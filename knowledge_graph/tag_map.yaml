@@ -1,0 +1,61 @@
+# Maps simulator output variables (models/well_integrity_model.simulate) to tag external_ids
+# and to the graph node the tag describes. Single source of truth for the data adapter.
+schema_version: "1.0.0"
+well: W01
+tags:
+  - external_id: W01-PT-A-ANN
+    sim_variable: P_ann
+    unit: bar
+    kind: measured
+    sensor: SEN-W01-PT-A-ANN
+    measures: {node: W01.ANN-A, property: pressure, location: wellhead}
+    sigma: 0.5
+  - external_id: W01-TT-WH
+    sim_variable: T_wh
+    unit: degC
+    kind: measured
+    sensor: SEN-W01-TT-WH
+    measures: {node: W01.XT, property: temperature, location: wellhead}
+    sigma: 0.3
+  - external_id: W01-PT-WH
+    sim_variable: P_wh
+    unit: bar
+    kind: measured
+    sensor: SEN-W01-PT-WH
+    measures: {node: W01.XT, property: pressure, location: upstream_choke}
+    sigma: 0.5
+  - external_id: W01-ZT-CHK
+    sim_variable: choke
+    unit: 1/64in
+    kind: measured
+    sensor: SEN-W01-ZT-CHK
+    measures: {node: W01.CHK, property: position, location: actuator}
+    sigma: 0.5
+  - external_id: W01-FL-PT
+    sim_variable: P_fl
+    unit: bar
+    kind: measured
+    sensor: SEN-W01-FL-PT
+    measures: {node: FL-W01, property: pressure, location: downstream_choke}
+    sigma: 0.5
+  - external_id: W01-VT-T-ANN
+    sim_variable: T_ann
+    unit: degC
+    kind: virtual
+    model: TWIN-W01-SURR
+    estimates: {node: W01.ANN-A, property: temperature, location: mean}
+    sigma: 2.0
+  - external_id: W01-VT-Q-LIQ
+    sim_variable: q_liq
+    unit: Sm3/d
+    kind: virtual
+    model: TWIN-W01-SURR
+    estimates: {node: W01, property: liquid_rate, location: wellhead}
+    sigma: 15.0
+  - external_id: W01-VT-P-ANN-THERMAL
+    sim_variable: P_ann_expected   # computed by pipeline/residual.py from the twin
+    unit: bar
+    kind: virtual
+    model: TWIN-W01-SURR
+    estimates: {node: W01.ANN-A, property: expected_pressure_thermal, location: wellhead}
+    sigma: 3.0
