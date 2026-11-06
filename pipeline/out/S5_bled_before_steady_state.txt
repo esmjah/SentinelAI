@@ -1,0 +1,39 @@
+Decision for A-annulus W01.ANN-A at t = 59.92 h [RA.W01.S5_bled_before_steady_state]: BLEED_TEST (gate EXPECTED_LOSS) [DEC.W01.S5_bled_before_steady_state].
+Measured annulus pressure is 18.75 bar against 12.38 bar expected from heating alone by twin TWIN-W01-SURR [RA.W01.S5_bled_before_steady_state].
+The residual of 6.34 bar over the 30.0 min dwell window corresponds to z = 2.08 with sigma_r = 3.04 bar [RA.W01.S5_bled_before_steady_state].
+The annulus was bled 43.92 h earlier; the pressure trend before the bleed was 1.85 bar/h [RA.W01.S5_bled_before_steady_state].
+Calibrated leak probability is 0.039 (90% interval 0.0095 to 0.1443) at an operational prior of 0.002 [RA.W01.S5_bled_before_steady_state].
+Margin to MAASP 120 bar rev C (effective 2026-03-01) [LIM.W01.MAASP.C] is 101.25 bar [RA.W01.S5_bled_before_steady_state].
+Expected losses: no action NOK 780,839, bleed test NOK 490,574, alarm NOK 2,048,048 [DEC.W01.S5_bled_before_steady_state].
+Costs: missed leak NOK 20,000,000, false alarm NOK 50,000, bleed test NOK 50,000 [POL.W01.ANN.v1]; confirmatory test NOK 2,000,000 [TEST.PRESSURE].
+The bleed test is twin-predicted to have sensitivity 0.49 and specificity 0.998 [DEC.W01.S5_bled_before_steady_state].
+Recommended next evidence: TEST.BLEED [DEC.W01.S5_bled_before_steady_state].
+This is advisory only; trip authority is SIS only [POL.W01.ANN.v1].
+
+--- grounding gate: ACCEPTED ---
+59.92 -> RA.W01.S5_bled_before_steady_state.t_eval_h
+18.75 -> RA.W01.S5_bled_before_steady_state.P_meas_bar
+12.38 -> RA.W01.S5_bled_before_steady_state.P_expected_bar
+6.34 -> RA.W01.S5_bled_before_steady_state.residual_bar
+30.0 -> RA.W01.S5_bled_before_steady_state.dwell_min
+2.08 -> RA.W01.S5_bled_before_steady_state.z
+3.04 -> RA.W01.S5_bled_before_steady_state.sigma_r_bar
+43.92 -> RA.W01.S5_bled_before_steady_state.hours_since_bleed
+1.85 -> RA.W01.S5_bled_before_steady_state.pre_bleed_trend_bar_h
+0.039 -> RA.W01.S5_bled_before_steady_state.p_leak
+90% -> RA.W01.S5_bled_before_steady_state.interval_level
+0.0095 -> RA.W01.S5_bled_before_steady_state.p_lo
+0.1443 -> RA.W01.S5_bled_before_steady_state.p_hi
+0.002 -> RA.W01.S5_bled_before_steady_state.prior_op
+120 -> LIM.W01.MAASP.C.value
+2026-03-01 -> LIM.W01.MAASP.C.effective_from
+101.25 -> RA.W01.S5_bled_before_steady_state.maasp_margin_bar
+780,839, -> DEC.W01.S5_bled_before_steady_state.loss_no_action_nok
+490,574, -> DEC.W01.S5_bled_before_steady_state.loss_bleed_test_nok
+2,048,048 -> DEC.W01.S5_bled_before_steady_state.loss_alarm_nok
+20,000,000, -> POL.W01.ANN.v1.cost_missed_leak_nok
+50,000, -> POL.W01.ANN.v1.cost_false_alarm_nok
+50,000 -> POL.W01.ANN.v1.cost_false_alarm_nok
+2,000,000 -> TEST.PRESSURE.cost_nok
+0.49 -> DEC.W01.S5_bled_before_steady_state.bleed_sensitivity
+0.998 -> DEC.W01.S5_bled_before_steady_state.bleed_specificity

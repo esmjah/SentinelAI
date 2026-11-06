@@ -1,0 +1,37 @@
+Decision for A-annulus W01.ANN-A at t = 59.92 h [RA.W01.S6_deep_leak_bleed]: NO_ACTION (gate EXPECTED_LOSS) [DEC.W01.S6_deep_leak_bleed].
+Measured annulus pressure is 4.68 bar against 5.03 bar expected from heating alone by twin TWIN-W01-SURR [RA.W01.S6_deep_leak_bleed].
+The residual of -0.03 bar over the 30.0 min dwell window corresponds to z = -0.01 with sigma_r = 3.04 bar [RA.W01.S6_deep_leak_bleed].
+The annulus was bled 11.92 h earlier; the pressure trend before the bleed was -0.07 bar/h [RA.W01.S6_deep_leak_bleed].
+Calibrated leak probability is 0.0017 (90% interval 0.0009 to 0.0021) at an operational prior of 0.002 [RA.W01.S6_deep_leak_bleed].
+Margin to MAASP 120 bar rev C (effective 2026-03-01) [LIM.W01.MAASP.C] is 115.32 bar [RA.W01.S6_deep_leak_bleed].
+Expected losses: no action NOK 34,036, alarm NOK 2,049,915 [DEC.W01.S6_deep_leak_bleed].
+Costs: missed leak NOK 20,000,000, false alarm NOK 50,000, bleed test NOK 50,000 [POL.W01.ANN.v1]; confirmatory test NOK 2,000,000 [TEST.PRESSURE].
+The bleed test is twin-predicted to have sensitivity 0.49 and specificity 0.998 [DEC.W01.S6_deep_leak_bleed].
+This is advisory only; trip authority is SIS only [POL.W01.ANN.v1].
+
+--- grounding gate: ACCEPTED ---
+59.92 -> RA.W01.S6_deep_leak_bleed.t_eval_h
+4.68 -> RA.W01.S6_deep_leak_bleed.P_meas_bar
+5.03 -> RA.W01.S6_deep_leak_bleed.P_expected_bar
+-0.03 -> RA.W01.S6_deep_leak_bleed.residual_bar
+30.0 -> RA.W01.S6_deep_leak_bleed.dwell_min
+-0.01 -> RA.W01.S6_deep_leak_bleed.z
+3.04 -> RA.W01.S6_deep_leak_bleed.sigma_r_bar
+11.92 -> RA.W01.S6_deep_leak_bleed.hours_since_bleed
+-0.07 -> RA.W01.S6_deep_leak_bleed.pre_bleed_trend_bar_h
+0.0017 -> RA.W01.S6_deep_leak_bleed.p_leak
+90% -> RA.W01.S6_deep_leak_bleed.interval_level
+0.0009 -> RA.W01.S6_deep_leak_bleed.p_lo
+0.0021 -> RA.W01.S6_deep_leak_bleed.p_hi
+0.002 -> RA.W01.S6_deep_leak_bleed.p_leak
+120 -> LIM.W01.MAASP.C.value
+2026-03-01 -> LIM.W01.MAASP.C.effective_from
+115.32 -> RA.W01.S6_deep_leak_bleed.maasp_margin_bar
+34,036, -> DEC.W01.S6_deep_leak_bleed.loss_no_action_nok
+2,049,915 -> DEC.W01.S6_deep_leak_bleed.loss_alarm_nok
+20,000,000, -> POL.W01.ANN.v1.cost_missed_leak_nok
+50,000, -> POL.W01.ANN.v1.cost_false_alarm_nok
+50,000 -> POL.W01.ANN.v1.cost_false_alarm_nok
+2,000,000 -> TEST.PRESSURE.cost_nok
+0.49 -> DEC.W01.S6_deep_leak_bleed.bleed_sensitivity
+0.998 -> DEC.W01.S6_deep_leak_bleed.bleed_specificity

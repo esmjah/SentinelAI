@@ -1,0 +1,44 @@
+Decision for A-annulus W01.ANN-A at t = 59.92 h [RA.W01.S3_leak_revealed_by_bleed]: ALARM (gate G4_ROBUST) [DEC.W01.S3_leak_revealed_by_bleed].
+Measured annulus pressure is 10.6 bar against 5.03 bar expected from heating alone by twin TWIN-W01-SURR [RA.W01.S3_leak_revealed_by_bleed].
+The residual of 5.53 bar over the 30.0 min dwell window corresponds to z = 1.82 with sigma_r = 3.04 bar [RA.W01.S3_leak_revealed_by_bleed].
+The annulus was bled 11.92 h earlier; the pressure trend before the bleed was -0.03 bar/h [RA.W01.S3_leak_revealed_by_bleed].
+Calibrated leak probability is 0.9301 (90% interval 0.0843 to 0.9301) at an operational prior of 0.002 [RA.W01.S3_leak_revealed_by_bleed].
+Margin to MAASP 120 bar rev C (effective 2026-03-01) [LIM.W01.MAASP.C] is 109.4 bar [RA.W01.S3_leak_revealed_by_bleed].
+Expected losses: no action NOK 18,601,416, alarm NOK 2,003,496 [DEC.W01.S3_leak_revealed_by_bleed].
+Costs: missed leak NOK 20,000,000, false alarm NOK 50,000, bleed test NOK 50,000 [POL.W01.ANN.v1]; confirmatory test NOK 2,000,000 [TEST.PRESSURE].
+The bleed test is twin-predicted to have sensitivity 0.49 and specificity 0.998 [DEC.W01.S3_leak_revealed_by_bleed].
+The interval width 0.8458 [DEC.W01.S3_leak_revealed_by_bleed] exceeds the policy's abstain_interval_width 0.4 [POL.W01.ANN.v1] and the best action differs across the interval, so the point estimate is not used: the action with the lowest worst-case loss is chosen.
+Worst-case losses over the interval: no action NOK 18,601,416, alarm NOK 2,045,785 [DEC.W01.S3_leak_revealed_by_bleed]. A human must confirm this decision.
+Recommended next evidence: TEST.PRESSURE [DEC.W01.S3_leak_revealed_by_bleed].
+This is advisory only; trip authority is SIS only [POL.W01.ANN.v1].
+
+--- grounding gate: ACCEPTED ---
+59.92 -> RA.W01.S3_leak_revealed_by_bleed.t_eval_h
+10.6 -> RA.W01.S3_leak_revealed_by_bleed.P_meas_bar
+5.03 -> RA.W01.S3_leak_revealed_by_bleed.P_expected_bar
+5.53 -> RA.W01.S3_leak_revealed_by_bleed.residual_bar
+30.0 -> RA.W01.S3_leak_revealed_by_bleed.dwell_min
+1.82 -> RA.W01.S3_leak_revealed_by_bleed.z
+3.04 -> RA.W01.S3_leak_revealed_by_bleed.sigma_r_bar
+11.92 -> RA.W01.S3_leak_revealed_by_bleed.hours_since_bleed
+-0.03 -> RA.W01.S3_leak_revealed_by_bleed.pre_bleed_trend_bar_h
+0.9301 -> RA.W01.S3_leak_revealed_by_bleed.p_leak
+90% -> RA.W01.S3_leak_revealed_by_bleed.interval_level
+0.0843 -> RA.W01.S3_leak_revealed_by_bleed.p_lo
+0.9301 -> RA.W01.S3_leak_revealed_by_bleed.p_leak
+0.002 -> RA.W01.S3_leak_revealed_by_bleed.prior_op
+120 -> LIM.W01.MAASP.C.value
+2026-03-01 -> LIM.W01.MAASP.C.effective_from
+109.4 -> RA.W01.S3_leak_revealed_by_bleed.maasp_margin_bar
+18,601,416, -> DEC.W01.S3_leak_revealed_by_bleed.loss_no_action_nok
+2,003,496 -> DEC.W01.S3_leak_revealed_by_bleed.loss_alarm_nok
+20,000,000, -> POL.W01.ANN.v1.cost_missed_leak_nok
+50,000, -> POL.W01.ANN.v1.cost_false_alarm_nok
+50,000 -> POL.W01.ANN.v1.cost_false_alarm_nok
+2,000,000 -> TEST.PRESSURE.cost_nok
+0.49 -> DEC.W01.S3_leak_revealed_by_bleed.bleed_sensitivity
+0.998 -> DEC.W01.S3_leak_revealed_by_bleed.bleed_specificity
+0.8458 -> DEC.W01.S3_leak_revealed_by_bleed.interval_width
+0.4 -> POL.W01.ANN.v1.abstain_interval_width
+18,601,416, -> DEC.W01.S3_leak_revealed_by_bleed.loss_no_action_nok
+2,045,785 -> DEC.W01.S3_leak_revealed_by_bleed.worst_alarm_nok

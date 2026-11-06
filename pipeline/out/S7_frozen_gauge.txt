@@ -1,0 +1,11 @@
+Decision for A-annulus W01.ANN-A at t = 59.92 h [RA.W01.S7_frozen_gauge]: ABSTAIN (gate G1_DATA_QUALITY) [DEC.W01.S7_frozen_gauge].
+Data quality of W01-PT-A-ANN is FROZEN [RA.W01.S7_frozen_gauge], so no leak probability is used. Verify the transmitter SEN-W01-PT-A-ANN before any integrity conclusion [DEC.W01.S7_frozen_gauge].
+Margin to MAASP 120 bar rev C (effective 2026-03-01) [LIM.W01.MAASP.C] is 69.82 bar [RA.W01.S7_frozen_gauge].
+Recommended next evidence: SEN-W01-PT-A-ANN [DEC.W01.S7_frozen_gauge].
+This is advisory only; trip authority is SIS only [POL.W01.ANN.v1].
+
+--- grounding gate: ACCEPTED ---
+59.92 -> RA.W01.S7_frozen_gauge.t_eval_h
+120 -> LIM.W01.MAASP.C.value
+2026-03-01 -> LIM.W01.MAASP.C.effective_from
+69.82 -> RA.W01.S7_frozen_gauge.maasp_margin_bar

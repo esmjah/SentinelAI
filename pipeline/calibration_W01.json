@@ -1,0 +1,64 @@
+{
+ "c_eff_sd": 0.08,
+ "tau_sd": 0.2,
+ "id": "CAL-W01-v1",
+ "twin": "TWIN-W01-SURR",
+ "features": [
+  "z_dwell_mean",
+  "z_dwell_min",
+  "z_slope_per_h",
+  "post_bleed",
+  "post_bleed_z",
+  "hours_since_bleed",
+  "thermal_transient_C",
+  "pre_bleed_trend_bar_h"
+ ],
+ "monotone": {
+  "z_dwell_mean": 1,
+  "z_dwell_min": 1,
+  "z_slope_per_h": 1,
+  "post_bleed_z": 1
+ },
+ "prior_train": 0.35173611111111114,
+ "prior_op": 0.002,
+ "interval_level": 0.9,
+ "n_boot": 40,
+ "feature_min": [
+  -4.863052645722625,
+  -5.060146369843313,
+  -3.253520067252996,
+  0.0,
+  -2.347935315314773,
+  0.0,
+  0.0012728019241023958,
+  -0.2926233596759051
+ ],
+ "feature_max": [
+  13.088543032232268,
+  12.832865939954306,
+  3.995261961858928,
+  1.0,
+  9.727689167167005,
+  44.66666666666667,
+  15.331972621717554,
+  4.788084161112618
+ ],
+ "n_runs": 3000,
+ "n_train": 14400,
+ "n_calib": 3600,
+ "n_test": 6000,
+ "metrics": {
+  "ece": 0.029680577478655466,
+  "brier": 0.16826271442139065,
+  "ece_naive": 0.24388457243373735,
+  "brier_naive": 0.26310232186771204
+ },
+ "bleed_test": {
+  "sensitivity": 0.49022801302931596,
+  "specificity": 0.9978448275862069,
+  "n_samples": 1538,
+  "positive_if_p_above": 0.9,
+  "min_hours_after_bleed": 6,
+  "median_depth_missed_leaks_m": 1629.062612801522
+ }
+}

@@ -1,0 +1,15 @@
+Leak confirmed with probability 0.99 [RA.W01.S3_llm_draft].
+MAASP is 140 bar [LIM.W01.MAASP.B], so there is ample margin.
+Per the latest procedure the limit is 140 bar [LIM.W01.MAASP.C].
+Similar wells leaked in 3 of 5 cases.
+See also [LIM.W01.MAASP.D].
+Recommend shutting in the well immediately.
+
+--- grounding gate: REJECTED ---
+R4 '0.99' matches no property of ['RA.W01.S3_llm_draft'] in: Leak confirmed with probability 0.99 [RA.W01.S3_llm_draft].
+R3 superseded source [LIM.W01.MAASP.B] (superseded by LIM.W01.MAASP.C) in: MAASP is 140 bar [LIM.W01.MAASP.B], so there is ample margin.
+R4 '140' matches no property of ['LIM.W01.MAASP.C'] in: Per the latest procedure the limit is 140 bar [LIM.W01.MAASP.C].
+R1 uncited number '3' in: Similar wells leaked in 3 of 5 cases.
+R1 uncited number '5' in: Similar wells leaked in 3 of 5 cases.
+R2 unknown node [LIM.W01.MAASP.D] in: See also [LIM.W01.MAASP.D].
+R5 missing advisory statement with cited trip authority
