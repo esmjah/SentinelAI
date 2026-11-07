@@ -1,21 +1,19 @@
-"""End-to-end demo: residual -> calibrated p(leak) -> decision -> grounded rationale -> audit record.
+"""End-to-end: evidence -> failure-mode probabilities -> decision -> grounded rationale -> audit.
 
-Run from the repository root (after `python -m pipeline.calibrate` has produced the artifact):
-    python -m pipeline.run_pipeline
+    python -m pipeline.run_pipeline          (after python -m pipeline.calibrate)
 
-Writes pipeline/out/<scenario>.txt (rationale + verdict), pipeline/out/audit.jsonl (one record per
-decision) and pipeline/pipeline_scenarios.png.
+Writes pipeline/out/<scenario>.txt (rationale and gate verdict), pipeline/out/audit.jsonl and
+pipeline/pipeline_scenarios.png.
 """
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-import numpy as np
-
+from digital_twin import failure_modes as fm
 from knowledge_graph.build_graph import build_graph
-from .residual import Scenario, compute_residual, features_at
-from .calibrate import LeakCalibrator, ARTIFACT
+from .residual import Scenario, collect, features_at, make_fault
+from .calibrate import FailureModeCalibrator, ARTIFACT
 from .decide import decide
 from . import rationale as rat
 
@@ -23,22 +21,31 @@ HERE = Path(__file__).parent
 OUT = HERE / "out"
 
 SCENARIOS = [
-    (Scenario(name="S1_healthy_startup", seed=1),
-     "Healthy well, start-up heating only"),
-    (Scenario(name="S2_hidden_leak_no_bleed", C_leak=5e-7, leak_start_h=40, seed=2),
-     "Leak hidden under thermal pressure, no bleed"),
-    (Scenario(name="S3_leak_revealed_by_bleed", C_leak=5e-7, leak_start_h=40, bleed_h=48, seed=3),
-     "Same leak, bleed at 48 h reveals rebuild"),
-    (Scenario(name="S4_leak_during_shut_in", C_leak=5e-7, leak_start_h=0, startup_h=12, seed=5),
-     "Leak flowing while shut in, before start-up"),
-    (Scenario(name="S5_bled_before_steady_state", tau_factor=1.6, bleed_h=16, seed=3),
-     "Healthy, slow heating, bled before steady state"),
-    (Scenario(name="S6_deep_leak_bleed", C_leak=5e-7, leak_start_h=40, bleed_h=48, leak_depth_m=1900, seed=6),
-     "Leak at 1900 m (below balance depth), bled"),
-    (Scenario(name="S7_frozen_gauge", C_leak=5e-7, leak_start_h=40, bleed_h=48, freeze_at_h=47, seed=7),
-     "Annulus transmitter frozen at 47 h"),
-    (Scenario(name="S8_outside_twin_envelope", choke_64=100, seed=8),
-     "Choke 100/64, outside twin envelope"),
+    (Scenario(name="S01_healthy", seed=1), "Healthy well: start-up heating only"),
+    (Scenario(name="S02_tubing_thread_leak", mechanism="FMech.TUB.THREAD", seed=2),
+     "Tubing thread leak at 1,500 m from 20 h, producing"),
+    (Scenario(name="S03_packer_leak", mechanism="FMech.PKR.ELAST", seed=3),
+     "Packer element leak at 2,300 m from 20 h, producing"),
+    (Scenario(name="S04_hanger_seal_bled", mechanism="FMech.THS.SEAL", bleed=(40.0, "A"), seed=4),
+     "Tubing-hanger seal leak from 20 h; A bled at 40 h"),
+    (Scenario(name="S05_casing_leak_AB", mechanism="FMech.CSG.LEAK", seed=5),
+     "Production-casing leak A<->B at 800 m from 20 h"),
+    (Scenario(name="S06_cement_gas_B_bled", mechanism="FMech.CEM.MICRO", bleed=(40.0, "B"), seed=6),
+     "Cement micro-annulus gas into B from 12 h; B bled at 40 h"),
+    (Scenario(name="S07_A_outlet_leak_env", mechanism="FMech.THSP.SEAL", seed=7),
+     "A-annulus outlet seal leaking to environment from 20 h"),
+    (Scenario(name="S08_int_casing_leak_bled", mechanism="FMech.ICSG.LEAK", bleed=(40.0, "B"), seed=8),
+     "Intermediate-casing leak to formation from 20 h; B bled at 40 h"),
+    (Scenario(name="S09_choke_erosion", mechanism="FMech.CHK.EROS", fault_kw=dict(k_per_day=0.10), seed=9),
+     "Choke trim erosion from 6 h"),
+    (Scenario(name="S10_compound_silent", mechanism="FMech.PKR.ELAST",
+              extra_faults=[make_fault("FMech.CEM.MICRO")],
+              known_findings=[fm.CasingWear("prodcsg", 0.6, 0.0, 1.0)], seed=10),
+     "Known 60 % casing wear + packer leak + cement gas"),
+    (Scenario(name="S11_frozen_transmitter", mechanism="FMech.SEN.FROZEN",
+              extra_faults=[make_fault("FMech.TUB.THREAD", start_h=46.0)], seed=11),
+     "A transmitter frozen at 40 h; thread leak from 46 h"),
+    (Scenario(name="S12_outside_envelope", choke_64=100.0, seed=12), "Choke 100/64, outside the twin envelope"),
 ]
 
 
@@ -46,83 +53,98 @@ def run(scenarios=SCENARIOS, plot=True, verbose=True):
     if not ARTIFACT.exists():
         raise SystemExit("No calibration artifact. Run: python -m pipeline.calibrate")
     g = build_graph()
-    cal = LeakCalibrator.load()
+    cal = FailureModeCalibrator.load()
     OUT.mkdir(exist_ok=True)
-    audit = open(OUT / "audit.jsonl", "w")
     rows, results = [], []
-    for s, desc in scenarios:
-        res = compute_residual(s, g)
-        f = features_at(res, g)
-        p = cal.predict(f)
-        d = decide(f, p, g, cal.summary)
-        g2, ra, de = rat.record(g, s.name, f, p, d, res.provenance)
-        text = rat.draft(g2, ra, de)
-        v = rat.verify(text, g2)
-        (OUT / f"{s.name}.txt").write_text(
-            text + "\n\n--- grounding gate: " + ("ACCEPTED" if v.accepted else "REJECTED") + " ---\n"
-            + "\n".join(v.violations or v.checked) + "\n")
-        audit.write(json.dumps(dict(
-            run_id=s.name, truth=dict(leak=s.leak_present, C_leak=s.C_leak, leak_depth_m=s.leak_depth_m),
-            risk_assessment={k: v_ for k, v_ in g2.nodes[ra].items()},
-            decision={k: v_ for k, v_ in g2.nodes[de].items()},
-            based_on=[v_ for _, v_, k in g2.out_edges(ra, keys=True) if k == "BASED_ON"],
-            rationale_accepted=v.accepted), default=str) + "\n")
-        rows.append((s.name, desc, s.leak_present, f["residual_bar"], p["p_leak"], p["p_lo"], p["p_hi"],
-                     d["action"] + ("*" if d["human_review"] else ""), d["gate"], v.accepted))
-        results.append((s, desc, res, f, p, d))
+    with open(OUT / "audit.jsonl", "w") as audit:
+        for s, desc in scenarios:
+            ev = collect(s, g)
+            f = features_at(ev, g)
+            p = cal.predict(f)
+            d = decide(f, p, g, cal.summary)
+            g2, ra, de = rat.record(g, s.name, f, p, d, ev.provenance)
+            text = rat.draft(g2, ra, de)
+            v = rat.verify(text, g2, de)
+            (OUT / f"{s.name}.txt").write_text(
+                text + "\n\n--- grounding gate: " + ("ACCEPTED" if v.accepted else "REJECTED") + " ---\n"
+                + "\n".join(v.violations or v.checked) + "\n")
+            truth = [s.mechanism] + [getattr(x, "mechanism", "") for x in s.extra_faults]
+            audit.write(json.dumps(dict(
+                run_id=s.name, description=desc, truth=dict(mechanisms=[t for t in truth if t],
+                                                            known_findings=[vars(x) for x in s.known_findings]),
+                risk_assessment=dict(g2.nodes[ra]), decision=dict(g2.nodes[de]),
+                based_on=[x for _, x, k in g2.out_edges(ra, keys=True) if k == "BASED_ON"],
+                rationale_accepted=v.accepted), default=str) + "\n")
+            rows.append((s.name, s.mechanism or "-", p["p_fail"], p["p_lo"], p["p_hi"], p["top_mode"],
+                         d["action"] + ("*" if d["human_review"] else ""), d["gate"], d["failure_mode"],
+                         d["next_evidence"] or "-", v.accepted))
+            results.append((s, desc, ev, f, p, d))
 
-    # hallucination demo on the leak case
-    s3 = next(r for r in results if r[0].name == "S3_leak_revealed_by_bleed")
-    g2, ra, de = rat.record(g, "S3_llm_draft", s3[3], s3[4], s3[5], s3[2].provenance)
-    bad = rat.hallucinated_example(ra, de)
-    vb = rat.verify(bad, g2)
-    (OUT / "S3_hallucinated_draft.txt").write_text(
-        bad.replace(". ", ".\n") + "\n\n--- grounding gate: " +
-        ("ACCEPTED" if vb.accepted else "REJECTED") + " ---\n" + "\n".join(vb.violations) + "\n")
-    audit.close()
+        bad_case = next(r for r in results if r[0].name == "S02_tubing_thread_leak")
+        g2, ra, de = rat.record(g, "S02_llm_draft", bad_case[3], bad_case[4], bad_case[5], bad_case[2].provenance)
+        wrong = "NO_ACTION" if bad_case[5]["action"] != "NO_ACTION" else "ALARM"
+        bad = rat.hallucinated_example(ra, de, wrong)
+        vb = rat.verify(bad, g2, de)
+        (OUT / "S02_hallucinated_draft.txt").write_text(
+            bad.replace(". ", ".\n") + "\n\n--- grounding gate: " + ("ACCEPTED" if vb.accepted else "REJECTED")
+            + " ---\n" + "\n".join(vb.violations) + "\n")
 
     if verbose:
-        print(f"{'scenario':28s} {'leak':5s} {'resid':>7s} {'p(leak)':>8s} {'90% interval':>17s}  "
-              f"{'action':10s} {'gate':18s} rationale")
-        for n, _, lk, r, pp, lo, hi, a, gt, ok in rows:
-            print(f"{n:28s} {str(lk):5s} {r:+7.2f} {pp:8.4f} [{lo:.4f}, {hi:.4f}]  {a:10s} {gt:18s} "
-                  f"{'accepted' if ok else 'REJECTED'}")
-        print("* = human confirmation required (G4 robust decision)")
-        print("\nHallucinated draft for S3 ->", "ACCEPTED" if vb.accepted else "REJECTED")
+        print(f"{'scenario':26s} {'truth':18s} {'p(fail)':>8s} {'90% interval':>17s} {'top mode':12s} "
+              f"{'action':10s} {'gate':17s} {'assessed':14s} {'next evidence':16s} rationale")
+        for n, tr, pf, lo, hi, tm, a, gt, fmode, nx_, ok in rows:
+            print(f"{n:26s} {tr:18s} {pf:8.4f} [{lo:.4f}, {hi:.4f}] {tm:12s} {a:10s} {gt:17s} {fmode:14s} "
+                  f"{nx_:16s} {'accepted' if ok else 'REJECTED'}")
+        print("* = human confirmation required (G4)")
+        print("\nHallucinated draft for S02 ->", "ACCEPTED" if vb.accepted else "REJECTED")
         for x in vb.violations:
             print("   ", x)
     if plot:
         _plot(results)
-    return rows
+    return rows, results
 
 
 def _plot(results):
     import matplotlib; matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    colors = {"NO_ACTION": "#43A047", "BLEED_TEST": "#FB8C00", "ALARM": "#E53935", "ABSTAIN": "#757575"}
-    fig, axes = plt.subplots(4, 2, figsize=(15, 15), sharex=True)
-    for ax, (s, desc, res, f, p, d) in zip(axes.flat, results):
-        ax.fill_between(res.t_h, res.P_expected - 2 * res.sigma_r, res.P_expected + 2 * res.sigma_r,
-                        color="#1E88E5", alpha=.15, label="twin ± 2σ_r")
-        ax.plot(res.t_h, res.P_expected, color="#1E88E5", lw=1.6, label="twin expected (thermal only)")
-        ax.plot(res.t_h, res.P_meas, color="#212121", lw=.9, label="measured W01-PT-A-ANN")
-        if s.snapped_bleed() is not None:
-            ax.axvline(s.snapped_bleed(), color="#6A1B9A", ls=":", lw=1.2, label="bleed")
-        if s.leak_present:
-            ax.axvline(s.leak_start_h, color="#E53935", ls="--", lw=1, label="leak starts (truth)")
-        ax.set_title(f"{s.name}\n{desc}", fontsize=10, loc="left")
-        ax.text(0.99, 0.95, f"{d['action']}{' (human review)' if d['human_review'] else ''}\n"
-                f"p = {p['p_leak']:.4f}\n[{p['p_lo']:.4f}, {p['p_hi']:.4f}]",
-                transform=ax.transAxes, ha="right", va="top", fontsize=10, fontweight="bold",
+    colors = {"NO_ACTION": "#43A047", "TEST": "#FB8C00", "ALARM": "#E53935", "ABSTAIN": "#757575"}
+    fig, axes = plt.subplots(4, 3, figsize=(19, 17), sharex=True)
+    for ax, (s, desc, ev, f, p, d) in zip(axes.flat, results):
+        t = ev.t_h
+        ax.fill_between(t, ev.twin["P_A"] - 2 * ev.sigma["A"], ev.twin["P_A"] + 2 * ev.sigma["A"],
+                        color="#C2185B", alpha=.10)
+        ax.plot(t, ev.twin["P_A"], color="#C2185B", lw=1.4, ls="--", label="A twin (expected)")
+        ax.plot(t, ev.meas["W01-PT-A-ANN"], color="#880E4F", lw=.8, label="A measured")
+        ax.fill_between(t, ev.twin["P_B"] - 2 * ev.sigma["B"], ev.twin["P_B"] + 2 * ev.sigma["B"],
+                        color="#3949AB", alpha=.10)
+        ax.plot(t, ev.twin["P_B"], color="#3949AB", lw=1.4, ls="--", label="B twin (expected)")
+        ax.plot(t, ev.meas["W01-PT-B-ANN"], color="#1A237E", lw=.8, label="B measured")
+        for e in ev.plant.events:
+            if e["event"] == "bleed_open":
+                ax.axvline(e["t_h"], color="#6A1B9A", ls=":", lw=1.2)
+        on = s.onset_h()
+        if on < s.hours:
+            ax.axvline(on, color="#E53935", ls="--", lw=1)
+        if s.shut_in_h:
+            ax.axvline(s.shut_in_h, color="k", ls="-.", lw=1)
+        ax.set_title(f"{s.name}\n{desc}", fontsize=9.5, loc="left")
+        what = {"NO_ACTION": "no failure mode indicated", "G1_DATA_QUALITY": "FM.MONITOR",
+                "G3_MODEL_VALIDITY": "twin not valid here"}
+        mode_txt = what.get(d["gate"], what.get(d["action"], d["failure_mode"]))
+        badge = (f"{d['action']}{' (human review)' if d['human_review'] else ''}\n{mode_txt}\n"
+                 + (f"p(fail) = {p['p_fail']:.3f}" if d["gate"] not in ("G1_DATA_QUALITY", "G3_MODEL_VALIDITY")
+                    else d["gate"]))
+        ax.text(0.99, 0.97, badge, transform=ax.transAxes, ha="right", va="top", fontsize=9, fontweight="bold",
                 color="white", bbox=dict(boxstyle="round", fc=colors[d["action"]], ec="none"))
-        ax.set_ylabel("A-annulus P [bar]"); ax.grid(alpha=.3)
-    axes[0, 0].legend(loc="center right", fontsize=8)
+        ax.set_ylabel("annulus pressure [bar]"); ax.grid(alpha=.3)
+    axes[0, 0].legend(loc="center right", fontsize=7.5)
     for ax in axes[-1]:
         ax.set_xlabel("time [h]")
-    plt.suptitle("SentinelAI pipeline - residual vs twin, calibrated p(leak) and decision at t = end",
-                 fontsize=13, y=0.995)
+    plt.suptitle("SentinelAI pipeline: A and B annulus vs digital twin (dashed, ±2σ band), diagnosis and decision at "
+                 "t = 60 h\nred dashed: true onset   purple dotted: bleed", fontsize=12, y=0.998)
     plt.tight_layout()
-    plt.savefig(HERE / "pipeline_scenarios.png", dpi=110)
+    plt.savefig(HERE / "pipeline_scenarios.png", dpi=100)
+    plt.close()
 
 
 if __name__ == "__main__":

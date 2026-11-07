@@ -1,0 +1,64 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S05_casing_leak_AB]: ALARM (gate G4_ROBUST) [DEC.W01.S05_casing_leak_AB].
+A-annulus pressure is 40.7 bar against 56.2 bar expected by [TWIN-W01]; the residual of -15.1 bar is z = -4.98 with sigma 3.04 bar [RA.W01.S05_casing_leak_AB].
+B-annulus pressure is 41.7 bar against 29.3 bar expected; the residual of 11.9 bar is z = 3.93 with sigma 3.04 bar [RA.W01.S05_casing_leak_AB].
+Probability that a failure mode is active is 0.06 (90% interval 0.0049 to 0.666) at an operational prior of 0.002 [RA.W01.S05_casing_leak_AB].
+The leading failure mode is [FM.COMM.AB] with probability 0.0575 [RA.W01.S05_casing_leak_AB].
+The next most likely is [FM.COMM.TA] with probability 0.0018 [RA.W01.S05_casing_leak_AB].
+[FMech.CHS.SEAL] can cause [FM.COMM.AB]; distance to its twin signature is 0.15 [DEC.W01.S05_casing_leak_AB].
+[FMech.CSG.LEAK] can cause [FM.COMM.AB]; distance to its twin signature is 0.21 [DEC.W01.S05_casing_leak_AB].
+[FM.COMM.AB] degrades [BE.SECONDARY].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.3 bar, margin 291.6 bar [RA.W01.S05_casing_leak_AB].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 165.1 bar [RA.W01.S05_casing_leak_AB].
+Expected losses: no action NOK 1,462,625, follow-up test NOK 587,146, alarm NOK 1,047,002; expected cost of a miss NOK 24,393,705 [DEC.W01.S05_casing_leak_AB].
+Policy costs: missed leak NOK 20,000,000, missed loss of containment NOK 500,000,000, false alarm NOK 50,000 [POL.W01.INTEGRITY].
+Confirmatory test costs NOK 1,000,000 [TEST.PT.ANN.B].
+Follow-up test costs NOK 50,000 [TEST.BLEED.A]; sensitivity 0.67 and specificity 0.992 (twin-estimated) [DEC.W01.S05_casing_leak_AB].
+The interval width 0.6612 [DEC.W01.S05_casing_leak_AB] exceeds abstain_interval_width 0.4 [POL.W01.INTEGRITY] and the best action differs across it; the action with the lowest worst-case loss is chosen and a human must confirm.
+Recommended next evidence: [TEST.PT.ANN.B] [DEC.W01.S05_casing_leak_AB].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S05_casing_leak_AB.t_eval_h
+40.7 -> RA.W01.S05_casing_leak_AB.P_A_bar
+56.2 -> RA.W01.S05_casing_leak_AB.P_A_exp_bar
+-15.1 -> RA.W01.S05_casing_leak_AB.r_A_bar
+-4.98 -> RA.W01.S05_casing_leak_AB.z_A
+3.04 -> RA.W01.S05_casing_leak_AB.sigma_A_bar
+41.7 -> RA.W01.S05_casing_leak_AB.P_B_bar
+29.3 -> RA.W01.S05_casing_leak_AB.P_B_exp_bar
+11.9 -> RA.W01.S05_casing_leak_AB.r_B_bar
+3.93 -> RA.W01.S05_casing_leak_AB.z_B
+3.04 -> RA.W01.S05_casing_leak_AB.sigma_A_bar
+0.06 -> RA.W01.S05_casing_leak_AB.p_fail
+90% -> RA.W01.S05_casing_leak_AB.interval_level
+0.0049 -> RA.W01.S05_casing_leak_AB.p_lo
+0.666 -> RA.W01.S05_casing_leak_AB.p_hi
+0.002 -> RA.W01.S05_casing_leak_AB.prior_op_fail
+0.0575 -> RA.W01.S05_casing_leak_AB.p_top
+0.0018 -> RA.W01.S05_casing_leak_AB.p_FM_COMM_TA
+[FMech.CHS.SEAL] can cause [FM.COMM.AB] -> CAUSES edge
+0.15 -> DEC.W01.S05_casing_leak_AB.mechanism_1_distance
+[FMech.CSG.LEAK] can cause [FM.COMM.AB] -> CAUSES edge
+0.21 -> DEC.W01.S05_casing_leak_AB.mechanism_2_distance
+[FM.COMM.AB] degrades [BE.SECONDARY] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.3 -> RA.W01.S05_casing_leak_AB.maasp_A_bar
+291.6 -> RA.W01.S05_casing_leak_AB.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S05_casing_leak_AB.maasp_B_bar
+165.1 -> RA.W01.S05_casing_leak_AB.margin_B_bar
+1,462,625, -> DEC.W01.S05_casing_leak_AB.loss_no_action_nok
+587,146, -> DEC.W01.S05_casing_leak_AB.loss_test_nok
+1,047,002 -> DEC.W01.S05_casing_leak_AB.loss_alarm_nok
+24,393,705 -> DEC.W01.S05_casing_leak_AB.C_bar_nok
+20,000,000, -> POL.W01.INTEGRITY.cost_missed_leak_nok
+500,000,000, -> POL.W01.INTEGRITY.cost_missed_loc_nok
+50,000 -> POL.W01.INTEGRITY.cost_false_alarm_nok
+1,000,000 -> TEST.PT.ANN.B.cost_nok
+50,000 -> TEST.BLEED.A.cost_nok
+0.67 -> DEC.W01.S05_casing_leak_AB.followup_sensitivity
+0.992 -> DEC.W01.S05_casing_leak_AB.followup_specificity
+0.6612 -> DEC.W01.S05_casing_leak_AB.interval_width
+0.4 -> POL.W01.INTEGRITY.abstain_interval_width

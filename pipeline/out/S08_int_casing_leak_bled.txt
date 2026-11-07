@@ -1,0 +1,68 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S08_int_casing_leak_bled]: ALARM (gate G4_ROBUST) [DEC.W01.S08_int_casing_leak_bled].
+A-annulus pressure is 55.9 bar against 56.2 bar expected by [TWIN-W01]; the residual of -0.2 bar is z = -0.07 with sigma 3.04 bar [RA.W01.S08_int_casing_leak_bled].
+B-annulus pressure is 14.1 bar against 8.7 bar expected; the residual of 4.4 bar is z = 1.45 with sigma 3.04 bar [RA.W01.S08_int_casing_leak_bled].
+The B-annulus was bled 19.8 h ago; the returns differed from the twin's by -0.31 Sm3 gas and -47.1 L brine [RA.W01.S08_int_casing_leak_bled].
+Probability that a failure mode is active is 0.0035 (90% interval 0.0011 to 0.4712) at an operational prior of 0.002 [RA.W01.S08_int_casing_leak_bled].
+The leading failure mode is [FM.SCP.B] with probability 0.002 [RA.W01.S08_int_casing_leak_bled].
+The next most likely is [FM.XFLOW] with probability 0.0006 [RA.W01.S08_int_casing_leak_bled].
+[FMech.ICSG.LEAK] can cause [FM.SCP.B]; distance to its twin signature is 0.26 [DEC.W01.S08_int_casing_leak_bled].
+[FMech.CEM.MICRO] can cause [FM.SCP.B]; distance to its twin signature is 2.36 [DEC.W01.S08_int_casing_leak_bled].
+[FM.SCP.B] degrades [BE.SECONDARY].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.4 bar, margin 276.6 bar [RA.W01.S08_int_casing_leak_bled].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 192.7 bar [RA.W01.S08_int_casing_leak_bled].
+Expected losses: no action NOK 679,163, follow-up test NOK 423,637, alarm NOK 1,049,826; expected cost of a miss NOK 195,398,220 [DEC.W01.S08_int_casing_leak_bled].
+Policy costs: missed leak NOK 20,000,000, missed loss of containment NOK 500,000,000, false alarm NOK 50,000 [POL.W01.INTEGRITY].
+Confirmatory test costs NOK 1,000,000 [TEST.PT.ANN.B].
+Follow-up test costs NOK 30,000 [TEST.TOPUP]; sensitivity 0.5 and specificity 0.95 (assumed default) [DEC.W01.S08_int_casing_leak_bled].
+The interval width 0.4701 [DEC.W01.S08_int_casing_leak_bled] exceeds abstain_interval_width 0.4 [POL.W01.INTEGRITY] and the best action differs across it; the action with the lowest worst-case loss is chosen and a human must confirm.
+Recommended next evidence: [TEST.PT.ANN.B] [DEC.W01.S08_int_casing_leak_bled].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S08_int_casing_leak_bled.t_eval_h
+55.9 -> RA.W01.S08_int_casing_leak_bled.P_A_bar
+56.2 -> RA.W01.S08_int_casing_leak_bled.P_A_exp_bar
+-0.2 -> RA.W01.S08_int_casing_leak_bled.r_A_bar
+-0.07 -> RA.W01.S08_int_casing_leak_bled.z_A
+3.04 -> RA.W01.S08_int_casing_leak_bled.sigma_A_bar
+14.1 -> RA.W01.S08_int_casing_leak_bled.P_B_bar
+8.7 -> RA.W01.S08_int_casing_leak_bled.P_B_exp_bar
+4.4 -> RA.W01.S08_int_casing_leak_bled.r_B_bar
+1.45 -> RA.W01.S08_int_casing_leak_bled.z_B
+3.04 -> RA.W01.S08_int_casing_leak_bled.sigma_A_bar
+19.8 -> RA.W01.S08_int_casing_leak_bled.hours_since_bleed_B
+-0.31 -> RA.W01.S08_int_casing_leak_bled.d_gas_B_Sm3
+-47.1 -> RA.W01.S08_int_casing_leak_bled.d_brine_B_L
+0.0035 -> RA.W01.S08_int_casing_leak_bled.p_fail
+90% -> RA.W01.S08_int_casing_leak_bled.interval_level
+0.0011 -> RA.W01.S08_int_casing_leak_bled.p_lo
+0.4712 -> RA.W01.S08_int_casing_leak_bled.p_hi
+0.002 -> RA.W01.S08_int_casing_leak_bled.p_top
+0.002 -> RA.W01.S08_int_casing_leak_bled.p_top
+0.0006 -> RA.W01.S08_int_casing_leak_bled.p_FM_EXT
+[FMech.ICSG.LEAK] can cause [FM.SCP.B] -> CAUSES edge
+0.26 -> DEC.W01.S08_int_casing_leak_bled.mechanism_1_distance
+[FMech.CEM.MICRO] can cause [FM.SCP.B] -> CAUSES edge
+2.36 -> DEC.W01.S08_int_casing_leak_bled.mechanism_2_distance
+[FM.SCP.B] degrades [BE.SECONDARY] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.4 -> RA.W01.S08_int_casing_leak_bled.maasp_A_bar
+276.6 -> RA.W01.S08_int_casing_leak_bled.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S08_int_casing_leak_bled.maasp_B_bar
+192.7 -> RA.W01.S08_int_casing_leak_bled.margin_B_bar
+679,163, -> DEC.W01.S08_int_casing_leak_bled.loss_no_action_nok
+423,637, -> DEC.W01.S08_int_casing_leak_bled.loss_test_nok
+1,049,826 -> DEC.W01.S08_int_casing_leak_bled.loss_alarm_nok
+195,398,220 -> DEC.W01.S08_int_casing_leak_bled.C_bar_nok
+20,000,000, -> POL.W01.INTEGRITY.cost_missed_leak_nok
+500,000,000, -> POL.W01.INTEGRITY.cost_missed_loc_nok
+50,000 -> POL.W01.INTEGRITY.cost_false_alarm_nok
+1,000,000 -> TEST.PT.ANN.B.cost_nok
+30,000 -> TEST.TOPUP.cost_nok
+0.5 -> DEC.W01.S08_int_casing_leak_bled.interval_width
+0.95 -> DEC.W01.S08_int_casing_leak_bled.followup_specificity
+0.4701 -> DEC.W01.S08_int_casing_leak_bled.interval_width
+0.4 -> POL.W01.INTEGRITY.abstain_interval_width

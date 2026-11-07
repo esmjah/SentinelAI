@@ -1,896 +1,1216 @@
-# knowledge_graph — A Tutorial on Well-Integrity Knowledge Modelling
+# knowledge_graph — A Manual on Well-Integrity Knowledge Modelling
 
-### From ISO 14224 taxonomy and NORSOK D-010 barriers to evidence-based risk assessment
+### From ISO 14224 taxonomy and NORSOK D-010 barriers to twin-verified risk flows for well W01
 
-> **Scope and honesty note.** This module and tutorial use **synthetic, illustrative** content.
-> *Ivar Aasen* appears only as a public installation name. All tags, limits, costs and parameters are invented.
-> Standards are summarised in my own words for teaching purposes. Always consult the current
-> editions of ISO 14224, NORSOK D-010, ISO 16530 and API RP 90 for normative requirements.
+> **What this document is.** A self-contained, textbook-style manual for the `knowledge_graph/`
+> module of SentinelAI. It teaches the engineering background (well construction, well barriers,
+> annulus pressure management, failure taxonomy, testing) and shows how each idea becomes nodes and
+> edges in a graph that can be queried. Every number quoted is produced by the code
+> (`python -m knowledge_graph.demo_queries`, `python -m knowledge_graph.twin_link`).
+>
+> **Synthetic and illustrative.** *Ivar Aasen* and *W01* are used only as names. All tags, ratings,
+> limits, costs and parameters are invented but physically consistent with the `digital_twin`
+> module. Standards are summarised in my own words for learning; always use the current editions
+> of the cited documents for normative requirements.
 
-![Two coupled views of the knowledge graph](kg_two_views.png)
+![The two coupled views of the knowledge graph](kg_two_views.png)
+
+---
+
+## The graph on one page
+
+| | Content |
+|---|---|
+| **Size** | 156 nodes, 488 edges, schema 1.0.0; passes 9 structural rules and 7 consistency tests |
+| **Asset view** | Installation → 4 systems → 5 equipment units → 4 subunits → **14 maintainable items**; 3 containment volumes, 2 formation zones, the environment |
+| **Failure knowledge** | **23 failure mechanisms** (17 simulated by the digital twin, each with a twin-computed fingerprint) |
+| **Evidence** | **26 tests** (7 online screening, 5 discriminating, 14 confirmatory), 9 sensors, 14 measured / manual tags, 10 virtual tags |
+| **Digital twin** | `TWIN-W01` (version 1.0.0) with 11 uncertain parameters and a `SIMULATES` link to every mechanism it can inject |
+| **Risk view** | **16 failure modes**, 3 barrier envelopes, 2 hazards, 9 compound-risk links, 5 versioned limits, 1 decision policy |
+| **Key queries** | candidate mechanisms for a symptom, signature matching, tests that split candidates, risk paths to hazards, silent mechanisms, common-cause barrier elements |
+
+**The central idea.** A pressure gauge tells you *that* something changed. The graph tells you
+*what could explain it* (mechanisms on physical items), *how to find out* (tests ranked by cost and
+reliability, with twin-predicted outcomes), and *what it means* (which barrier is degraded, which
+hazard comes closer, which limit applies). Every one of those statements is a node or an edge
+that can be inspected, versioned and cited.
 
 ---
 
 ## Contents
 
-1. [Why a knowledge graph for well integrity?](#1-why-a-knowledge-graph-for-well-integrity)
-2. [Background: how an oil well is built and why it can leak](#2-background-how-an-oil-well-is-built-and-why-it-can-leak)
-3. [ISO 14224: the asset taxonomy behind the Asset view](#3-iso-14224-the-asset-taxonomy-behind-the-asset-view)
-4. [Failure vocabulary: mode, mechanism, cause](#4-failure-vocabulary-mode-mechanism-cause)
-5. [NORSOK D-010 and ISO 16530: the barrier logic behind the Risk view](#5-norsok-d-010-and-iso-16530-the-barrier-logic-behind-the-risk-view)
-6. [Annulus pressure: categories, MAASP and the core physics](#6-annulus-pressure-categories-maasp-and-the-core-physics)
-7. [Catalogue of well failure mechanisms](#7-catalogue-of-well-failure-mechanisms)
-8. [Catalogue of tests and the evidence hierarchy](#8-catalogue-of-tests-and-the-evidence-hierarchy)
-9. [Sensors, tags and virtual tags](#9-sensors-tags-and-virtual-tags)
-10. [The digital twin in risk assessment](#10-the-digital-twin-in-risk-assessment)
-11. [From evidence to decision: the risk flow](#11-from-evidence-to-decision-the-risk-flow)
-12. [The graph model: nodes, edges, rules](#12-the-graph-model-nodes-edges-rules)
-13. [Worked example: a hidden tubing leak on W01](#13-worked-example-a-hidden-tubing-leak-on-w01)
-14. [Using the code](#14-using-the-code)
-15. [Limitations, freezing and extension](#15-limitations-freezing-and-extension)
-16. [Glossary](#16-glossary)
-17. [References](#17-references)
+1. [Why a knowledge graph for well integrity](#1-why-a-knowledge-graph-for-well-integrity)
+2. [How a production well is built](#2-how-a-production-well-is-built)
+3. [The standards landscape](#3-the-standards-landscape)
+4. [ISO 14224: the taxonomy behind the Asset view](#4-iso-14224-the-taxonomy-behind-the-asset-view)
+5. [Failure vocabulary: mode, mechanism, cause](#5-failure-vocabulary-mode-mechanism-cause)
+6. [Well barriers: NORSOK D-010 and ISO 16530](#6-well-barriers-norsok-d-010-and-iso-16530)
+7. [Annulus pressure management and limits](#7-annulus-pressure-management-and-limits)
+8. [Catalogue of maintainable items](#8-catalogue-of-maintainable-items)
+9. [Catalogue of failure mechanisms](#9-catalogue-of-failure-mechanisms)
+10. [Catalogue of failure modes](#10-catalogue-of-failure-modes)
+11. [Hazards and risk flows](#11-hazards-and-risk-flows)
+12. [Tests and the evidence hierarchy](#12-tests-and-the-evidence-hierarchy)
+13. [Instrumentation: sensors, tags and virtual tags](#13-instrumentation-sensors-tags-and-virtual-tags)
+14. [The digital twin inside the graph](#14-the-digital-twin-inside-the-graph)
+15. [Decision policy](#15-decision-policy)
+16. [Graph model reference](#16-graph-model-reference)
+17. [Worked examples](#17-worked-examples)
+18. [Using the code](#18-using-the-code)
+19. [Limitations](#19-limitations)
+20. [Glossary](#20-glossary)
+21. [References](#21-references)
 
 ---
 
-## 1. Why a knowledge graph for well integrity?
+## 1. Why a knowledge graph for well integrity
 
-An alarm system for a safety-critical well has to answer five questions, in order:
+### 1.1 Five questions an integrity system must answer
 
-1. **What is measured, and how well?** (sensor, tag, uncertainty)
-2. **What did we expect to see?** (physics or a digital twin)
-3. **Which physical part could explain the difference?** (asset structure)
-4. **What does that mean for safety?** (barriers, limits, hazards)
-5. **What should a human do, and what does each choice cost?** (decision policy)
+| # | Question | Without structure | With the graph |
+|---|---|---|---|
+| 1 | What is measured, and how well? | Tag names in a historian | `Tag` → `Sensor`, σ, kind (measured / manual / virtual) |
+| 2 | What did we expect to see? | Fixed alarm limits | Digital twin → virtual tags with σ |
+| 3 | Which physical part could explain the difference? | Expert memory | Volume ← `CONNECTS` ← mechanism → owning item |
+| 4 | What does it mean for safety? | Free-text procedures | Mechanism → failure mode → barrier → hazard; versioned limits |
+| 5 | What should be done, at what cost? | Habit | Tests ranked by class and cost, with twin-predicted outcomes; decision policy |
 
-A flat list of time series answers only question 1. A rule engine bolted onto it usually answers
-question 5 with a fixed threshold and skips 2–4. That is exactly the weakness the SentinelAI
-case describes: scores treated as probabilities, a fixed threshold, channels treated as independent,
-limits retrieved from an unversioned index.
+A flat list of time series answers only question 1. A rule engine usually jumps from 1 to 5 with a
+fixed threshold. A knowledge graph stores the **structure that connects** the questions, so that a
+reasoning layer (statistical or human) can walk from a symptom to an explanation to an action,
+and show its work.
 
-A knowledge graph stores the **structure** that connects these questions:
-
-- *what exists* (installation, systems, well, parts)
-- *how it can fail* (failure mechanisms per part)
-- *how we can find out* (tests and tags)
-- *what a failure means* (failure modes, barriers, hazards, limits)
-
-Every number used in a decision can then be traced to a node with a meaning, a unit, an
-uncertainty and a version.
-
-The graph has two coupled **views**:
+### 1.2 Two coupled views
 
 | View | Built on | Answers |
 |---|---|---|
-| **Asset view** | ISO 14224 taxonomy | What exists, how it degrades, how we test it |
-| **Risk view** | NORSOK D-010 / ISO 16530 barrier logic | What it means for safety now, and what to do |
+| **Asset view** | ISO 14224 equipment taxonomy | What exists, how it can degrade, how we can find out |
+| **Risk view** | NORSOK D-010 / ISO 16530 barrier logic | What a degradation means for safety, and which limits apply |
 
-They are not two databases. They are two perspectives on one graph, joined by explicit
-**cross-view edges**.
+They are two perspectives on **one** graph, joined by explicit cross-view edges: `CAUSES`
+(mechanism → failure mode), `IMPLEMENTED_BY` (barrier → item), `APPLIES_TO` and `LIMITED_BY`
+(limit → volume, item), `MANIFESTS_IN` (volume → failure mode).
+
+### 1.3 Why a graph and not tables
+
+Well integrity knowledge is **many-to-many** and **multi-hop**:
+
+- One failure mode (B pressure rising) has seven candidate mechanisms; one mechanism (a casing
+  leak) produces four failure modes.
+- One item (the production casing) belongs to two barrier envelopes at different depths.
+- The question "can a worn casing lead to an underground blowout?" is a *path* question:
+  wear → B-margin low → outer containment → underground flow.
+
+Relational tables can store these, but path questions, consistency rules and "what is connected
+to this?" exploration are native operations on a graph.
 
 ---
 
-## 2. Background: how an oil well is built and why it can leak
+## 2. How a production well is built
 
-### 2.1 Anatomy of a production well
-
-A well is a set of concentric steel pipes cemented into the rock:
+### 2.1 Schematic of W01
 
 ```
-          Xmas tree (valves, production choke)
-          Wellhead (hangers, seals, annulus outlets)
-  ┌──┬──┬──┬──┐
-  │  │  │  │  │   C-annulus  (between surface and intermediate casing)
-  │  │  │  │  │   B-annulus  (between intermediate and production casing)
-  │  │  │▒▒│  │   A-annulus  (between production tubing and production casing)
-  │  │  │▒▒│  │
-  │  │  │TT│  │   TT = production tubing (carries reservoir fluid to surface)
-  │  │  │▒▒│  │   ▒▒ = completion fluid (brine) in the A-annulus
-  │  │  │==│  │   == = production packer (seals A-annulus from reservoir)
-  │  │  │  │  │
-        ~~~~ reservoir ~~~~
+                                   ┌── production choke ──► flowline (P_fl)
+                       wing valve ─┤
+              X-mas tree   master valve (SIS final element)
+      ─────────────────────┬──────────────────────────────────────────────────────────
+      tubing-head spool    │  tubing hanger + seals       A-annulus outlet valves (P_A)
+      casing-hanger pack-off  (seals A from B at surface)
+      casing-head spool                                   B-annulus outlet valves (P_B)
+      ─────────────────────┴──────────────────────────────────────────────────────────
+        │ICSG│ B │CSG│ A │TUB│ A │CSG│ B │ICSG│
+        │    │   │   │   │ ↑ │   │   │   │    │      DHSV in the tubing, ~450 m
+        │    │   │   │   │   │   │   │   │    │      B = brine + gas cap, 0–1,200 m, 35 m³
+        │▓▓▓▓│▓▓▓│   │   │   │   │   │▓▓▓│▓▓▓▓│ 1,200 m top of production-casing cement;
+        │▓▓▓▓│▓▓▓│   │   │   │   │   │▓▓▓│▓▓▓▓│         shallow gas zone behind it
+        │    │▓▓▓│   │   │ ● │   │   │▓▓▓│    │ 2,250 m downhole gauge (tubing side)
+        │    │▓▓▓│   │═══╪═══╪═══│   │▓▓▓│    │ 2,300 m production packer (bottom of A)
+                            reservoir 2,400 m, 250 bar, 90 °C
 ```
+
+### 2.2 Components and their functions
 
 | Component | Function |
 |---|---|
-| **Production tubing** | Pipe that carries oil, gas and water from reservoir to surface |
-| **Production packer** | Seal between tubing and casing near the bottom. It isolates the A-annulus from the reservoir |
-| **DHSV** (downhole safety valve) | Fail-safe-closed valve in the tubing that shuts the well in below the seabed or ground level |
-| **Production casing** | Outer pipe around the tubing, cemented to the formation |
-| **Cement sheath** | Cement between casing and rock. It seals and supports the casing |
-| **Tubing hanger and seals** | Suspends the tubing in the wellhead and seals the top of the A-annulus |
-| **Wellhead and Xmas tree** | Surface pressure-containing equipment with master, wing and swab valves and the **production choke** |
-| **Annuli (A, B, C)** | Closed spaces between pipes. They are normally sealed and monitored by pressure gauges at the wellhead |
+| **Production tubing** | Conduit that carries oil, water and gas to surface; can be pulled and replaced |
+| **Production packer** | Seals the tubing to the casing near the bottom; forms the floor of the A-annulus |
+| **DHSV** (downhole safety valve, SCSSV) | Fail-safe-closed flapper valve in the tubing, held open by hydraulic pressure in a **control line**; closes on loss of pressure |
+| **Tubing hanger and seals** | Suspends the tubing in the tubing-head spool and seals the top of the A-annulus |
+| **Tubing-head spool** | Wellhead section that holds the tubing hanger; carries the **A-annulus outlet valves** |
+| **Production-casing hanger pack-off** | Seal between the production casing and the casing-head spool; separates A from B at surface |
+| **Casing-head spool** | Lower wellhead section; carries the **B-annulus outlet valves** |
+| **X-mas tree** | Valve assembly on top of the wellhead: **master valve** (actuated, closed by the safety system), **wing valve**, and the **production choke** |
+| **Production casing** | Steel pipe outside the tubing, cemented at the bottom; walls of A (inside) and B (outside) |
+| **Production-casing cement** | Seals and supports the production casing from the shoe up to the top of cement (1,200 m) |
+| **Intermediate casing** | Outer pipe that forms the outer wall of the B-annulus |
+| **A-annulus / B-annulus** | Closed spaces between pipes, filled with brine, monitored by pressure gauges at the wellhead |
 
-### 2.2 What "well integrity" means
+### 2.3 What "well integrity" means
 
-ISO 16530-1 defines well integrity, in essence, as the containment and prevention of escape of
-fluids to the environment or to subterranean formations. It is achieved by applying technical,
-operational and organisational solutions over the life of the well.
+ISO 16530-1 describes well integrity as containment and prevention of escape of fluids to
+subterranean formations or to surface, achieved by technical, operational and organisational
+means over the whole life of the well. NORSOK D-010 turns this into a concrete rule: there shall be
+**two independent, tested well barriers** between the reservoir and the environment (Chapter 6).
 
-The practical consequence: **two independent, tested barrier envelopes** must stand between
-the reservoir and the environment at all times (Section 5).
+### 2.4 Why the annuli are the windows on integrity
 
-### 2.3 Why the A-annulus is the most informative place to look
-
-The A-annulus sits **between** the primary and secondary barrier envelopes. If any primary-barrier
-element leaks (tubing, packer, hanger seal), fluid enters the A-annulus and its pressure changes.
-The A-annulus pressure gauge is therefore the single most useful online indicator of
-primary-barrier health.
-
-But the A-annulus pressure also changes for harmless reasons, mainly **heating**. Separating
-the harmless from the harmful is the central problem of this tutorial.
+- The **A-annulus** sits between the primary and the secondary barrier. Any leak of a primary
+  element (tubing, packer, hanger seal) or a secondary element (casing, pack-off, A valves) changes
+  its pressure or its fluid content.
+- The **B-annulus** sits outside the production casing. It reacts to production-casing leaks,
+  pack-off leaks, cement gas migration and intermediate-casing leaks.
+- Both also change for **harmless** reasons: heating, cooling and ballooning. The digital twin
+  predicts these, so the graph's tests compare measurements with the twin, not with fixed numbers.
 
 ---
 
-## 3. ISO 14224: the asset taxonomy behind the Asset view
+## 3. The standards landscape
 
-### 3.1 What ISO 14224 is
+### 3.1 Map of the standards used
 
-**ISO 14224** (*Petroleum, petrochemical and natural gas industries: collection and exchange of
-reliability and maintenance data for equipment*) standardises how equipment, failures and
-maintenance are described. That makes data comparable across fields and companies. OREDA
-reliability data follows it.
+| Standard | Subject (summarised) | Where it appears in the graph |
+|---|---|---|
+| **ISO 14224** | Collection and exchange of reliability and maintenance data: equipment taxonomy, boundaries, failure modes, mechanisms and causes | Asset-view hierarchy, `MaintainableItem`, `FailureMechanism` classes, failure-mode vocabulary (Ch. 4–5) |
+| **OREDA** handbook | Reliability data collected in the ISO 14224 format | Source of priors for mechanism frequencies (extension) |
+| **NORSOK D-010** | Well integrity in drilling and well operations: well barriers, barrier elements, acceptance criteria, barrier schematics | `BarrierEnvelope`, `IMPLEMENTED_BY`, the two-barrier rule (Ch. 6) |
+| **ISO 16530-1** | Well integrity over the life cycle: governance, roles, documentation | Overall framing; limits as versioned, governed documents |
+| **ISO/TS 16530-2** | Well integrity in the operational phase: annulus pressure management, MAASP, well operating limits, integrity categorisation | `Limit` nodes, MAASP, annulus monitoring tests (Ch. 7) |
+| **API RP 90-1** (offshore), **API RP 90-2** (onshore) | Annular casing pressure management: sustained casing pressure, diagnostic bleed-down / build-up, MAWOP | `FM.SCP.*`, `TEST.BLEED.*`, MAWOP limits (Ch. 7, 12) |
+| **Offshore Norge Guideline 117** | Recommended guidelines for well integrity on the Norwegian shelf, including well categorisation | Integrity categories (extension), test practice |
+| **API Spec 6A / ISO 10423** | Wellhead and X-mas tree equipment: pressure ratings, design, testing | Spool and valve ratings (`working_pressure_bar`) |
+| **API Spec 14A / ISO 10432**, **API RP 14B** | Subsurface safety valve equipment and systems: design, testing, inflow-test acceptance | DHSV mechanisms and `TEST.DHSV.INFLOW` |
+| **ISO 14310 / API Spec 11D1** | Packers and bridge plugs: design validation grades (V0 gas-tight to V6) | `W01.PKR.qualification` |
+| **API Spec 5CT / ISO 11960**, **API TR 5C3 / ISO/TR 10400** | Casing and tubing specification; performance (burst, collapse) calculation | Pipe ratings, wear derating (Ch. 7–8) |
+| **IEC 61508 / IEC 61511**, **Offshore Norge Guideline 070** | Functional safety of safety instrumented systems | `SIS-W01`, `ACTUATES`, "trip authority SIS only" (Ch. 15) |
+| **ISO 17776**, **ISO 31000** | Hazard identification and risk assessment offshore; risk management principles (bow-tie thinking) | Hazard nodes and risk flows (Ch. 11) |
 
-It provides three things this module reuses:
+### 3.2 How the standards fit together
 
-1. A **taxonomy**: a hierarchy from industry down to part.
+```
+   ISO 14224  ──── "what is it, how does it fail?"  ─────────────►  Asset view
+   API 5CT/5C3, API 6A, ISO 14310, API 14A  ── ratings of items ──►  item properties, limits
+   NORSOK D-010 ── "which items form a barrier?" ─────────────────►  BarrierEnvelope + IMPLEMENTED_BY
+   ISO 16530-2, API RP 90 ── "how much pressure is allowed, how do we test?" ─► Limit, Test
+   IEC 61511 ── "who may shut the well in?" ──────────────────────►  SIS-W01, policy
+   ISO 17776 / bow-tie ── "where does it lead?" ──────────────────►  failure mode → barrier → hazard
+```
+
+The graph is the place where these separate documents meet. In practice they live in different
+systems (maintenance system, well-integrity management system, safety documentation); the graph
+links them by stable identifiers.
+
+---
+
+## 4. ISO 14224: the taxonomy behind the Asset view
+
+### 4.1 Purpose of ISO 14224
+
+ISO 14224 standardises *how equipment, failures and maintenance are described* so that data from
+different fields and companies can be compared and pooled (this is how OREDA reliability data is
+built). It gives three things this module uses:
+
+1. A **taxonomy**: nine levels from industry down to part.
 2. **Equipment boundaries**: what belongs to an equipment unit and what does not.
-3. Standard **failure vocabulary**: failure mode, failure mechanism, failure cause (Section 4).
+3. **Failure vocabulary**: failure mode, failure mechanism and failure cause, with standard classes.
 
-### 3.2 The taxonomy levels
+### 4.2 The nine levels and their use here
 
-ISO 14224 describes nine levels. Levels 1–5 describe *use and location*; levels 6–9 describe the
-*equipment subdivision*.
-
-| Level | ISO 14224 name | Meaning | In this module |
+| Level | ISO 14224 name | Meaning | In this graph |
 |---|---|---|---|
-| 1 | Industry | Oil and gas, petrochemical, … | implicit |
+| 1 | Industry | Petroleum, natural gas, petrochemical | implicit |
 | 2 | Business category | Upstream, midstream, … | implicit |
-| 3 | Installation | A facility | `Installation` → `IA` Ivar Aasen |
-| 4 | Plant / unit | A major process area | merged into `System` |
-| 5 | Section / system | A functional system | `System` → Production, Gas compression, Water injection |
-| 6 | Equipment unit | A unit with a defined boundary | `EquipmentUnit` → Well W01, Flowline, Manifold, Separator |
-| 7 | Subunit | A functional subdivision of the unit | `Subunit` → Downhole completion, Wellhead & Xmas tree, Casing & cement |
-| 8 | Component / maintainable item | The level at which maintenance is done | `MaintainableItem` → Tubing, Packer, DHSV, … |
-| 9 | Part | Pieces of a maintainable item | not modelled (out of scope) |
+| 3 | Installation | A facility | `IA` Ivar Aasen |
+| 4 | Plant / unit | Major process area | merged into `System` |
+| 5 | Section / system | Functional system | `IA.PROD`, `IA.GC`, `IA.WI`, `IA.SAS` |
+| 6 | Equipment unit | Unit with a defined boundary | `W01`, `FL-W01`, `MAN-P1`, `SEP-1`, `SIS-W01` |
+| 7 | Subunit | Functional subdivision | `W01.DH` downhole completion, `W01.WH` wellhead, `W01.XT` X-mas tree, `W01.CC` casing and cement |
+| 8 | Component / maintainable item | Level at which maintenance is done | 14 items (Chapter 8) |
+| 9 | Part | Pieces of an item | not modelled |
 
-**Design rule used here:** failure mechanisms attach at level 8, the maintainable item. That is
-the level where a fix happens: you replace a packer, not "the downhole completion".
+**Design rule.** Failure mechanisms attach at level 8. That is where a repair happens: you replace
+the hanger seals, not "the wellhead". Instrument mechanisms attach to the `Sensor` itself, which
+is a maintainable instrument in the ISO 14224 sense.
 
-### 3.3 Equipment boundary
+### 4.3 Equipment boundary of W01
 
-ISO 14224 insists on a clear **boundary** for each equipment unit. Without it, two people
-counting "well failures" will count different things.
+The boundary of `W01` runs from the production packer up to and including the production choke.
+The flowline downstream of the choke is a separate equipment unit (`FL-W01`), connected by
+`FLOWS_TO`. The safety system that closes the well (`SIS-W01`) belongs to the safety and
+automation system (`IA.SAS`), not to the well, and is connected by `ACTUATES` edges to the master
+valve and the DHSV. Clear boundaries prevent double counting: a leaking master-valve actuator is
+a SIS failure, a leaking master-valve gate is a well failure.
 
-In this module the boundary of `W01` includes everything from the packer up to and including
-the Xmas tree and production choke. The flowline downstream of the choke is a separate
-equipment unit (`FL-W01`) linked by `FLOWS_TO`.
+### 4.4 What a pure taxonomy cannot express, and the extensions used
 
-### 3.4 Three things a pure taxonomy cannot express
+A taxonomy is a **tree**. Well integrity needs more structure:
 
-A taxonomy is a **tree**: every item has one parent. Well integrity needs three more structures,
-added here as typed edges:
-
-| Need | Why a tree fails | Solution in this graph |
+| Need | Why a tree fails | Extension in this graph |
 |---|---|---|
-| **Volumes** | The A-annulus is a space bounded by several parts in different subunits | `ContainmentVolume` node with `BOUNDED_BY` edges to tubing, packer, hanger seal, casing |
-| **Process topology** | Flow crosses equipment units (well → choke → flowline → manifold) | `FLOWS_TO` edges |
-| **Barriers** | A barrier envelope is a *functional set* of items from different subunits | `BarrierEnvelope` in the Risk view with `IMPLEMENTED_BY` edges to items |
+| **Spaces** | An annulus is a *volume* bounded by items in different subunits | `ContainmentVolume` (`W01.BORE`, `W01.ANN-A`, `W01.ANN-B`) with `BOUNDED_BY` edges to its walls |
+| **Pressure sources outside the well** | Formations and the atmosphere are not equipment | `FormationZone` (`W01.RES`, `W01.SGZ`), `ExternalDomain` (`ENV`) |
+| **Leak paths** | A leak joins two spaces, not a parent and a child | `CONNECTS` edges from each mechanism to its source and sink (`role` = src / snk) |
+| **Process flow** | Flow crosses equipment units | `FLOWS_TO`: reservoir → bore → choke → flowline → manifold → separator |
+| **Safety actuation** | The SIS closes valves in another unit | `ACTUATES` |
+| **Barriers** | A barrier is a *functional set* of items from several subunits | `BarrierEnvelope` in the Risk view with `IMPLEMENTED_BY` edges (Chapter 6) |
 
-The `BOUNDED_BY` edge is especially powerful. **Any fluid that enters a closed volume must
-come through one of its boundaries**, so the graph can list the candidate leak paths
-automatically (`candidate_mechanisms()`).
+The `CONNECTS` edge turns a physical principle into a query: **fluid can only enter a closed
+volume through a path that connects to it**. `candidate_mechanisms("W01.ANN-B")` therefore returns
+exactly the seven mechanisms that could change B (Section 17.2).
 
 ---
 
-## 4. Failure vocabulary: mode, mechanism, cause
+## 5. Failure vocabulary: mode, mechanism, cause
 
-ISO 14224 separates three concepts that are often mixed up. Keeping them apart is what makes
-the two-view design work.
+### 5.1 Three concepts that are often confused
 
-| Concept | Definition (paraphrased) | Question it answers | Well example |
+| Concept | Meaning (paraphrased from ISO 14224) | Question | W01 example |
 |---|---|---|---|
-| **Failure mode** | The effect by which a failure is observed | *What do we see?* | Sustained casing pressure in the A-annulus |
-| **Failure mechanism** | The physical, chemical or other process that leads to the failure | *What is happening physically?* | Elastomer degradation of the packer seal |
-| **Failure cause** | The circumstances during design, manufacture, operation or maintenance that led to the failure | *Why did it happen?* | Seal material not qualified for CO₂ service |
+| **Failure mode** | The effect by which a failure is observed | *What do we see?* | Sustained casing pressure in B |
+| **Failure mechanism** | The physical, chemical or other process that leads to failure | *What is physically happening?* | Gas migrating through a micro-annulus in the cement |
+| **Failure cause** | Circumstances during design, manufacture, use or maintenance that led to failure | *Why did it happen?* | Cement slurry not designed for gas-tight setting |
 
-ISO 14224 groups failure mechanisms into broad classes:
+### 5.2 ISO 14224 mechanism classes
 
-| Class | Examples |
-|---|---|
-| Mechanical failure | Leakage, vibration, deformation, looseness, sticking |
-| Material failure | Corrosion, erosion, wear, breakage, fatigue, overheating, burst |
-| Instrument failure | Control or measurement faults |
-| Electrical failure | Short circuit, open circuit, earth fault |
-| External influence | Contamination, external impact |
-| Miscellaneous | Unknown or combined causes |
+| Class | Examples | Used in W01 |
+|---|---|---|
+| Mechanical failure | Leakage, vibration, deformation, looseness, sticking | thread leak, seal leaks, valve fail to close, packer movement |
+| Material failure | Corrosion, erosion, wear, breakage, fatigue, degradation | tubing corrosion, choke erosion, casing wear, elastomer degradation, cement degradation |
+| Instrument failure | Faulty signal, out of adjustment, control failure | frozen transmitter, drifting gauge |
+| Electrical failure | Short circuit, open circuit, earth fault | not modelled |
+| External influence | Contamination, external impact | not modelled |
+| Miscellaneous | Unknown or combined | not modelled |
 
-### How the vocabulary maps onto the two views
+The class is stored on every mechanism (`iso14224_class`), so the graph can be aggregated the
+same way reliability databases are.
+
+### 5.3 How the vocabulary maps onto the two views
 
 ```
- Asset view                              Risk view
- ───────────                             ─────────
- Maintainable item                        Failure mode   ← what the operator sees
-     └─ HAS_MECHANISM → Failure mechanism ──CAUSES──►  (many-to-many)
+ Asset view                                                Risk view
+ Maintainable item ─HAS_MECHANISM→ Failure mechanism ─CAUSES {condition}→ Failure mode
+                                         │
+                                  CONNECTS (src, snk)
+                                         ▼
+                                 volumes / formation / environment
 ```
 
-- **Mechanisms live in the Asset view.** They belong to exactly one maintainable item, because
-  they describe what physically happens *to that item*.
-- **Failure modes live in the Risk view.** They describe what the operator observes and what it
-  means for safety.
-- **The link is many-to-many.** A thread leak, a packer elastomer leak and a hanger seal leak all
-  produce the *same* observed failure mode: sustained casing pressure. That is precisely why a
-  single gauge cannot tell you which part has failed, and why tests exist (Section 8).
+- **Mechanisms live in the Asset view.** Each belongs to exactly one item or sensor (rule R1).
+- **Failure modes live in the Risk view.** They describe what an operator observes and what it
+  threatens.
+- **The link is many-to-many and conditional.** The `CAUSES` edge carries the *operating condition*
+  under which the mode appears. A tubing thread leak causes "tubing to A-annulus communication"
+  **while producing** (A drains) and "sustained casing pressure in A" **when shut in** (A refills).
+  This conditionality is learned from the digital twin (Chapter 14).
 
-Failure causes are not modelled in v1. They belong to root-cause analysis after the fact.
+Failure causes are not modelled; they belong to root-cause analysis after a confirmed failure.
 
 ---
 
-## 5. NORSOK D-010 and ISO 16530: the barrier logic behind the Risk view
+## 6. Well barriers: NORSOK D-010 and ISO 16530
 
-### 5.1 Key definitions
+### 6.1 Definitions
 
-**NORSOK D-010** (*Well integrity in drilling and well operations*) is the Norwegian standard
-for well barriers. **ISO 16530-1** covers well-integrity management over the whole life cycle.
-The concepts used here:
-
-| Term | Meaning |
+| Term | Meaning (summarised) |
 |---|---|
-| **Well barrier** | An envelope of one or more elements that together prevent fluid flowing unintentionally from the formation to another formation or to the surface |
-| **Well barrier element (WBE)** | One physical part of a barrier, e.g. tubing, packer, DHSV, casing, cement |
+| **Well barrier** | An envelope of one or more elements that together prevent unintentional flow of formation fluid |
+| **Well barrier element (WBE)** | A physical element that, alone or with others, forms a barrier: tubing, packer, DHSV, casing, cement, wellhead, valves |
 | **Primary well barrier** | The first envelope that stops flow from the source |
-| **Secondary well barrier** | The back-up envelope if the primary fails |
-| **Acceptance criteria** | Requirements a WBE must meet: design, testing, monitoring |
-| **Well barrier schematic (WBS)** | A drawing of both envelopes and their elements for the current well state |
+| **Secondary well barrier** | The back-up envelope that stops flow if the primary fails |
+| **Acceptance criteria** | Requirements each WBE must meet: design, construction, initial verification, monitoring |
+| **Well barrier schematic (WBS)** | Drawing of both envelopes and their elements for the current well state |
 
-**Two-barrier principle:** during production, two independent, tested envelopes must be in
-place. Independence matters: ideally no single element should belong to both envelopes. If one
-does (a "common WBE"), one failure removes both barriers at once.
+**Two-barrier principle.** During production, two independent, tested envelopes shall be in place.
+NORSOK D-010 provides, for each element type, an acceptance table that states its function,
+design requirements, how it is verified initially, and how it is **monitored** in operation. That
+last column is exactly what the graph's tests represent.
 
-### 5.2 Typical barrier envelopes for a producing well
+**Independence.** The two envelopes should not share an element whose failure removes both. Where
+sharing is unavoidable, it shall be identified and its risk assessed.
 
-| Envelope | Typical elements | In this module (`IMPLEMENTED_BY`) |
+### 6.2 Barrier envelopes in W01
+
+| Envelope | Elements (`IMPLEMENTED_BY`, with section) | NORSOK barrier? |
 |---|---|---|
-| **Primary** | Cap rock and cement below packer, casing below packer, production packer, completion string (tubing), DHSV | `W01.TUB`, `W01.PKR`, `W01.DHSV` |
-| **Secondary** | Casing cement, production casing, wellhead, tubing hanger and seals, Xmas tree master valve | `W01.CSG`, `W01.CEM`, `W01.THS`, `W01.MV` |
+| `BE.PRIMARY` | tubing; production packer; DHSV; DHSV control line (part of the DHSV system); production casing *below the packer*; production-casing cement *below the packer* | yes |
+| `BE.SECONDARY` | production casing *above the packer*; production-casing cement *cap above the reservoir*; tubing hanger and seals; tubing-head spool incl. A valves; casing-hanger pack-off; master valve; wing valve | yes |
+| `BE.OUTER` | intermediate casing; casing-head spool incl. B valves | **no**: outer annulus containment, protects against underground flow |
 
-The real allocation for a given well comes from its well barrier schematic. The table above is a
-simplified, teaching version.
+This allocation follows the typical well barrier schematic of a producing well with a
+tubing-retrievable DHSV. A real well's allocation comes from its own schematic.
 
-### 5.3 Why barriers are not part of the tree
+### 6.3 Common well barrier elements, found by query
 
-A barrier envelope is defined by **function** ("stop flow along this path"), not by location. It
-takes the tubing from the downhole completion subunit and the hanger seal from the wellhead
-subunit. That is why `BarrierEnvelope` sits in the Risk view and points back to items. The
-query `common_cause_items()` checks the independence principle by finding items that belong to
-both envelopes.
-
-### 5.4 Risk-view chain
+`common_cause_items(g)` returns:
 
 ```
- Failure mechanism ─CAUSES→ Failure mode ─DEGRADES→ Barrier envelope ─LEADS_TO→ Hazard
-                                  │
-                         CHECKED_AGAINST
-                                  ▼
-                        Limit (versioned, e.g. MAASP rev C)
+W01.CSG [('BE.PRIMARY', 'section below the packer'), ('BE.SECONDARY', 'section above the packer')]
+W01.CEM [('BE.PRIMARY', 'section below the packer'), ('BE.SECONDARY', 'cap above reservoir')]
 ```
 
-The hazard in v1 is **loss of containment** (`HZ.LOC`). Barriers do not *cause* the hazard.
-The edge means "if this envelope is lost, the path to this hazard is open".
+This is not an error; it is a well-known feature of production-well barrier design. The production
+casing and its cement contribute to the primary barrier below the packer and to the secondary barrier
+above it. The `section` property records *which part* belongs where. The query makes the shared
+dependency explicit, so that one finding (for example 60 % casing wear) is immediately recognised as
+affecting **both** envelopes (Section 11.4).
+
+### 6.4 Why barriers are not part of the tree
+
+A barrier is defined by **function** ("stop flow along this path"), not by location. It takes the
+packer from the downhole completion, the hanger from the wellhead and the master valve from the
+X-mas tree. That is why `BarrierEnvelope` lives in the Risk view and points back into the Asset
+view.
 
 ---
 
-## 6. Annulus pressure: categories, MAASP and the core physics
+## 7. Annulus pressure management and limits
 
-### 6.1 Three categories of annulus pressure
+### 7.1 Where annulus pressure comes from
 
-API RP 90-1 and ISO 16530-2 distinguish annulus pressure by its origin:
+ISO/TS 16530-2 and API RP 90-1 classify annulus pressure by origin:
 
-| Category | Origin | Integrity concern? |
+| Category | Origin | Integrity concern? | In the graph |
+|---|---|---|---|
+| **Thermally induced** | Trapped fluid heats, expands, and pressurises the closed space | No, but must stay below limits | `MANIFESTS_IN` from the volume to `FM.MAASP.*` |
+| **Operator imposed** | Pressure applied deliberately (testing, gas lift) | Planned | not modelled |
+| **Sustained casing pressure (SCP)** | Pressure that **rebuilds after bleed-down** because fluid enters through a leak | **Yes** | `FM.SCP.A`, `FM.SCP.B` |
+
+The digital twin adds two further harmless causes: **ballooning** (tubing pressure changes the
+annulus volume) and **cooling** after shut-in. All are predicted, so the tests compare measurements
+with the twin.
+
+### 7.2 Three kinds of limit
+
+| Limit | Definition | Status in W01 |
 |---|---|---|
-| **Thermally induced** | Trapped fluid heats and expands when production starts or rates rise | Not a failure, but must stay below MAASP |
-| **Operator imposed** | Pressure applied deliberately, e.g. for gas lift or testing | Planned |
-| **Sustained casing pressure (SCP)** | Pressure that **rebuilds after bleed-down** because fluid enters from a leak | **Yes**: a barrier element is leaking |
+| **MAASP** (maximum allowable annulus surface pressure) | Highest wellhead pressure an annulus may see without overloading any element exposed to it: casing burst, inner-string collapse, packer, wellhead, formation strength | **Documented and versioned** (`Limit`, kind MAASP) |
+| **MAWOP** (maximum allowable wellhead operating pressure) | A conservative operating screen. A common rule (used in API RP 90-1 practice and in US offshore regulation) takes the lesser of 50 % of the burst rating of the casing being evaluated and 80 % of the collapse rating of the next inner string | **Documented** (`Limit`, kind MAWOP) |
+| **Operational MAASP** | MAASP recomputed every time step from the *current* pressures on the other side of each pipe and the *current* wall thickness | **Computed by the twin** (virtual tags `W01-VT-MAASP-A/B`) |
 
-### 6.2 MAASP
+### 7.3 Values for W01
 
-The **maximum allowable annulus surface pressure (MAASP)** is the highest pressure the annulus
-may see at the wellhead. It is set by the weakest point exposed to that annulus, for example:
+| Annulus | MAWOP | Documented MAASP | Operational MAASP (twin, healthy) |
+|---|---|---|---|
+| A | **236.8 bar** = 50 % × 473.7 (production-casing burst); 80 % × 517.1 (tubing collapse) = 413.7 | **330 bar**, rev C, from 2026-03-01 (packer differential while producing) | 332.2 bar, governed by the packer |
+| B | **118.9 bar** = 50 % × 237.9 (intermediate-casing burst); 80 % × 327.5 (production-casing collapse) = 262.0 | **205 bar**, rev A, from 2025-01-15 (casing-head spool) | 206.8 bar, governed by the casing-head spool |
 
-- burst rating of the production casing
-- collapse rating of the tubing
-- packer rating
-- wellhead or hanger rating
-- formation strength at the casing shoe
+A superseded documented limit, `LIM.W01.MAASP-A.B` (345 bar, based on the spool rating only), is
+kept in the graph. It is the value that applied before the packer was included in the calculation.
+Keeping it makes a classic error detectable: citing an out-of-date limit.
 
-MAASP is recalculated when the well changes (e.g. corrosion found, new fluids). It is therefore
-**versioned**: the graph keeps rev C (active, 120 bar) and rev B (superseded, 140 bar). Quoting
-a superseded limit is a real-world error mode, and the graph makes it detectable.
+### 7.4 Why the operational MAASP matters
 
-### 6.3 The physics in one equation
+The documented MAASP is computed once, for assumed conditions. The real allowable pressure moves:
 
-The pressure in a closed, liquid-filled annulus obeys:
+- **Producing vs shut in.** Producing lowers tubing pressure at the packer, which raises the packer
+  differential for the same annulus pressure; MAASP_A falls from 344.7 to 332.2 bar at start-up.
+- **Bleeding A changes B's limit.** The production casing's collapse capacity is backed up by the
+  pressure in A. In the twin, with 60 % casing wear, bleeding A to 5 bar lowers MAASP_B by
+  **149.6 bar** (to 57.2 bar), because the casing loses its internal support.
+- **Wear.** Wall loss lowers burst in proportion and collapse roughly with its square (Section 9.6).
 
-$$\frac{dP_{ann}}{dt}=\underbrace{\frac{\alpha_f}{c_{eff}}\frac{dT_{ann}}{dt}}_{\text{thermal}}+\underbrace{\frac{q_{leak}-q_{bleed}}{V_{ann}\,c_{eff}}}_{\text{mass in/out}}$$
-
-| Symbol | Meaning | Typical (synthetic) |
-|---|---|---|
-| $\alpha_f$ | Thermal expansion coefficient of the annulus fluid | 4.5×10⁻⁴ 1/K |
-| $c_{eff}$ | Effective compressibility: fluid, casing elasticity, any small gas cap | 2×10⁻⁹ 1/Pa |
-| $V_{ann}$ | Annulus volume | 30 m³ |
-| $q_{leak}$ | Inflow through a leaking barrier element | 0 when healthy |
-
-The ratio $\alpha_f / c_{eff}$ is about **2.25 bar per °C** here, and can reach several bar per °C
-in a stiff, liquid-full annulus. A start-up that warms the annulus by 20 °C therefore adds
-roughly 45 bar **with nothing wrong**.
-
-### 6.4 Two consequences that drive the whole design
-
-1. **Fixed thresholds fail in both directions.** They false-alarm on every start-up and can miss
-   a leak that is hidden under thermal pressure: a leak only flows if tubing pressure exceeds
-   annulus pressure at the leak depth.
-2. **The bleed test separates the two.** After bleeding to a low pressure at constant
-   temperature, a healthy annulus stays low; a leaking one **rebuilds**. This is shown in
-   `models/well_integrity_demo.png`.
+The graph models this with three tiers checked by the same failure mode:
+`FM.MAASP.A -CHECKED_AGAINST→ MAWOP-A` (alert tier) and `→ MAASP-A` (action tier), and the
+twin's operational MAASP is monitored by `TEST.MARGIN`.
 
 ---
 
-## 7. Catalogue of well failure mechanisms
+## 8. Catalogue of maintainable items
 
-Each entry describes the **physics**, the **maintainable item** it belongs to, the **failure
-mode(s)** it produces, the **observable signature** and the **tests** that find it.
-
-Status: ✅ modelled in v1 · ➕ recommended extension.
-
-### 7.1 Tubing
-
-#### ✅ `FMech.TUB.THREAD`: Connection thread leak
-- **Item:** `W01.TUB` (primary barrier)
-- **Physics:** Tubing joints are screwed together. Gas-tight premium connections seal metal to
-  metal. Thermal cycling, over- or under-torque, galling, bending or corrosion of the seal area
-  open a micro-path from tubing to A-annulus. Gas leaks far more easily than liquid.
-- **ISO 14224 class:** mechanical failure, leakage.
-- **Failure mode:** `FM.SCP` sustained casing pressure.
-- **Signature:**
-  - Annulus pressure rises above the thermal prediction.
-  - It rebuilds after bleed-down at constant temperature.
-  - With gas, the rebuild tends toward tubing pressure and gas appears at the annulus outlet.
-- **Tests:** residual (C), bleed-rebuild (B), tubing or annulus pressure test (A),
-  temperature or noise log to locate the leak depth.
-
-#### ✅ `FMech.TUB.CORR`: Internal corrosion and pitting
-- **Item:** `W01.TUB`
-- **Physics:** CO₂ (sweet) corrosion, H₂S (sour) cracking and pitting, and erosion-corrosion where
-  water is present. Wall loss reduces burst and collapse capacity, and through-wall pits become
-  leak paths.
-- **ISO 14224 class:** material failure, corrosion.
-- **Failure modes:** `FM.SCP` once through-wall. Also a reduced MAASP, because collapse
-  capacity falls.
-- **Signature:** usually silent until a pit penetrates the wall; then like a thread leak.
-  Corrosion coupons, water chemistry and production history indicate the rate.
-- **Tests:** multi-finger caliper or electromagnetic thickness log (A for wall loss), water
-  chemistry and corrosion-rate monitoring (C), then as for a thread leak once leaking.
-
-### 7.2 Production packer
-
-#### ✅ `FMech.PKR.ELAST`: Elastomer degradation
-- **Item:** `W01.PKR` (primary barrier)
-- **Physics:** Packer seal elements are elastomers. They age through:
-  - temperature cycling (compression set)
-  - chemical attack (H₂S, CO₂, aromatics, completion brines)
-  - explosive decompression after gas soaks into the rubber
-  - extrusion under differential pressure
-
-  The seal loses contact stress and leaks.
-- **ISO 14224 class:** material failure (degradation) leading to mechanical leakage.
-- **Failure mode:** `FM.SCP`.
-- **Signature:** like a tubing leak, but the leak is **at packer depth**. Reservoir fluid and
-  pressure communicate below the annulus fluid column. The rebuild level reflects the pressure
-  balance at the packer.
-- **Tests:** bleed-rebuild (B), annulus pressure test against the packer (A), temperature log
-  showing an anomaly at packer depth.
-
-### 7.3 Downhole safety valve
-
-#### ➕ `FMech.DHSV.LEAK`: Leakage in closed position
-- **Item:** `W01.DHSV` (primary barrier). The node exists; the mechanism is not yet modelled.
-- **Physics:** Erosion, scale, debris or damage on the flapper and seat lets fluid pass when the
-  valve is closed.
-- **ISO 14224 failure modes:** leakage in closed position; fail to close on demand.
-- **Signature:** visible only during a periodic closure test: tubing pressure above the valve
-  builds up after closure.
-- **Tests:** periodic DHSV inflow (leak) test against a leak-rate acceptance criterion
-  (A for this element), function test.
-
-### 7.4 Tubing hanger and wellhead seals
-
-#### ✅ `FMech.THS.SEAL`: Hanger seal leak
-- **Item:** `W01.THS` (shown in the secondary envelope in this teaching allocation; see Section 5.2)
-- **Physics:** Elastomer or metal-to-metal seals in the hanger degrade or are damaged during
-  installation. Tubing fluid then reaches the A-annulus near the surface, or wellbore fluid
-  reaches the environment through the wellhead.
-- **Failure mode:** `FM.SCP`. Severe cases are an external leak.
-- **Signature:** a leak at the **top** of the annulus, so the rebuild responds quickly. Seal test
-  ports can isolate it.
-- **Tests:** hanger-seal test through test ports (A), bleed-rebuild (B).
-
-### 7.5 Xmas tree and production choke
-
-#### ✅ `FMech.CHK.EROS`: Choke erosion
-- **Item:** `W01.CHK`
-- **Physics:** At the choke, velocity is highest, often at critical (sonic) flow. Produced sand and
-  droplets erode the trim. The effective opening grows, so for the same set position the rate rises
-  and the pressure drop falls.
-- **ISO 14224 class:** material failure, erosion.
-- **Failure mode:** `FM.FLOWCTRL` loss of flow control. In extreme cases, body wash-out and
-  external leakage.
-- **Signature:**
-  - The choke flow coefficient drifts: measured upstream and downstream pressures and the rate
-    no longer match the choke model for the set position.
-  - Sand detector counts rise.
-- **Tests:** choke performance check against the twin (C), acoustic sand monitoring (C),
-  inspection (A).
-
-#### ➕ `FMech.MV.LEAK`: Master valve internal leakage
-- **Item:** `W01.MV` (secondary barrier)
-- **Physics:** Gate and seat wear or debris prevent a tight seal when closed.
-- **Tests:** periodic valve leak test, using pressure build-up between closed valves (A).
-
-### 7.6 Casing and cement
-
-#### ✅ `FMech.CEM.MICRO`: Micro-annulus gas path
-- **Item:** `W01.CEM`
-- **Physics:**
-  - Cement can debond from the casing or rock through pressure and temperature cycling,
-    shrinkage or poor placement.
-  - Gas can also migrate through channels left during placement.
-  - The result is a micro-annulus that lets formation gas migrate upward, often into the B- or
-    A-annulus.
-- **Failure mode:** `FM.SCP`, typically a **slow, steady** rebuild that is not linked to production
-  changes.
-- **Signature:** gas at the annulus outlet whose composition may differ from produced gas.
-  Rebuild continues even with the well shut in.
-- **Tests:** bleed-rebuild with gas sampling and composition analysis (B), cement bond or
-  ultrasonic log (A), temperature or noise log.
-
-#### ✅ `FMech.CSG.WEAR`: Casing wear and burst-capacity loss
-- **Item:** `W01.CSG` (secondary barrier)
-- **Physics:**
-  - Drill-string rotation during construction wears a groove in the casing.
-  - Later corrosion thins the wall further.
-  - Burst capacity falls, so the casing may fail below the original MAASP.
-- **Failure mode:** `FM.MAASP`. The **allowed** limit is no longer safe, so the limit must be
-  recalculated and the version updated.
-- **Tests:** caliper or thickness log (A). Construction wear records are prior evidence.
-
-#### ➕ `FMech.CSG.COLLAPSE`: Casing or tubing collapse from APB
-- **Physics:** In a sealed outer annulus (B or C) that cannot be bled, thermal build-up can exceed
-  the collapse rating of the inner pipe.
-- **Tests:** design checks, monitoring of bleedable annuli.
-
-### 7.7 Non-mechanism failure mode: thermal APB above MAASP
-
-`W01.ANN-A -MANIFESTS_IN-> FM.MAASP`. Thermal pressure build-up is **normal physics, not a
-failure mechanism**. It can still violate MAASP if the annulus is not bled or the rate is
-increased too fast. That is why the graph allows a containment volume to cause a failure mode
-directly.
-
-### 7.8 Summary matrix
-
-| Mechanism | Item | Envelope | Failure mode | Rebuild after bleed? | Best discriminating test |
+| Item | Subunit | Function | Barrier | Rating / design | Governing standard |
 |---|---|---|---|---|---|
-| Thread leak | Tubing | Primary | SCP | Yes, fast with gas | Bleed-rebuild, temperature log |
-| Corrosion | Tubing | Primary | SCP, lower MAASP | Once through-wall | Caliper or thickness log |
-| Elastomer degradation | Packer | Primary | SCP | Yes | Pressure test against packer |
-| DHSV leak (➕) | DHSV | Primary | Leak in closed position | n/a | DHSV inflow test |
-| Hanger seal leak | Hanger seal | Secondary* | SCP | Yes, fast | Hanger test ports |
-| Choke erosion | Choke | (flow control) | Loss of flow control | n/a | Twin choke check, sand monitor |
-| Micro-annulus | Cement | Secondary | SCP (slow) | Yes, slow, even when shut in | Gas composition, bond log |
-| Casing wear | Casing | Secondary | MAASP no longer safe | n/a | Caliper or thickness log |
-| Thermal APB | (volume) | n/a | MAASP | **No** | Residual vs twin, bleed-rebuild |
+| `W01.TUB` Production tubing | Downhole | Production conduit | Primary | 4-1/2" 12.6 lb/ft L80; burst 581.2, collapse 517.1 bar | API 5CT / ISO 11960; API TR 5C3 |
+| `W01.PKR` Production packer | Downhole | Seals tubing to casing at 2,300 m | Primary | differential 344.7 bar; V0 gas-tight | ISO 14310 / API 11D1 |
+| `W01.DHSV` Downhole safety valve | Downhole | Fail-safe-closed isolation below surface (450 m) | Primary | tubing-retrievable flapper | API 14A / ISO 10432; API RP 14B |
+| `W01.CL` DHSV control line | Downhole | Holds the DHSV open hydraulically | Primary | hydraulic oil | (part of the SSSV system) |
+| `W01.THS` Tubing hanger and seals | Wellhead | Suspends tubing; seals top of A | Secondary | — | API 6A / ISO 10423 |
+| `W01.THSP` Tubing-head spool + A valves | Wellhead | Pressure containment; A-annulus access | Secondary | 5,000 psi = 344.7 bar | API 6A / ISO 10423 |
+| `W01.CHS` Casing-hanger pack-off | Wellhead | Seals A from B at surface | Secondary | — | API 6A / ISO 10423 |
+| `W01.CHSP` Casing-head spool + B valves | Wellhead | Pressure containment; B-annulus access | Outer | 3,000 psi = 206.8 bar | API 6A / ISO 10423 |
+| `W01.MV` Master valve | X-mas tree | Isolation; SIS final element | Secondary | actuated, fail-safe closed | API 6A / ISO 10423 |
+| `W01.PWV` Production wing valve | X-mas tree | Isolation of the production line | Secondary | — | API 6A / ISO 10423 |
+| `W01.CHK` Production choke | X-mas tree | Controls rate | — | adjustable, 1/64 in bean | API 6A / ISO 10423 |
+| `W01.CSG` Production casing | Casing & cement | Wall of A and B; part of both envelopes | Primary + Secondary | 9-5/8" 47 lb/ft L80; burst 473.7, collapse 327.5 bar | API 5CT; API TR 5C3 |
+| `W01.CEM` Production-casing cement | Casing & cement | Seals and supports casing from shoe to 1,200 m | Primary + Secondary | top of cement 1,200 m | NORSOK D-010 acceptance tables |
+| `W01.ICSG` Intermediate casing | Casing & cement | Outer wall of B | Outer | 13-3/8" 68 lb/ft K55; burst 237.9, collapse 134.4 bar | API 5CT; API TR 5C3 |
 
-\* Allocation depends on the well barrier schematic.
+Two sensors are also failure-capable maintainable instruments: the **A-annulus pressure
+transmitter** (`SEN-W01-PT-A-ANN`) and the **downhole gauge** (`SEN-W01-PT-DHG`).
+
+Rule R4 requires every item to have at least one failure mechanism; the graph passes it.
 
 ---
 
-## 8. Catalogue of tests and the evidence hierarchy
+## 9. Catalogue of failure mechanisms
 
-### 8.1 Why tests are first-class nodes
+### 9.1 How to read each entry
 
-A test is a **source of evidence with a known reliability and cost**. Modelling tests explicitly
-lets the decision layer reason about *which evidence to buy next*. That is what "reducing
-uncertainty" means operationally.
+- **Item, ISO class, leak path** (`CONNECTS`).
+- **Physics:** what happens.
+- **Failure modes** (`CAUSES`) with the condition under which each appears.
+- **Twin fingerprint** (from `signatures.yaml`, Chapter 14): differences to the healthy twin, in bar.
+  `ΔA_pre`, `ΔB_pre` while producing (47.5 h); `ΔA_post`, `ΔB_post` 23 h after a bleed of the
+  mechanism's own annulus; `ΔA_shutin` after a 22 h shut-in; bleed returns; change of MAASP.
+- **Tests** that reveal it (`EVIDENCE_FOR`), cheapest class first.
 
-### 8.2 Reliability classes
+Healthy reference (twin): A 56.1 bar and B 28.1 bar while producing; A bleed returns 0.49 Sm³ gas
+and 295 L brine; B bleed returns 2.11 Sm³ gas and 60.9 L brine; A after the shut-in test 10.9 bar.
 
-| Class | Meaning | Typical properties |
-|---|---|---|
-| **C: screening** | Detects *that* something may be wrong | Online, continuous, cheap, lower specificity |
-| **B: discriminating** | Separates competing explanations | Requires an operator action, moderate cost |
-| **A: confirmatory** | Directly verifies barrier status or locates the defect | Planned intervention, costly, high specificity |
+![Twin fingerprints](kg_signatures.png)
 
-### 8.3 Tests in v1
+### 9.2 Production tubing
 
-| Node | Class | Cost (synthetic) | What it does | Evidence for |
+**`FMech.TUB.THREAD` Tubing connection (thread) leak** — *Mechanical, leakage*; bore ↔ A at 1,500 m.
+- **Physics.** Premium connections seal metal to metal. Make-up errors, thermal cycling, bending or
+  corrosion of the seal area open a micro-path.
+- **Modes.** `FM.COMM.TA` while producing; `FM.SCP.A` when shut in or above the balance depth.
+- **Fingerprint.** ΔA_pre **−53.3**, ΔB_pre −2.2, ΔA_post −2.9, ΔA_shutin **+10.1**; bleed returns
+  nothing (A is already below 5 bar).
+- **Why the sign flips.** While producing, the heated A-annulus is above tubing pressure at every
+  depth, so brine **drains into the tubing**. After shut-in, tubing pressure rises above A and the
+  leak **refills** A (see the `digital_twin` manual, balance depth).
+- **Tests.** C: `TEST.RES.A`; B: `TEST.BLEED.A`, `TEST.SHUTIN`, `TEST.GASCOMP`; A: `TEST.PT.TUB`,
+  `TEST.PT.ANN.A`, `TEST.LOG.TEMP` (locates depth).
+
+**`FMech.TUB.CORR` Tubing corrosion pit / hole (growing)** — *Material, corrosion*; bore ↔ A at 900 m.
+- **Physics.** CO₂ or H₂S corrosion penetrates the wall; the hole grows (conductance doubles per day).
+- **Modes.** `FM.COMM.TA`; `FM.SCP.A` after bleed; `FM.NOBLEED` when large.
+- **Fingerprint.** ΔA_pre −38.1, ΔA_post **+10.2**, ΔA_shutin +22.1; bleed 0.49 Sm³, 46.8 L.
+  Shallower than the thread leak, so after a bleed it is *above* the balance depth and refills A.
+- **Tests.** C: `TEST.RES.A`; B: `TEST.BLEED.A`, `TEST.SHUTIN`; A: `TEST.LOG.CAL`, `TEST.PT.TUB`,
+  `TEST.PT.ANN.A`, `TEST.LOG.TEMP`.
+
+**`FMech.TUB.WALL` Tubing wall loss (pressure-capacity loss)** — *Material, corrosion / erosion*; no leak path.
+- **Physics.** General thinning lowers collapse capacity roughly with the square of the remaining wall.
+- **Modes.** `FM.MARGIN.A`.
+- **Fingerprint.** No pressure change at all; **ΔMAASP_A −262.0** bar (60 % wall loss): the tubing
+  collapse bound becomes the governing limit of A.
+- **Tests.** A only: `TEST.LOG.CAL`. A **silent** mechanism (Section 12.6).
+
+### 9.3 Production packer
+
+**`FMech.PKR.ELAST` Packer element degradation** — *Material, degradation*; bore ↔ A at 2,300 m.
+- **Physics.** Elastomer ageing (compression set), chemical attack, explosive decompression after
+  gas soak, or extrusion under differential pressure. ISO 14310 grades describe what a packer was
+  qualified to hold (V0 = gas-tight).
+- **Modes.** `FM.COMM.TA` and `FM.FLUIDLOSS.A` while producing; `FM.SCP.A` when shut in.
+- **Fingerprint.** ΔA_pre **−54.4**, ΔA_post −3.9, ΔA_shutin **−9.6**; **void 0.045 m³** (fluid
+  level drop); bleed returns nothing.
+- **Tests.** C: `TEST.RES.A`; B: `TEST.TOPUP`, `TEST.SHUTIN`, `TEST.GASCOMP`; A: `TEST.PT.ANN.A`,
+  `TEST.LOG.TEMP`.
+
+**`FMech.PKR.MOVE` Packer movement / unseating** — *Mechanical, displacement*; same path.
+- **Physics.** Thermal expansion and ballooning change the axial load on the tubing; a packer that
+  is not anchored for these loads can move or unseat.
+- **Modes, fingerprint, tests.** Identical to element degradation (same leak model). The two can be
+  separated only by mechanical evidence (tubing-movement analysis, retrieval).
+
+### 9.4 DHSV and control line
+
+**`FMech.DHSV.LCP` DHSV leakage in closed position** — *Mechanical, leakage*; reservoir → bore.
+- **Physics.** Erosion, scale or debris on flapper and seat.
+- **Modes.** `FM.ISOLATION`. Not simulated: the twin does not close the DHSV.
+- **Tests.** A: `TEST.DHSV.INFLOW`. Acceptance is a maximum leak rate measured by pressure build-up
+  above the closed valve; API RP 14B gives a widely used criterion (verify the current edition).
+
+**`FMech.DHSV.FTC` DHSV fail to close on demand** — *Mechanical, sticking*.
+- **Modes.** `FM.ISOLATION`. **Tests.** A: `TEST.SIS.FUNC`.
+
+**`FMech.CL.LEAK` Control-line leak / communication** — *Mechanical, leakage*; bore ↔ A.
+- **Physics.** Loss of hydraulic pressure closes the DHSV (spurious shut-in); tubing fluid entering
+  the line creates a path to surface.
+- **Modes.** `FM.ISOLATION`, `FM.COMM.TA`. **Tests.** C: `TEST.RES.A`; B: `TEST.SHUTIN`;
+  A: `TEST.CL.PT`, `TEST.SIS.FUNC`, `TEST.PT.ANN.A`.
+
+### 9.5 Wellhead and X-mas tree
+
+**`FMech.THS.SEAL` Tubing-hanger seal leak** — *Mechanical, leakage*; bore ↔ A at surface.
+- **Physics.** Hanger seals degrade; tubing-head pressure reaches the top of A.
+- **Modes.** `FM.SCP.A` after bleed, `FM.COMM.TA`, `FM.NOBLEED` (orifice-type leak).
+- **Fingerprint.** ΔA_pre −4.2, ΔA_post **+46.7** (A rebuilds to tubing-head pressure),
+  ΔA_shutin **+50.1**; bleed 0.39 Sm³, 280.1 L. The textbook SCP case.
+- **Tests.** C: `TEST.RES.A`; B: `TEST.BLEED.A`, `TEST.SHUTIN`, `TEST.GASCOMP`; A: `TEST.HGR.PORT`,
+  `TEST.PT.TUB`, `TEST.PT.ANN.A`.
+
+**`FMech.THSP.SEAL` A-annulus outlet / valve seal leak to environment** — *Mechanical, external leakage*; A → environment.
+- **Modes.** `FM.EXT`, `FM.FLUIDLOSS.A`.
+- **Fingerprint.** ΔA_pre −31.3, ΔA_shutin −9.9; bleed **0.00 Sm³** gas (the gas cap has already
+  escaped), 116.8 L brine.
+- **Tests.** C: `TEST.RES.A`; B: `TEST.BLEED.A`, `TEST.TOPUP`; A: `TEST.WH.VALVE`, `TEST.PT.ANN.A`.
+
+**`FMech.CHS.SEAL` Casing-hanger pack-off leak** — *Mechanical, leakage*; A ↔ B at surface.
+- **Modes.** `FM.COMM.AB`; `FM.SCP.B` after a B bleed; `FM.SCP.A` after an A bleed (B pushes back).
+- **Fingerprint.** ΔA_pre **−15.8**, ΔB_pre **+12.3** (opposite signs); after an A bleed ΔA_post
+  +14.2, ΔB_post −8.4; the A bleed returns **2.6 Sm³** gas, which is B's gas that crossed into A.
+- **Tests.** C: `TEST.RES.A`, `TEST.RES.B`, `TEST.AB.SIGN`; B: `TEST.BLEED.A`, `TEST.BLEED.B`;
+  A: `TEST.HGR.PORT`, `TEST.PT.ANN.A`, `TEST.PT.ANN.B`.
+
+**`FMech.CHSP.SEAL` B-annulus outlet / valve seal leak to environment** — B → environment.
+- **Modes.** `FM.EXT`, `FM.FLUIDLOSS.B`. **Fingerprint.** ΔB_pre **−17.8**, ΔB_post −2.6; bleed 0 Sm³, 30.6 L.
+- **Tests.** C: `TEST.RES.B`; B: `TEST.BLEED.B`; A: `TEST.WH.VALVE`, `TEST.PT.ANN.B`.
+
+**`FMech.MV.LEAK`, `FMech.MV.FTC`, `FMech.PWV.LEAK` Tree valve leakage / fail to close.**
+- **Modes.** `FM.ISOLATION`. Not simulated.
+- **Tests.** A: `TEST.XT.LEAK` (pressure build-up between closed valves), `TEST.SIS.FUNC`.
+- These are **demand failures**: they matter only when the valve is asked to close, so they are
+  found by periodic proof testing, never by online monitoring. IEC 61511 calls the time between
+  such tests the proof-test interval.
+
+**`FMech.CHK.EROS` Choke trim erosion** — *Material, erosion*.
+- **Physics.** Sand and droplets erode the trim at a rate that grows with velocity (about v² here).
+  The effective opening grows at a fixed set position, and erosion accelerates itself.
+- **Modes.** `FM.FLOWCTRL`.
+- **Fingerprint.** Δq_liq **+75.2 Sm³/d**, ΔP_wh **−2.5 bar**; ΔA +1.9 to +2.5 (hotter well); ΔMAASP_A −5.0.
+- **Tests.** C: `TEST.CHOKE`; A: `TEST.CHK.INSP`.
+
+### 9.6 Casing and cement
+
+**`FMech.CSG.LEAK` Production-casing leak (hole / connection)** — *Mechanical, leakage*; A ↔ B at 800 m.
+- **Modes.** `FM.COMM.AB`; `FM.SCP.B` after a B bleed; `FM.SCP.A` after an A bleed.
+- **Fingerprint.** ΔA_pre **−16.1**, ΔB_pre **+12.4**; after an A bleed ΔA_post +20.4, ΔB_post −2.0;
+  bleed 0.49 Sm³, 198.4 L.
+- **Compared with the pack-off leak.** Producing fingerprints are almost identical (−16.1/+12.4 vs
+  −15.8/+12.3). They separate after an A bleed (+20.4/−2.0 vs +14.2/−8.4) and by bleed gas
+  (0.49 vs 2.6 Sm³). Section 17.2 uses this.
+- **Tests.** C: `TEST.RES.A`, `TEST.RES.B`, `TEST.AB.SIGN`; B: `TEST.BLEED.A`, `TEST.BLEED.B`;
+  A: `TEST.PT.ANN.A`, `TEST.PT.ANN.B`, `TEST.LOG.TEMP`.
+
+**`FMech.CSG.WEAR` Production-casing wear / corrosion (capacity loss)** — *Material*; no leak path.
+- **Physics.** Drill-string wear during construction and later corrosion thin the wall.
+  Burst capacity scales with wall thickness (Barlow: $P_b = 2\sigma_y t/D$); collapse capacity
+  depends more strongly on $t/D$ (API TR 5C3) and is approximated by $t^2$.
+- **Modes.** `FM.MARGIN.A`, `FM.MARGIN.B`.
+- **Fingerprint.** No pressure change; **ΔMAASP_A −161.4**, **ΔMAASP_B −149.6** bar (60 % loss,
+  A bled). The casing appears in both barrier envelopes (Section 6.3), so one finding weakens both.
+- **Tests.** A only: `TEST.LOG.CAL` (electromagnetic thickness tools can measure through the tubing).
+
+**`FMech.CEM.MICRO` Cement micro-annulus / channel gas migration** — *Material, degradation*; shallow gas zone → B at 1,200 m.
+- **Physics.** Cement debonds from casing or rock (pressure / temperature cycling, shrinkage) or
+  channels were left during placement; gas from a shallow zone migrates up into B.
+- **Modes.** `FM.SCP.B`.
+- **Fingerprint.** ΔA 0; ΔB_pre +3.2, ΔB_post **+16.2**; B bleed returns **3.60 Sm³** gas
+  (healthy 2.11).
+- **Tests.** C: `TEST.RES.B`; B: `TEST.BLEED.B`, `TEST.GASCOMP` (formation gas differs from
+  produced gas); A: `TEST.LOG.CBL`, `TEST.LOG.TEMP`.
+
+**`FMech.ICSG.WEAR` Intermediate-casing wear / corrosion** — capacity loss.
+- **Modes.** `FM.MARGIN.B`. **Fingerprint.** **ΔMAASP_B −120.6** bar; no pressure change.
+- **Tests.** A only: `TEST.LOG.CAL`.
+
+**`FMech.ICSG.LEAK` Intermediate-casing leak to formation** — *Mechanical, leakage*; B ↔ shallow zone at 600 m.
+- **Physics.** While B is above the formation pressure at the hole, brine drains out (underground
+  loss); after B is bled below it, formation gas flows in.
+- **Modes.** `FM.FLUIDLOSS.B`, `FM.XFLOW`, `FM.SCP.B` (after a B bleed).
+- **Fingerprint.** ΔB_pre **−13.1**, ΔB_post **+5.7**; B bleed 1.71 Sm³ gas, **0 L** brine.
+- **Tests.** C: `TEST.RES.B`; B: `TEST.BLEED.B`, `TEST.TOPUP`; A: `TEST.PT.ANN.B`, `TEST.LOG.TEMP`.
+
+### 9.7 Instruments
+
+**`FMech.SEN.FROZEN` Annulus transmitter frozen / stuck** (on `SEN-W01-PT-A-ANN`) — *Instrument, faulty signal*.
+- **Physics.** The output stops changing. A healthy transmitter always shows noise of about its σ;
+  a flat line is the signature.
+- **Modes.** `FM.MONITOR`, which `AGGRAVATES` `FM.SCP.A` and `FM.MAASP.A` (it masks them).
+- **Tests.** C: `TEST.DQ`; A: `TEST.SEN.CAL`.
+
+**`FMech.SEN.DRIFT` Downhole-gauge drift** (on `SEN-W01-PT-DHG`) — *Instrument, out of adjustment*.
+- **Physics.** Slow bias, here 0.5 bar per day; looks like reservoir depletion.
+- **Tests.** C: `TEST.DHG.X` (compare with the twin's predicted pressure at 2,250 m); A: `TEST.SEN.CAL`.
+
+### 9.8 Summary matrix
+
+| Mechanism | Item | Path | Main modes | ΔA_pre | ΔB_pre | ΔA_post | ΔB_post | Best online test |
+|---|---|---|---|---|---|---|---|---|
+| TUB.THREAD | tubing | bore↔A 1,500 m | COMM.TA, SCP.A | −53.3 | −2.2 | −2.9 | −0.2 | RES.A |
+| TUB.CORR | tubing | bore↔A 900 m | COMM.TA, SCP.A, NOBLEED | −38.1 | −1.6 | +10.2 | +0.4 | RES.A |
+| TUB.WALL | tubing | — | MARGIN.A | 0 | 0 | 0 | 0 | none (silent) |
+| PKR.ELAST / MOVE | packer | bore↔A 2,300 m | COMM.TA, FLUIDLOSS.A, SCP.A | −54.4 | −2.3 | −3.9 | −0.3 | RES.A |
+| DHSV.LCP / FTC | DHSV | reservoir→bore | ISOLATION | n/s | | | | none (demand) |
+| CL.LEAK | control line | bore↔A | ISOLATION, COMM.TA | n/s | | | | RES.A |
+| THS.SEAL | hanger seals | bore↔A surface | SCP.A, COMM.TA, NOBLEED | −4.2 | −0.2 | +46.7 | +1.9 | RES.A |
+| THSP.SEAL | A valves | A→env | EXT, FLUIDLOSS.A | −31.3 | −1.3 | −2.0 | −0.1 | RES.A |
+| CHS.SEAL | pack-off | A↔B surface | COMM.AB, SCP.B, SCP.A | −15.8 | +12.3 | +14.2 | −8.4 | AB.SIGN |
+| CHSP.SEAL | B valves | B→env | EXT, FLUIDLOSS.B | 0 | −17.8 | 0 | −2.6 | RES.B |
+| MV / PWV | tree valves | bore→env | ISOLATION | n/s | | | | none (demand) |
+| CHK.EROS | choke | — | FLOWCTRL | +2.5 | +1.1 | +1.9 | +2.0 | CHOKE |
+| CSG.LEAK | prod. casing | A↔B 800 m | COMM.AB, SCP.B, SCP.A | −16.1 | +12.4 | +20.4 | −2.0 | AB.SIGN |
+| CSG.WEAR | prod. casing | — | MARGIN.A, MARGIN.B | 0 | 0 | 0 | 0 | none (silent) |
+| CEM.MICRO | cement | gas zone→B | SCP.B | 0 | +3.2 | 0 | +16.2 | RES.B |
+| ICSG.WEAR | int. casing | — | MARGIN.B | 0 | 0 | 0 | 0 | none (silent) |
+| ICSG.LEAK | int. casing | B↔gas zone 600 m | FLUIDLOSS.B, XFLOW, SCP.B | 0 | −13.1 | 0 | +5.7 | RES.B |
+| SEN.FROZEN / DRIFT | sensors | — | MONITOR | (instrument) | | | | DQ / DHG.X |
+
+n/s = not simulated by the twin.
+
+---
+
+## 10. Catalogue of failure modes
+
+| Failure mode | Observed as | Caused by | Degrades | Also leads to / aggravates |
 |---|---|---|---|---|
-| `TEST.RESIDUAL` | C | 0, online | Measured annulus pressure minus twin-predicted thermal pressure, with uncertainty | Thread leak, elastomer leak, hanger seal leak |
-| `TEST.BLEED` | B | 50 kNOK | Bleed annulus to about 5 bar, hold, watch rebuild at constant temperature for about 12 h | Same; separates SCP from thermal |
-| `TEST.PRESSURE` | A | 2 MNOK | Pressure test of tubing or annulus with intervention | Confirms which barrier element leaks |
+| `FM.SCP.A` Sustained casing pressure in A | A rebuilds after bleed at stable temperature | thread, corrosion, packer, hanger seal, pack-off, casing leak | Primary | — |
+| `FM.SCP.B` Sustained casing pressure in B | B rebuilds after bleed; extra gas | cement, casing leak, pack-off, int.-casing leak | Secondary | aggravates MARGIN.B |
+| `FM.COMM.TA` Tubing ↔ A communication | A below twin while producing; A rises when shut in | thread, corrosion, packer, hanger seal, control line | Primary | — |
+| `FM.COMM.AB` A ↔ B communication | Opposite-sign residuals; pressures converge | casing leak, pack-off | Secondary | aggravates MAASP.B (A's pressure reaches B, whose wellhead is rated lower) |
+| `FM.FLUIDLOSS.A` A fluid loss | Void; needs top-up | packer, A valves | Secondary | aggravates MARGIN.B (casing loses internal support) |
+| `FM.FLUIDLOSS.B` B fluid loss | B drains below twin | B valves, int.-casing leak | Outer | — |
+| `FM.XFLOW` Annulus ↔ formation | Annulus fluid to formation | int.-casing leak | Outer | **leads directly to HZ.UGB** |
+| `FM.EXT` External leak | Pressure decay; fluid at outlet | A valves, B valves | Secondary | **leads directly to HZ.LOC** |
+| `FM.NOBLEED` Cannot bleed down | Bleed cannot reach target | corrosion hole, hanger seal (orifice) | Primary | aggravates MAASP.A |
+| `FM.MAASP.A` / `FM.MAASP.B` Pressure above limit | Above MAWOP / MAASP | thermal APB (no mechanism), aggravation | Primary + Secondary / Secondary + Outer | checked against limits |
+| `FM.MARGIN.A` / `FM.MARGIN.B` Margin low | Twin MAASP approaching pressure | wall loss, casing wear, int.-casing wear | Primary + Secondary / Secondary + Outer | aggravate MAASP.A / MAASP.B |
+| `FM.ISOLATION` Cannot isolate on demand | Failed valve test or closure | DHSV, control line, tree valves | Primary + Secondary | aggravates EXT |
+| `FM.FLOWCTRL` Loss of flow control | Rate and P_wh drift at fixed choke | choke erosion | Secondary | **leads directly to HZ.LOC** (body wash-out) |
+| `FM.MONITOR` Loss of monitoring | Frozen / drifting data | sensor faults | Primary + Secondary (verification) | aggravates SCP.A, MAASP.A (masking) |
 
-### 8.4 Wider test catalogue (for extension)
-
-| Test | Class | Finds | Notes |
-|---|---|---|---|
-| Annulus pressure trend and residual | C | SCP, thermal APB | Needs twin for thermal correction |
-| Bleed-down and build-up | B | SCP vs thermal; rebuild rate gives leak size | Record volume and fluid type bled |
-| Bled-fluid sampling and gas composition | B | Leak source (produced vs formation gas) | Compare with produced-gas composition |
-| Annulus pressure test | A | Integrity of packer, tubing, casing from the annulus side | Pressure held for a defined time |
-| Tubing pressure test (with plug) | A | Tubing and connections | Needs intervention |
-| DHSV inflow (leak) test | A | DHSV closed-position leakage | Periodic; acceptance by leak rate |
-| Xmas tree valve leak test | A | Master and wing valve leakage | Periodic |
-| Hanger-seal test (test ports) | A | Wellhead seal integrity | Surface access |
-| Temperature log, noise or acoustic log | A/B | **Locates** leak depth | Logging run |
-| Multi-finger caliper, EM thickness | A | Wall loss, corrosion, wear | Updates MAASP inputs |
-| Cement bond or ultrasonic log | A | Cement quality, micro-annulus | Logging run |
-| Choke performance vs twin | C | Choke erosion | Uses wellhead P, flowline P, choke position, rate |
-| Acoustic sand detector | C | Sand production, erosion risk | Online |
-
-### 8.5 How tests combine
-
-Evidence from tests does **not** simply add up:
-
-- Two tests driven by the **same physical cause** (e.g. both depend on annulus temperature) are not
-  two independent votes.
-- A class-A test overrides a class-C screen.
-- A negative class-C screen during a known thermal transient means little.
-
-The graph records which tags and models each test `USES`. The pipeline can therefore detect shared
-inputs and avoid double-counting.
+Rule R5 checks that **every failure mode has a path to a hazard**, and R6 that something causes it.
 
 ---
 
-## 9. Sensors, tags and virtual tags
+## 11. Hazards and risk flows
 
-### 9.1 Three different things
+### 11.1 Two hazards
 
-| Concept | Node | What it is | Example |
-|---|---|---|---|
-| **Sensor** | `Sensor` | A physical instrument with range, accuracy and calibration date | Pressure transmitter on the A-annulus outlet |
-| **Tag** | `Tag` | The named data stream the sensor produces in the historian | `W01-PT-A-ANN` |
-| **Virtual tag** | `VirtualTag` | A data stream **computed by a model**, not measured | `W01-VT-P-ANN-THERMAL`: expected thermal annulus pressure |
+| Hazard | Meaning |
+|---|---|
+| `HZ.LOC` Loss of containment to surface | Hydrocarbon release at the wellhead; in the worst case a blowout |
+| `HZ.UGB` Underground uncontrolled flow | Flow between formations or into shallow zones; can broach to surface |
 
-Separating sensor from tag matters. When a transmitter is replaced, the tag (and its history)
-continues, but accuracy and calibration change. The graph records both.
+### 11.2 Bow-tie thinking
 
-### 9.2 Edges that give a tag its meaning
+A bow-tie places a hazardous **top event** in the middle, **threats** on the left, **consequences**
+on the right, and **barriers** on both sides. The graph is the left half of a well-integrity
+bow-tie made precise:
 
 ```
- Sensor ─INSTALLED_ON→ A-annulus
- Tag    ─PRODUCED_BY→ Sensor
- Tag    ─MEASURES {property: pressure, location: wellhead}→ A-annulus
- VirtualTag ─ESTIMATES {property: expected_pressure_thermal}→ A-annulus
- SimulationModel ─PRODUCES→ VirtualTag
- SimulationModel ─CONSUMES→ Tag
+ threats (mechanisms) ──CAUSES──► symptoms (failure modes) ──DEGRADES──► barriers ──LEADS_TO──► hazard
 ```
 
-A tag name alone is ambiguous. The `MEASURES` edge with `property` and `location` states
-**exactly** what physical quantity is measured, where, and on which node.
+Barriers do not *cause* hazards. The `LEADS_TO` edge from an envelope means "if this envelope is
+lost, the path to this hazard is open". Three failure modes have **direct** `LEADS_TO` edges because
+they already *are* the start of the hazard: an external leak (`FM.EXT`), cross-flow (`FM.XFLOW`)
+and loss of flow control (`FM.FLOWCTRL`, choke body wash-out).
 
-### 9.3 Tags in v1 (`tag_map.yaml`)
+### 11.3 Risk paths
 
-| Tag | Kind | Measures or estimates | σ | Role in risk assessment |
+`risk_paths(g, mechanism)` enumerates every simple path to a hazard along `CAUSES`, `AGGRAVATES`,
+`DEGRADES` and `LEADS_TO`. For production-casing wear:
+
+```
+FMech.CSG.WEAR -> FM.MARGIN.A -> BE.PRIMARY   -> HZ.LOC
+FMech.CSG.WEAR -> FM.MARGIN.A -> BE.SECONDARY -> HZ.LOC
+FMech.CSG.WEAR -> FM.MARGIN.B -> BE.SECONDARY -> HZ.LOC
+FMech.CSG.WEAR -> FM.MARGIN.B -> BE.OUTER     -> HZ.UGB
+FMech.CSG.WEAR -> FM.MARGIN.A -> FM.MAASP.A   -> BE.PRIMARY -> HZ.LOC
+...
+```
+
+One silent mechanism reaches **both hazards** through **all three envelopes**.
+
+### 11.4 Compound risk: `AGGRAVATES`
+
+Single failures are usually tolerable; combinations are not. `AGGRAVATES` (failure mode → failure
+mode) records that one condition makes another worse. `compound_paths(g)` returns the chains:
+
+```
+FM.SCP.B       -> FM.MARGIN.B -> FM.MAASP.B
+FM.FLUIDLOSS.A -> FM.MARGIN.B -> FM.MAASP.B
+```
+
+**The twin confirms the chain.** In the `digital_twin` manual (integrity chapter), production-casing
+wear (60 %) plus a packer leak (A drains to about 1 bar) plus cement gas into B lowers MAASP_B from
+206.8 to **48.9 bar** and the margin from 177 to **20 bar**, while every gauge looks normal (B at
+29 bar). Each element is in the graph: wear → `FM.MARGIN.B`; packer → `FM.FLUIDLOSS.A` → aggravates
+`FM.MARGIN.B`; cement → `FM.SCP.B` → aggravates `FM.MARGIN.B` → aggravates `FM.MAASP.B`.
+
+---
+
+## 12. Tests and the evidence hierarchy
+
+### 12.1 Why tests are first-class nodes
+
+A test is a **source of evidence with a reliability, a cost and a prediction**. NORSOK D-010
+acceptance tables specify, for each barrier element, how it is verified and monitored; ISO/TS 16530-2
+and API RP 90 describe diagnostic tests for annulus pressure. Modelling tests explicitly lets a
+decision layer ask *which evidence to buy next*.
+
+### 12.2 Reliability classes
+
+| Class | Meaning | Typical properties | Count in W01 |
+|---|---|---|---|
+| **C** screening | Detects *that* something may be wrong | Online, continuous, no cost, lower specificity | 7 |
+| **B** discriminating | Separates competing explanations | Operator action, moderate cost, hours | 5 |
+| **A** confirmatory | Verifies barrier status or locates the defect | Planned intervention or logging, costly | 14 |
+
+### 12.3 Test catalogue
+
+| Test | Class | Cost (kNOK) | What it does | Evidence for (mechanisms) / monitors (modes) |
 |---|---|---|---|---|
-| `W01-PT-A-ANN` | measured | A-annulus pressure at wellhead | 0.5 bar | Primary integrity indicator |
-| `W01-TT-WH` | measured | Wellhead temperature | 0.3 °C | Thermal driver of APB, twin input |
-| `W01-PT-WH` | measured | Wellhead pressure upstream of choke | 0.5 bar | Tubing pressure for leak balance, choke model |
-| `W01-ZT-CHK` | measured | Choke position | 0.5 /64 in | Operating state, choke erosion check |
-| `W01-FL-PT` | measured | Flowline pressure downstream of choke | 0.5 bar | Critical vs subcritical choke flow |
-| `W01-VT-T-ANN` | virtual | Mean annulus temperature | 2.0 °C | Not measurable downhole; drives thermal APB |
-| `W01-VT-Q-LIQ` | virtual | Liquid rate | 15 Sm³/d | Operating state |
-| `W01-VT-P-ANN-THERMAL` | virtual | Expected annulus pressure from heating only | 3.0 bar | Baseline for the residual test |
+| `TEST.RES.A` | C | 0 | A pressure minus twin expectation, **both directions** | 9 A-side mechanisms; MAASP.A |
+| `TEST.RES.B` | C | 0 | B pressure minus twin expectation | casing leak, pack-off, cement, B valves, int.-casing leak; MAASP.B |
+| `TEST.AB.SIGN` | C | 0 | Opposite-sign A/B residuals | casing leak, pack-off |
+| `TEST.CHOKE` | C | 0 | Measured rate vs choke model at the set position | choke erosion; FLOWCTRL |
+| `TEST.MARGIN` | C | 0 | Pressure vs twin-computed operational MAASP | MAASP.A/B, MARGIN.A/B |
+| `TEST.DQ` | C | 0 | Flat line, range, gaps | frozen transmitter; MONITOR |
+| `TEST.DHG.X` | C | 0 | Downhole gauge vs twin profile | gauge drift; MONITOR |
+| `TEST.TOPUP` | B | 30 | Volume needed to refill an annulus | packer, A valves, int.-casing leak; FLUIDLOSS |
+| `TEST.BLEED.A` | B | 50 | Bleed A, record gas / brine, watch build-up 12 h | 6 mechanisms; SCP.A, NOBLEED |
+| `TEST.BLEED.B` | B | 50 | Same for B | 5 mechanisms; SCP.B |
+| `TEST.GASCOMP` | B | 80 | Composition of bled gas vs produced gas | cement (formation gas), tubing / packer / hanger (produced gas) |
+| `TEST.SHUTIN` | B | 300 (deferred production) | Shut in 22 h; leak path reverses | 6 tubing-side mechanisms; COMM.TA |
+| `TEST.SEN.CAL` | A | 10 | Instrument calibration / function check | sensor faults |
+| `TEST.WH.VALVE` | A | 30 | Annulus valve and seal leak test | A and B valve seals; EXT |
+| `TEST.CHK.INSP` | A | 40 | Choke inspection | choke erosion |
+| `TEST.SIS.FUNC` | A | 50 | DHSV and master-valve closure test | fail-to-close, control line; ISOLATION |
+| `TEST.CL.PT` | A | 50 | Control-line pressure test | control line |
+| `TEST.HGR.PORT` | A | 50 | Test ports between hanger / pack-off seals | hanger seals, pack-off |
+| `TEST.XT.LEAK` | A | 80 | Build-up between closed tree valves | master and wing valve leakage |
+| `TEST.DHSV.INFLOW` | A | 100 | Build-up above the closed DHSV | DHSV leakage |
+| `TEST.PT.ANN.B` | A | 1,000 | B-annulus pressure test | casing leak, pack-off, int.-casing leak, B valves |
+| `TEST.LOG.CAL` | A | 1,200 | Caliper / electromagnetic thickness log | tubing wall, corrosion, both casing wears; MARGIN |
+| `TEST.PT.ANN.A` | A | 1,500 | A-annulus pressure test (MIT-A) | 9 mechanisms |
+| `TEST.LOG.TEMP` | A | 1,500 | Temperature / noise log; **locates** leaks | 7 leak mechanisms |
+| `TEST.PT.TUB` | A | 2,000 | Tubing test against a plug | thread, corrosion, hanger seal |
+| `TEST.LOG.CBL` | A | 2,500 | Cement bond / ultrasonic log | cement |
 
-### 9.4 Why uncertainty belongs on the tag
+![Evidence map](kg_test_matrix.png)
 
-- Each tag carries **σ**. Virtual tags have larger σ than physical sensors because they inherit
-  model uncertainty.
-- The residual test combines them: $\sigma_r^2 \approx \sigma_{meas}^2 + \sigma_{model}^2$.
-- A residual of 4 bar means one thing with $\sigma_r = 0.5$ and something quite different with
-  $\sigma_r = 3$.
+### 12.4 Twin-predicted outcomes
 
-### 9.5 Data-quality states (handled in `pipeline/`)
+Some tests read exactly a quantity the twin computes. Their **predicted outcome** for each
+mechanism is in the graph (`predicts` on the test, `signature` on the mechanism):
 
-A measurement can be stale, frozen, out of range, forward-filled or flagged bad. A risk
-assessment must know this. A **frozen annulus gauge** that reports "stable pressure" is the most
-dangerous false negative. Quality state is carried with each observation, not in the frozen graph.
-
-### 9.6 One source of truth: `tag_map.yaml`
-
-The simulator in `models/` produces variables such as `P_ann` and `T_wh`. `tag_map.yaml` maps
-each to a tag `external_id` and a graph node. The same mapping would point at a real historian in
-production. The graph stores structure and metadata; the time-series values live outside it.
-
----
-
-## 10. The digital twin in risk assessment
-
-### 10.1 What "digital twin" means here
-
-A **simulation model, calibrated to a specific asset, that predicts how the asset should behave
-in its current operating state**. In this repository:
-
-| Node | Model | Status |
+| Test | Reads | Valid when |
 |---|---|---|
-| `TWIN-W01-SURR` | Surrogate physics model `models/well_integrity_model.py`: inflow, tubing, choke, heat transfer, annulus pressure | Implemented, v1.0.0 |
-| `TWIN-PROD-OLGA` | Dynamic multiphase model of the production network (assumed to exist at the operator) | Stub; not runnable here |
+| `TEST.RES.A` / `RES.B` | ΔA_pre / ΔB_pre | producing |
+| `TEST.AB.SIGN` | ΔA_pre and ΔB_pre | producing |
+| `TEST.BLEED.A` | ΔA_post, ΔB_post | mechanism's experiment bled A |
+| `TEST.BLEED.B` | ΔB_post | mechanism's experiment bled B |
+| `TEST.SHUTIN` | ΔA_shutin | shut in |
+| `TEST.MARGIN` | ΔMAASP_A, ΔMAASP_B | any |
+| `TEST.CHOKE` | Δq_liq, ΔP_wh | producing |
 
-An operator-grade multiphase simulator such as OLGA models flow and heat in tubing, flowlines and
-risers. Annulus pressure build-up is usually analysed with dedicated well-thermal and
-casing-design tools. The surrogate combines the essentials of both at teaching fidelity.
+This turns a recommendation into a **falsifiable prediction**: "if it is the thread leak, a shut-in
+will raise A by about 10 bar; if it is the packer, A will stay about 10 bar lower".
 
-### 10.2 Five roles of the twin in risk assessment
+### 12.5 Which test splits the candidates?
 
-**1. Expected state, then residual (detection)**
-- The twin predicts annulus pressure from heating alone: $\hat P_{thermal}$.
-- The residual $r = P_{meas} - \hat P_{thermal}$ removes the harmless, temperature-driven part.
-- What remains is evidence of mass entering the annulus.
-- This replaces "raw pressure > threshold" and handles the correlation between temperature and
-  pressure explicitly instead of treating channels as independent.
+`discriminating_tests(g, candidates)` uses two rules:
 
-**2. Virtual sensors (observability)**
-- Mean annulus temperature, tubing pressure at the leak depth and bottomhole pressure are not
-  measured.
-- The twin supplies them as virtual tags, with σ.
+1. **Outcome-based** (preferred): if the twin predicts the test for every candidate, the test
+   splits them when the predicted readings differ by more than 6 bar (about two residual σ).
+2. **Coverage-based** (fallback): the test can reveal some candidates but not others.
 
-**3. What-if prediction of tests (decision support)**
-- Before recommending a bleed test, the twin predicts its outcome: "healthy: stays at about
-  5 bar; leak at 1500 m: rebuilds to about 11 bar within a few hours."
-- A recommendation becomes a **test with a predicted, falsifiable result**.
+For {thread leak, packer leak} the result is `TEST.TOPUP` (coverage: only the packer drains the
+fluid level), `TEST.SHUTIN` (outcome: **+10.1 vs −9.6 bar**), and `TEST.PT.TUB` (coverage). Note
+that `TEST.BLEED.A` is *not* listed: both predict almost the same post-bleed reading (−2.9 vs
+−3.9). Coverage alone would wrongly suggest the bleed helps.
 
-**4. Validity gating (knowing when not to trust it)**
-- Each model has a calibrated envelope (`valid_choke_64`, `valid_T_ann_C`).
-- Outside it, or on a new well with no calibration, the residual's σ widens.
-- The decision policy then moves from alarm/no-alarm to **advisory plus test**.
-- The twin's reliability is an explicit input to the decision.
+### 12.6 Silent mechanisms
 
-**5. Separating model mismatch from asset fault (governance)**
-- A persistent residual can mean the asset changed *or* the model is stale.
-- Patterns across many wells, or right after a process change, point to the model.
-- Recalibration creates a new model version node (`calibrated_on` → event), so earlier
-  decisions remain reproducible.
+`silent_mechanisms(g)` returns mechanisms no online test can reveal:
 
-### 10.3 Calibration as evidence
+```
+CSG.WEAR, ICSG.WEAR, TUB.WALL           capacity loss: no pressure signature at all
+DHSV.LCP, DHSV.FTC, MV.LEAK, MV.FTC,    demand failures: visible only when the valve is asked
+PWV.LEAK                                to close
+```
 
-The twin's uncertain parameters are the per-well unknowns:
-- effective compressibility $c_{eff}$
-- thermal time constant $\tau$
-- and, if a leak is suspected, leak coefficient and leak depth
+The consistency test `test_silent_mechanisms_have_no_pressure_signature` checks against the twin
+that the simulated ones really leave no trace (all residuals below 1 bar). These mechanisms are
+managed by **schedules**, not alarms: periodic inspection logs, valve proof tests (IEC 61511
+proof-test intervals), and MAASP updates after each inspection.
 
-Bleed-rebuild events are natural experiments that identify them. In a Bayesian framing, each
-test updates the posterior over these parameters, and the posterior on $C_{leak} > 0$ **is** the
-leak probability.
+### 12.7 Tests are not independent votes
 
-### 10.4 What the twin must never do
-
-- **Never take trip authority.** The policy node states `trip_authority = "SIS only"`.
-  Protective trips stay in the certified safety instrumented system.
-- **Never be treated as the truth.** It is one source of evidence with its own uncertainty, model
-  version and validity envelope.
+`shared_inputs(g, "TEST.RES.A", "TEST.AB.SIGN")` returns `W01-PT-A-ANN` and `W01-VT-P-A-EXP`. Two
+tests built on the same tags and the same twin prediction share their errors: a wrong gas-cap
+assumption in the twin biases both. A reasoning layer must not count them as two independent pieces
+of evidence. The `USES` edges make this checkable.
 
 ---
 
-## 11. From evidence to decision: the risk flow
+## 13. Instrumentation: sensors, tags and virtual tags
 
-The full flow implemented by `pipeline/` (next module), mapped onto graph nodes:
+### 13.1 Four kinds of data
 
-| Step | Input nodes | Output | Uncertainty handled |
+| Kind | Node | Produced by | Example |
 |---|---|---|---|
-| 1. Observe | `Tag`, `Sensor` | Measurement with σ and quality flag | Sensor noise, drift, staleness |
-| 2. Expect | `SimulationModel`, `VirtualTag` | $\hat P_{thermal}$ with σ | Model and parameter uncertainty |
-| 3. Residual | `TEST.RESIDUAL` | $r$, $\sigma_r$ | Combined |
-| 4. Diagnose | `candidate_mechanisms()`, `CAUSES` | Calibrated $P(\text{leak} \mid \text{evidence})$ with interval | Calibration, out-of-distribution |
-| 5. Consequence | `risk_chain()`, `active_limit()` | Affected barrier, margin to MAASP | Limit version |
-| 6. Decide | `DecisionPolicy` | Alarm, recommend test, or no action | Asymmetric costs |
-| 7. Explain | `grounding_index()` | Rationale with every number traced to a node | LLM hallucination |
-| 8. Record | runtime `RiskAssessment`, `Decision` | Audit trail | Reproducibility |
+| **Measured** | `Tag` (kind measured) | a `Sensor` | `W01-PT-A-ANN` |
+| **Manual** | `Tag` (kind manual) | a `Test` (recorded during it) | `W01-A-BLEED-GAS` |
+| **Virtual** | `VirtualTag` | the digital twin | `W01-VT-P-A-EXP`, `W01-VT-MAASP-B` |
+| **Document** | `Limit` | an engineering document | `LIM.W01.MAASP-A.C` |
 
-### The cost-based decision rule
+### 13.2 Tags of W01 (`tag_map.yaml`)
 
-With $C_{FA}$ the cost of a false alarm and $C_{miss}$ the cost of a missed leak (both on the
-policy node), alarm when:
+| Tag | Kind | Measures / estimates | σ | Sensor installed on |
+|---|---|---|---|---|
+| `W01-PT-WH` | measured | bore pressure at wellhead | 0.5 bar | X-mas tree |
+| `W01-TT-WH` | measured | bore temperature at wellhead | 0.3 °C | X-mas tree |
+| `W01-ZT-CHK` | measured | choke position | 0.2 /64 in | choke |
+| `W01-FL-PT` | measured | flowline pressure | 0.5 bar | flowline |
+| `W01-PT-DHG` / `TT-DHG` | measured | bore pressure / temperature at 2,250 m | 0.1 | tubing |
+| `W01-FT-LIQ` / `FT-GAS` | measured | liquid / gas rate (multiphase meter) | 3 % / 5 % | flowline |
+| `W01-PT-A-ANN` | measured | A pressure at wellhead | 0.5 bar | tubing-head spool |
+| `W01-PT-B-ANN` | measured | B pressure at wellhead | 0.5 bar | casing-head spool |
+| `W01-A-BLEED-GAS` / `-LIQ` | manual | gas / brine returned from A | 0.1 Sm³ / 1 L | recorded by `TEST.BLEED.A` |
+| `W01-B-BLEED-GAS` / `-LIQ` | manual | same for B | 0.1 Sm³ / 1 L | recorded by `TEST.BLEED.B` |
+| `W01-VT-P-A-EXP` / `P-B-EXP` | virtual | expected A / B pressure | 3.0 bar | twin |
+| `W01-VT-T-A` / `T-B` | virtual | annulus temperatures | 2.0 / 3.0 °C | twin |
+| `W01-VT-Q-LIQ-EXP` | virtual | expected rate from the choke model | 15 Sm³/d | twin |
+| `W01-VT-P-DHG-EXP` | virtual | expected pressure at the gauge depth | 2.0 bar | twin |
+| `W01-VT-MAASP-A` / `-B` | virtual | operational MAASP | 10 bar | twin |
+| `W01-VT-MARGIN-A` / `-B` | virtual | margin to MAASP | 10 bar | twin |
 
-$$p_{cal} > \frac{C_{FA}}{C_{FA}+C_{miss}}$$
+### 13.3 Why the distinctions matter
 
-With 50 kNOK and 20 MNOK the threshold is about 0.25 %. That is very low, because missing a leak
-is about 400 times worse. The middle ground is handled by a third action: **recommend a bleed
-test** when its cost (50 kNOK) is smaller than the expected value of the information it provides,
-or when the probability interval is too wide (`abstain_interval_width`).
+- **Sensor vs tag.** When a transmitter is replaced, the tag history continues but accuracy and
+  calibration change. The graph keeps both.
+- **Manual vs measured.** Bleed logs are sparse, human-recorded and only exist when a test is run.
+  Their `PRODUCED_BY` edge points to the test, so the graph knows that no bleed means no reading.
+- **Virtual tags carry larger σ.** They inherit model uncertainty. A residual combines both:
+  $\sigma_r = \sqrt{\sigma_{tag}^2 + \sigma_{virtual}^2} \approx 3.04$ bar for the A-annulus.
+- **Data quality is evidence about the instrument, not the well.** `TEST.DQ` and `TEST.DHG.X`
+  produce evidence for sensor mechanisms. A frozen gauge must be ruled out before any integrity
+  conclusion is drawn from it.
 
 ---
 
-## 12. The graph model: nodes, edges, rules
+## 14. The digital twin inside the graph
 
-### 12.1 Node types
+### 14.1 The twin node and its edges
 
-| View | Node type | ISO / NORSOK concept | Example id |
+```
+TWIN-W01 (version 1.0.0, code digital_twin/, valid choke 8–96/64, valid T_A 20–90 °C)
+  ├─CONSUMES→  W01-ZT-CHK, W01-FL-PT, W01-PT-WH, W01-TT-WH        (operations it needs)
+  ├─PRODUCES→  10 virtual tags                                      (expectations, limits)
+  ├─HAS_PARAMETER→ 11 uncertain parameters ─DESCRIBES→ volume / item
+  └─SIMULATES→ 17 failure mechanisms (with the exact fault injection)
+```
+
+A second model node, `TWIN-PROD-OLGA`, stands for the operator's production-network multiphase
+model; it estimates the flowline and is an adapter stub here.
+
+### 14.2 What the twin does not know: parameters
+
+| Parameter | Describes | Prior | Why uncertain |
 |---|---|---|---|
-| Asset | `Installation` | ISO 14224 level 3 | `IA` |
-| Asset | `System` | ISO 14224 level 4–5 | `IA.PROD`, `IA.GC`, `IA.WI` |
-| Asset | `EquipmentUnit` | ISO 14224 level 6 | `W01`, `FL-W01`, `MAN-P1`, `SEP-1` |
-| Asset | `Subunit` | ISO 14224 level 7 | `W01.DH`, `W01.XT`, `W01.CC` |
-| Asset | `ContainmentVolume` | (extension) annulus | `W01.ANN-A` |
-| Asset | `MaintainableItem` | ISO 14224 level 8, WBE | `W01.TUB`, `W01.PKR`, `W01.DHSV`, `W01.THS`, `W01.CHK`, `W01.MV`, `W01.CSG`, `W01.CEM` |
-| Asset | `FailureMechanism` | ISO 14224 failure mechanism | `FMech.TUB.THREAD`, … |
-| Asset | `Sensor`, `Tag`, `VirtualTag` | Instrumentation | `W01-PT-A-ANN` |
-| Asset | `SimulationModel` | Digital twin | `TWIN-W01-SURR` |
-| Asset | `Test` | Evidence source | `TEST.BLEED` |
-| Risk | `FailureMode` | ISO 14224 failure mode | `FM.SCP`, `FM.MAASP`, `FM.FLOWCTRL` |
-| Risk | `BarrierEnvelope` | NORSOK D-010 well barrier | `BE.PRIMARY`, `BE.SECONDARY` |
-| Risk | `Hazard` | Major accident hazard | `HZ.LOC` |
-| Risk | `Limit` | MAASP (versioned) | `LIM.W01.MAASP.C` |
-| Risk | `DecisionPolicy` | Cost and authority rules | `POL.W01.ANN.v1` |
-| Risk | `RiskAssessment`, `Decision` | Runtime, written by `pipeline/` | — |
+| `PAR.A.GASCAP` | A-annulus | U(0, 0.15) m³ | Gas left after completion is rarely measured; largest effect on thermal APB |
+| `PAR.A.CWALL` | A-annulus | nominal × exp(N(0, 0.10)) | Pipe elasticity, cement support |
+| `PAR.A.TAU` | A-annulus | nominal × exp(N(0, 0.20)) | Convection in the annulus |
+| `PAR.A.BALLOON` | A-annulus | nominal × exp(N(0, 0.30)) | Tubing geometry |
+| `PAR.B.GASCAP` | B-annulus | U(0.05, 0.40) m³ | Unknown |
+| `PAR.B.TAU` | B-annulus | nominal × exp(N(0, 0.25)) | Heat path through A and cement |
+| `PAR.U` | well | nominal × exp(N(0, 0.15)) | Heat transfer drives all temperatures |
+| `PAR.PI` | reservoir | nominal × exp(N(0, 0.10)) | Skin, depletion |
+| `PAR.TUB.WALL`, `PAR.CSG.WALL`, `PAR.ICSG.WALL` | pipes | known only at the last inspection | Drive MAASP; uncertainty grows with time since the last log |
 
-### 12.2 Edge types
+These are the same priors the twin uses to draw plausible "real wells" (`sample_plant`). In the
+graph they answer a different question: *which unknowns could explain a residual without any
+failure?* A B residual of +3 bar can be a slightly smaller gas cap rather than cement gas.
 
-| Edge | From → To | Meaning |
+### 14.3 Signatures: how the graph learns from the twin
+
+`twin_link.py` runs, for each simulated mechanism, the twin with that fault and without it under
+identical operations, and stores the differences in `signatures.yaml`:
+
+| Experiment | Operations | Stored |
 |---|---|---|
-| `PART_OF` | child → parent | ISO 14224 hierarchy |
-| `BOUNDED_BY` | volume → item | Item forms a wall of the volume |
-| `FLOWS_TO` | item/unit → unit | Process topology |
-| `HAS_MECHANISM` | item → mechanism | How this item can degrade |
-| `INSTALLED_ON` | sensor → node | Physical location |
-| `PRODUCED_BY` | tag → sensor | Data lineage |
-| `MEASURES` | tag → node | Physical meaning (`property`, `location`) |
-| `ESTIMATES` | virtual tag / model → node | Model-based meaning |
-| `CONSUMES` / `PRODUCES` | model → tag | Twin inputs and outputs |
-| `USES` | test → tag | Data a test depends on (dependence check) |
-| `EVIDENCE_FOR` | test → mechanism | What a test can reveal |
-| `CAUSES` | mechanism → failure mode | **Cross-view**, many-to-many |
-| `MANIFESTS_IN` | volume → failure mode | **Cross-view**, non-mechanism effects |
-| `IMPLEMENTED_BY` | envelope → item | **Cross-view**, barrier composition |
-| `APPLIES_TO` | limit → volume | **Cross-view**, where a limit applies |
-| `DEGRADES` | failure mode → envelope | Risk propagation |
-| `LEADS_TO` | envelope → hazard | Risk propagation |
-| `CHECKED_AGAINST` | failure mode → limit | Acceptance criterion |
-| `GOVERNS` | policy → failure mode | Which policy decides |
+| E1 production and bleed | shut in to 6 h, choke 32/64, bleed the relevant annulus at 48 h | ΔA_pre, ΔB_pre, ΔA_post, ΔB_post, bleed returns, ΔMAASP_A/B, Δq, ΔP_wh, void |
+| E2 shut-in test | produce to 50 h, shut in, read A at 71.9 h | ΔA_shutin |
 
-### 12.3 Validation rules (`validate()`)
+`build_graph.py` attaches each signature to its mechanism node. The consistency test
+`test_signatures_agree_with_causes` then checks the **graph's claims against the physics**: every
+mechanism said to cause tubing–A communication must drain A while producing or raise it when shut
+in; every mechanism said to cause A–B communication must give opposite-sign residuals; every
+capacity-loss mechanism must lower MAASP by more than 50 bar. If the twin changes, the test shows
+which graph statements no longer hold.
 
-1. Each failure mechanism belongs to exactly one maintainable item (ISO 14224 discipline).
-2. Each measured tag `MEASURES` a node: no orphan data.
-3. Each limit has a revision.
-4. Exactly one **active** MAASP limit exists per annulus.
+### 14.4 Signature matching
 
----
+`match_signature(g, observed)` ranks mechanisms by the distance between an observation and each
+signature, in units of a tolerance τ (default 5 bar):
 
-## 13. Worked example: a hidden tubing leak on W01
+$$d(m) = \sqrt{\sum_k \left(\frac{x_k^{obs} - s_k(m)}{\tau}\right)^2}$$
 
-Using the scenario in `models/well_integrity_demo.png`:
+A pseudo-mechanism "(healthy)" with all signatures zero is ranked too, so "nothing is wrong" is
+always a candidate. This is a transparent first-pass diagnosis; a calibrated probability needs the
+statistical layer (`pipeline/`), which can use the same signatures as features.
 
-1. **6 h, start-up.** The choke opens to 32/64". Wellhead and annulus temperatures rise; annulus
-   pressure climbs from 10 to about 50 bar.
-   - The twin predicts this from $\alpha_f/c_{eff}\cdot\Delta T$.
-   - Residual ≈ 0. **No alarm.** A fixed threshold at 40 bar would have raised a false alarm.
-2. **40 h, a thread leak starts** (`FMech.TUB.THREAD`).
-   - Annulus pressure is already high from heating, so at the leak depth tubing pressure does not
-     exceed annulus pressure. No flow, residual ≈ 0.
-   - The leak is **hidden** and no online test can see it.
-3. **48 h, routine bleed to 5 bar** (`TEST.BLEED`, class B).
-   - The twin predicts the healthy outcome: pressure stays at about 5 bar.
-   - Measured: rebuild to about 11 bar at constant temperature.
-   - Residual ≈ +6 bar, far above $\sigma_r$.
-4. **Diagnosis.**
-   - `candidate_mechanisms("W01.ANN-A")` gives thread leak, corrosion, packer elastomer,
-     hanger seal and casing wear.
-   - Rebuild level and speed favour a leak at depth.
-   - The calibrated leak probability rises sharply.
-5. **Consequence.**
-   - `risk_chain("FMech.TUB.THREAD")` gives `FM.SCP → BE.PRIMARY → HZ.LOC`: the primary barrier is
-     degraded.
-   - `active_limit()` gives MAASP **120 bar rev C**, a large margin.
-6. **Decision.**
-   - The policy threshold is crossed: **advisory alarm**.
-   - Recommend an annulus pressure test or temperature log (class A) to locate the leak.
-   - The well can stay in production only under the operator's well-integrity procedures, with a
-     human decision.
-7. **Explanation and audit.**
-   - The rationale cites `W01-PT-A-ANN`, `TWIN-W01-SURR v1.0.0`, `LIM.W01.MAASP.C` and
-     `POL.W01.ANN.v1`.
-   - A rationale citing "140 bar" is rejected because that value belongs to a superseded limit.
+### 14.5 Validity
+
+The twin is trusted only inside its envelope (`valid_choke_64`, `valid_T_A_C`). Outside it, the
+virtual tags and all twin-predicted test outcomes lose their meaning. A reasoning layer should read
+these properties before using any `predicted_outcome`.
 
 ---
 
-## 14. Using the code
+## 15. Decision policy
 
-### Files
+`POL.W01.INTEGRITY` (version 1.0.0) governs all 16 failure modes and holds the economic and
+authority settings a decision layer needs:
+
+| Property | Value | Meaning |
+|---|---|---|
+| `cost_false_alarm_nok` | 50,000 | Cost of acting on a non-existent problem |
+| `cost_missed_leak_nok` | 20,000,000 | Cost of missing a barrier leak |
+| `cost_missed_loc_nok` | 500,000,000 | Cost of missing a path to loss of containment |
+| `abstain_interval_width` | 0.4 | Above this probability-interval width, a human decides |
+| `min_dwell_min` | 30 | Minimum persistence before acting |
+| `trip_authority` | SIS only | Only `SIS-W01` (IEC 61511) may close the well automatically |
+
+Test costs live on the test nodes; the policy refers to them. Changing a cost changes decisions
+without touching the graph's engineering content.
+
+---
+
+## 16. Graph model reference
+
+### 16.1 Node types
+
+| View | Type | Count | Example |
+|---|---|---|---|
+| Asset | `Installation` | 1 | `IA` |
+| Asset | `System` | 4 | `IA.PROD`, `IA.SAS` |
+| Asset | `EquipmentUnit` | 5 | `W01`, `SIS-W01` |
+| Asset | `Subunit` | 4 | `W01.WH` |
+| Asset | `MaintainableItem` | 14 | `W01.CHS` |
+| Asset | `ContainmentVolume` | 3 | `W01.ANN-B` |
+| Asset | `FormationZone` / `ExternalDomain` | 2 / 1 | `W01.SGZ`, `ENV` |
+| Asset | `FailureMechanism` | 23 | `FMech.CEM.MICRO` |
+| Asset | `Sensor` / `Tag` / `VirtualTag` | 9 / 14 / 10 | `W01-PT-B-ANN` |
+| Asset | `SimulationModel` / `ModelParameter` | 2 / 11 | `TWIN-W01`, `PAR.A.GASCAP` |
+| Asset | `Test` | 26 | `TEST.SHUTIN` |
+| Risk | `FailureMode` | 16 | `FM.COMM.AB` |
+| Risk | `BarrierEnvelope` / `Hazard` | 3 / 2 | `BE.OUTER`, `HZ.UGB` |
+| Risk | `Limit` / `DecisionPolicy` | 5 / 1 | `LIM.W01.MAWOP-B.A` |
+| Risk | `RiskAssessment` / `Decision` | runtime | written by `pipeline/` |
+
+### 16.2 Edge types (count)
+
+| Edge | From → to | Count | Meaning |
+|---|---|---|---|
+| `PART_OF` | child → parent | 30 | ISO 14224 hierarchy |
+| `BOUNDED_BY` | volume → item | 17 | Item forms a wall of the volume |
+| `CONNECTS` | mechanism → volume / zone / env | 30 | Leak path (role src / snk) |
+| `HAS_MECHANISM` | item / sensor → mechanism | 23 | How it can fail |
+| `FLOWS_TO` | node → node | 5 | Process flow |
+| `ACTUATES` | SIS → valve | 2 | Safety function |
+| `INSTALLED_ON`, `PRODUCED_BY`, `MEASURES` | sensor / tag | 9, 14, 14 | Data lineage and meaning |
+| `ESTIMATES`, `CONSUMES`, `PRODUCES` | twin / virtual tag | 11, 4, 10 | Model inputs and outputs |
+| `HAS_PARAMETER`, `DESCRIBES` | twin → parameter → node | 11, 11 | Model uncertainty |
+| `SIMULATES` | twin → mechanism | 17 | Fault injection available |
+| `USES`, `EVIDENCE_FOR`, `MONITORS` | test → tag / mechanism / mode | 39, 86, 23 | Evidence |
+| `CAUSES` | mechanism → mode | 41 | Cross-view, with condition |
+| `MANIFESTS_IN` | volume → mode | 2 | Thermal APB without failure |
+| `IMPLEMENTED_BY` | envelope → item | 15 | Barrier composition, with section |
+| `APPLIES_TO`, `LIMITED_BY` | limit → volume / item | 5, 12 | Where a limit applies and what sets it |
+| `CHECKED_AGAINST` | mode → limit | 4 | Acceptance tiers |
+| `DEGRADES` | mode → envelope | 22 | Risk propagation |
+| `AGGRAVATES` | mode → mode | 9 | Compound risk |
+| `LEADS_TO` | envelope / mode → hazard | 6 | Path to hazard |
+| `GOVERNS` | policy → mode | 16 | Decision scope |
+
+### 16.3 Structural rules (`validate()`)
+
+| Rule | Requirement |
+|---|---|
+| R1 | Every mechanism belongs to exactly one maintainable item or sensor |
+| R2 | Every mechanism causes at least one failure mode |
+| R3 | Every mechanism can be revealed by at least one test |
+| R4 | Every maintainable item has at least one mechanism |
+| R5 | Every failure mode has a path to a hazard |
+| R6 | Every failure mode is caused by a mechanism or manifests in a volume |
+| R7 | Every measured or manual tag measures something |
+| R8 | Every test gives evidence or monitors a mode |
+| R9 | Every annulus has exactly one active MAASP |
+
+### 16.4 Consistency tests (`test_graph.py`)
+
+Structure valid; every simulated mechanism has a signature; `CAUSES` claims agree with the twin;
+silent mechanisms truly leave no pressure trace; the common-cause elements are exactly the
+production casing and its cement; MAWOP is below MAASP for both annuli; the shut-in test separates
+the thread leak from the packer leak.
+
+---
+
+## 17. Worked examples
+
+All outputs below are produced by `python -m knowledge_graph.demo_queries`.
+
+### 17.1 A drops 50 bar below the twin while producing
+
+1. **Symptom.** `TEST.RES.A` shows a residual of about −50 bar; B is about −2 bar.
+2. **Candidates.** `candidate_mechanisms("W01.ANN-A")` gives 11 mechanisms.
+3. **Ranking by signature** (`match_signature({"dA_pre": -50, "dB_pre": -2})`):
+
+   | Mechanism | Distance |
+   |---|---|
+   | TUB.THREAD | 0.66 |
+   | PKR.ELAST | 0.88 |
+   | PKR.MOVE | 0.88 |
+   | TUB.CORR | 2.38 |
+   | THSP.SEAL | 3.74 |
+
+4. **What the ranking says.** A tubing or packer leak is draining A. These are primary-barrier
+   failures (`risk_paths` → `BE.PRIMARY` → `HZ.LOC`).
+5. **Next evidence.** `discriminating_tests([thread, packer])`:
+   `TEST.TOPUP` (30 kNOK, coverage), `TEST.SHUTIN` (300 kNOK, **+10.1 vs −9.6 bar**),
+   `TEST.PT.TUB` (2,000 kNOK). The bleed test is not proposed: it would not separate them.
+6. **Consequence check.** The active limits of A (MAWOP 236.8, MAASP 330 bar) are far away: this
+   is a barrier problem, not a pressure problem.
+
+### 17.2 B rises while A falls
+
+1. **Symptom.** `TEST.AB.SIGN`: A about −16 bar, B about +12 bar.
+2. **Ranking.** CHS.SEAL 0.07, CSG.LEAK 0.08, THS.SEAL 3.39, CEM.MICRO 3.65: an A–B communication.
+3. **Splitting the two.** `discriminating_tests([CSG.LEAK, CHS.SEAL])`:
+   `TEST.BLEED.A` (predicted ΔA_post +20.4 / ΔB_post −2.0 for the casing leak vs +14.2 / −8.4 for
+   the pack-off; and 0.49 vs 2.6 Sm³ of bled gas), `TEST.HGR.PORT` (coverage: pack-off only),
+   `TEST.LOG.TEMP` (coverage: casing leak; locates depth).
+4. **Consequence.** `FM.COMM.AB` degrades the secondary barrier and **aggravates** `FM.MAASP.B`:
+   A's pressure can now reach B, whose wellhead is rated 207 bar against A's 345 bar.
+
+### 17.3 The silent compound
+
+1. **Inspection finding.** A caliper log (`TEST.LOG.CAL`) shows 60 % production-casing wall loss.
+2. **Graph.** `FMech.CSG.WEAR` → `FM.MARGIN.A` and `FM.MARGIN.B`; the casing is a **common** element
+   of both envelopes (Section 6.3); risk paths reach **both** hazards.
+3. **Twin.** MAASP_A falls by 161.4 bar and MAASP_B by 149.6 bar after A is bled.
+4. **Compound.** If the packer also leaks (`FM.FLUIDLOSS.A`) and cement gas pressurises B
+   (`FM.SCP.B`), both aggravate `FM.MARGIN.B`. The twin gives MAASP_B **48.9 bar** with B at about
+   29 bar: a margin of 20 bar with no alarm on any gauge.
+5. **Lesson.** Some of the most important risks are found by **reasoning over structure and limits**,
+   not by watching signals.
+
+### 17.4 Is the DHSV still a barrier?
+
+- `tests_for("FMech.DHSV.LCP")` returns only `TEST.DHSV.INFLOW` (class A).
+- `silent_mechanisms` lists both DHSV mechanisms.
+- **Consequence.** The DHSV's status is known only as of its last inflow test. Its reliability as a
+  barrier is a function of the test interval, not of any online data. That is the proof-testing
+  logic of IEC 61511 applied to a well barrier element.
+
+---
+
+## 18. Using the code
+
+### 18.1 Files
 
 | File | Purpose |
 |---|---|
-| `schema.py` | Node and edge types (Pydantic), view assignment, `TestSpec`, `LimitSpec` |
-| `build_graph.py` | Builds the W01 graph, validates it, exports `kg_v1.json` |
-| `tag_map.yaml` | Simulator variable → tag → graph node |
-| `queries.py` | Read-only queries for `pipeline/` |
-| `demo_queries.py` | Example query output |
-| `visualize_two_views.py` | Draws `kg_two_views.png`; checks drawn ids exist in the graph |
-| `kg_two_views.png` | Figure of the two coupled views |
-| `kg_v1.json` | Frozen node-link snapshot (54 nodes, 96 edges) |
+| `schema.py` | Node and edge types, views, `TestSpec`, `LimitSpec` |
+| `catalog.py` | All engineering content: hierarchy, items, volumes, mechanisms, modes, barriers, hazards, tests, limits, policy, parameters |
+| `tag_map.yaml` | Twin signal → tag → graph node |
+| `twin_link.py` | Runs the digital twin and writes `signatures.yaml` |
+| `signatures.yaml` | Twin-computed fingerprints (generated, version-controlled) |
+| `build_graph.py` | Builds and validates the graph; exports `kg.json` |
+| `queries.py` | Read-only queries (table below) |
+| `demo_queries.py` | Prints the worked examples |
+| `visualize.py` | Draws `kg_two_views.png`, `kg_test_matrix.png`, `kg_signatures.png` |
+| `test_graph.py` | Consistency tests |
+| `kg.json` | Node-link snapshot for Neo4j or industrial data-model import |
 
-### Run (from the repository root `SentinelAI/`)
+### 18.2 Commands (from the repository root)
 
 ```bash
-pip install networkx pydantic pyyaml matplotlib
-python -m knowledge_graph.build_graph          # build, validate, write kg_v1.json
-python -m knowledge_graph.demo_queries         # example queries
-python -m knowledge_graph.visualize_two_views  # regenerate the figure
+pip install networkx pydantic pyyaml matplotlib numpy scipy
+python -m knowledge_graph.twin_link        # (re)compute signatures from digital_twin (~1 min)
+python -m knowledge_graph.build_graph      # build, validate, write kg.json
+python -m knowledge_graph.demo_queries     # worked examples
+python -m knowledge_graph.visualize        # figures
+python -m knowledge_graph.test_graph       # consistency tests (or pytest)
 ```
 
-### Queries
+### 18.3 Queries
 
-| Function | Returns | Tutorial section |
+| Function | Returns | Chapter |
 |---|---|---|
-| `tags_for(g, node)` | Measured and virtual tags with unit and σ | 9 |
-| `candidate_mechanisms(g, volume)` | Mechanisms of items bounding the volume | 3.4, 7 |
-| `active_limit(g, volume)` | The single non-superseded limit | 6.2 |
-| `policy_for(g, failure_mode)` | Costs, thresholds, authority | 11 |
-| `risk_chain(g, mechanism)` | Mechanism → mode → envelope → hazard | 5.4 |
-| `tests_for(g, mechanism)` | Tests sorted C → B → A | 8 |
-| `common_cause_items(g)` | Items in both envelopes | 5.1 |
-| `grounding_index(g)` | Every numeric fact by node id | 11, step 7 |
+| `tags_for(g, node)` | Tags on a node with kind, unit, σ | 13 |
+| `candidate_mechanisms(g, volume)` | Mechanisms connected to or bounding a volume | 4.4, 17 |
+| `mechanisms_for_mode(g, fm)` / `modes_for_mechanism(g, m)` | `CAUSES` with conditions | 5, 10 |
+| `signature(g, m)` / `match_signature(g, observed)` | Twin fingerprint; ranked diagnosis | 14 |
+| `tests_for(g, m)` | Tests, class C → B → A, cheapest first | 12 |
+| `predicted_outcome(g, test, m)` | Twin-predicted reading of a test | 12.4 |
+| `discriminating_tests(g, candidates)` | Tests that split candidates | 12.5 |
+| `silent_mechanisms(g)` | Mechanisms with no online evidence | 12.6 |
+| `shared_inputs(g, t1, t2)` | Common tags of two tests | 12.7 |
+| `risk_paths(g, m)` / `hazards_reachable(g, m)` | Paths to hazards | 11.3 |
+| `compound_paths(g)` | `AGGRAVATES` chains | 11.4 |
+| `common_cause_items(g)` / `barriers_of(g, item)` | Barrier independence | 6.3 |
+| `active_limits(g, volume)` / `active_limit(g, volume, kind)` | Non-superseded limits | 7 |
+| `policy_for(g, fm)` | Governing policy | 15 |
+| `twin_coverage(g)` / `parameters_for(g, node)` | Twin reach and uncertainty | 14 |
+| `grounding_index(g)` | Every numeric fact by node, incl. signatures | — |
 
 ---
 
-## 15. Limitations, freezing and extension
+## 19. Limitations
 
-**Frozen at schema v1.0.0.** `pipeline/` reads the graph through `queries.py` only. Any change
-creates a new version so earlier decisions stay reproducible.
+**Content**
+- One well, two annuli. A C-annulus, the conductor and other wells are not modelled.
+- Barrier allocation follows a typical schematic, not a real well's barrier schematic.
+- ISO 14224 levels 4 and 5 are merged; level 9 (parts) and failure causes are not modelled.
+- Costs, ratings and limits are synthetic, although ratings are typical catalogue values.
 
-**Known simplifications:**
-- One well, one annulus. B and C annuli are not modelled.
-- Barrier allocation is a teaching simplification, not a real well barrier schematic.
-- ISO 14224 levels 4 and 5 are merged; level 9 (parts) is omitted.
-- Failure causes are not modelled.
-- Costs, limits and σ values are synthetic.
+**Physics links**
+- Signatures come from one operating scenario (choke 32/64, bleed at 48 h, shut-in at 50 h) and one
+  fault size per mechanism. Different depths, sizes or operations give different numbers; the
+  graph stores the scenario with the signatures.
+- Six mechanisms (DHSV, control line, tree valves) are not simulated; their links rest on
+  engineering knowledge alone.
+- Packer movement and packer element leak share a leak model and cannot be separated by pressure.
 
-**Natural extensions:**
-- DHSV and master-valve mechanisms with periodic-test schedules.
-- B and C annuli with collapse risk.
-- Mechanism priors from reliability data.
-- Test outcome nodes (event history).
-- Loading `kg_v1.json` into Neo4j or industrial data-model views (e.g. Cognite Data Fusion).
+**Reasoning**
+- Signature matching is a distance ranking, not a calibrated probability; it ignores parameter
+  uncertainty and mechanism frequencies.
+- `CAUSES` conditions are text; a reasoning layer still has to interpret the operating state.
+- `AGGRAVATES` is qualitative; the size of the effect comes from the twin.
+
+These choices keep every statement inspectable. Each can be refined without changing the schema.
 
 ---
 
-## 16. Glossary
+## 20. Glossary
 
-| Term | Definition |
+| Term | Meaning |
 |---|---|
-| **A-annulus** | Space between production tubing and production casing |
-| **APB** | Annular pressure build-up, usually thermally driven |
+| **A-annulus / B-annulus** | Space between tubing and production casing / between production and intermediate casing |
+| **APB** | Annular pressure build-up, usually from heating |
+| **Balance depth** | Depth where tubing and annulus pressures are equal; sets leak direction |
 | **Barrier envelope** | Set of barrier elements that together prevent unintended flow |
-| **Bleed-rebuild test** | Bleed annulus pressure down, then watch whether it rebuilds |
-| **DHSV** | Downhole safety valve, fail-safe closed |
-| **Failure mechanism** | Physical or chemical process leading to failure (ISO 14224) |
-| **Failure mode** | Observed effect of a failure (ISO 14224) |
+| **Bow-tie** | Risk diagram with threats, top event, consequences and barriers |
+| **Common well barrier element** | Element shared by two barrier envelopes |
+| **DHSV / SCSSV** | Downhole (surface-controlled subsurface) safety valve |
+| **Failure mechanism / mode / cause** | Physical process / observed effect / originating circumstance (ISO 14224) |
 | **MAASP** | Maximum allowable annulus surface pressure |
-| **Maintainable item** | Lowest level at which maintenance is performed (ISO 14224 level 8) |
-| **Residual** | Measured minus model-predicted value |
+| **MAWOP** | Maximum allowable wellhead operating pressure (conservative operating screen) |
+| **Maintainable item** | Lowest level at which maintenance is done (ISO 14224 level 8) |
+| **MIT-A** | Mechanical integrity test (pressure test) of the A-annulus |
+| **Operational MAASP** | MAASP recomputed from current loads and wall thickness |
+| **Pack-off** | Seal between a casing hanger and the wellhead spool |
+| **Proof test** | Periodic test that reveals failures only visible on demand |
 | **SCP** | Sustained casing pressure: rebuilds after bleed-down |
+| **Signature** | Twin-computed difference between faulty and healthy behaviour |
+| **Silent mechanism** | Mechanism with no online evidence |
 | **SIS** | Safety instrumented system, which holds trip authority |
 | **Virtual tag** | Model-computed data stream with its own uncertainty |
-| **WBE** | Well barrier element |
+| **WBE / WBS** | Well barrier element / well barrier schematic |
 
 ---
 
-## 17. References
+## 21. References
 
-- ISO 14224, *Petroleum, petrochemical and natural gas industries — Collection and exchange of
-  reliability and maintenance data for equipment.*
+- ISO 14224, *Petroleum, petrochemical and natural gas industries — Collection and exchange of reliability and maintenance data for equipment.*
+- OREDA, *Offshore and Onshore Reliability Data Handbook.*
 - NORSOK D-010, *Well integrity in drilling and well operations.*
 - ISO 16530-1, *Petroleum and natural gas industries — Well integrity — Part 1: Life cycle governance.*
 - ISO/TS 16530-2, *Well integrity — Part 2: Well integrity for the operational phase.*
-- API RP 90-1, *Annular Casing Pressure Management for Offshore Wells.*
-- API RP 14B, *Design, Installation, Operation, Test, and Redress of Subsurface Safety Valve Systems.*
-- IEC 61511, *Functional safety — Safety instrumented systems for the process industry sector.*
-- Ramey, H. J. (1962). *Wellbore Heat Transmission.* Journal of Petroleum Technology.
-- Gilbert, W. E. (1954). *Flowing and Gas-Lift Well Performance.* API Drilling and Production Practice.
+- Offshore Norge Guideline 117, *Recommended guidelines for well integrity.*
+- API RP 90-1, *Annular Casing Pressure Management for Offshore Wells*; API RP 90-2, *Annular Casing Pressure Management for Onshore Wells.*
+- API Spec 6A / ISO 10423, *Wellhead and tree equipment.*
+- API Spec 14A / ISO 10432, *Subsurface safety valve equipment*; API RP 14B, *Design, Installation, Operation, Test, and Redress of Subsurface Safety Valve Systems.*
+- ISO 14310 / API Spec 11D1, *Packers and bridge plugs.*
+- API Spec 5CT / ISO 11960, *Casing and tubing*; API TR 5C3 / ISO/TR 10400, *Calculation of performance properties of casing and tubing.*
+- IEC 61508 and IEC 61511, *Functional safety*; Offshore Norge Guideline 070, *Application of IEC 61508 and IEC 61511 in the Norwegian petroleum industry.*
+- ISO 17776, *Offshore production installations — Major accident hazard management.*
+- ISO 31000, *Risk management — Guidelines.*

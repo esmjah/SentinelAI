@@ -1,0 +1,57 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S09_choke_erosion]: ALARM (gate EXPECTED_LOSS) [DEC.W01.S09_choke_erosion].
+A-annulus pressure is 62.8 bar against 56.2 bar expected by [TWIN-W01]; the residual of 7.5 bar is z = 2.47 with sigma 3.04 bar [RA.W01.S09_choke_erosion].
+B-annulus pressure is 33.5 bar against 29.3 bar expected; the residual of 3.5 bar is z = 1.14 with sigma 3.04 bar [RA.W01.S09_choke_erosion].
+The liquid rate deviates from the twin's choke model by z = 8.79 [RA.W01.S09_choke_erosion].
+Probability that a failure mode is active is 0.7233 (90% interval 0.7233 to 0.7416) at an operational prior of 0.002 [RA.W01.S09_choke_erosion].
+The leading failure mode is [FM.FLOWCTRL] with probability 0.7209 [RA.W01.S09_choke_erosion].
+The next most likely is [FM.SCP.B] with probability 0.001 [RA.W01.S09_choke_erosion].
+[FMech.CHK.EROS] can cause [FM.FLOWCTRL]; distance to its twin signature is 1.11 [DEC.W01.S09_choke_erosion].
+[FM.FLOWCTRL] degrades [BE.SECONDARY].
+[FM.FLOWCTRL] leads to [HZ.LOC].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.3 bar, margin 269.5 bar [RA.W01.S09_choke_erosion].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 173.4 bar [RA.W01.S09_choke_erosion].
+Expected losses: no action NOK 360,748,778, alarm NOK 53,836; expected cost of a miss NOK 498,761,738 [DEC.W01.S09_choke_erosion].
+Policy costs: missed leak NOK 20,000,000, missed loss of containment NOK 500,000,000, false alarm NOK 50,000 [POL.W01.INTEGRITY].
+Confirmatory test costs NOK 40,000 [TEST.CHK.INSP].
+Recommended next evidence: [TEST.CHK.INSP] [DEC.W01.S09_choke_erosion].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S09_choke_erosion.t_eval_h
+62.8 -> RA.W01.S09_choke_erosion.P_A_bar
+56.2 -> RA.W01.S09_choke_erosion.P_A_exp_bar
+7.5 -> RA.W01.S09_choke_erosion.r_A_bar
+2.47 -> RA.W01.S09_choke_erosion.z_A
+3.04 -> RA.W01.S09_choke_erosion.sigma_A_bar
+33.5 -> RA.W01.S09_choke_erosion.P_B_bar
+29.3 -> RA.W01.S09_choke_erosion.P_B_exp_bar
+3.5 -> RA.W01.S09_choke_erosion.r_B_bar
+1.14 -> RA.W01.S09_choke_erosion.z_B
+3.04 -> RA.W01.S09_choke_erosion.sigma_A_bar
+8.79 -> RA.W01.S09_choke_erosion.z_Q
+0.7233 -> RA.W01.S09_choke_erosion.p_fail
+90% -> RA.W01.S09_choke_erosion.interval_level
+0.7233 -> RA.W01.S09_choke_erosion.p_fail
+0.7416 -> RA.W01.S09_choke_erosion.p_hi
+0.002 -> RA.W01.S09_choke_erosion.prior_op_fail
+0.7209 -> RA.W01.S09_choke_erosion.p_top
+0.001 -> RA.W01.S09_choke_erosion.p_FM_SCP_B
+[FMech.CHK.EROS] can cause [FM.FLOWCTRL] -> CAUSES edge
+1.11 -> DEC.W01.S09_choke_erosion.mechanism_1_distance
+[FM.FLOWCTRL] degrades [BE.SECONDARY] -> DEGRADES edge
+[FM.FLOWCTRL] leads to [HZ.LOC] -> LEADS_TO edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.3 -> RA.W01.S09_choke_erosion.maasp_A_bar
+269.5 -> RA.W01.S09_choke_erosion.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S09_choke_erosion.maasp_B_bar
+173.4 -> RA.W01.S09_choke_erosion.margin_B_bar
+360,748,778, -> DEC.W01.S09_choke_erosion.loss_no_action_nok
+53,836 -> DEC.W01.S09_choke_erosion.loss_alarm_nok
+498,761,738 -> DEC.W01.S09_choke_erosion.C_bar_nok
+20,000,000, -> POL.W01.INTEGRITY.cost_missed_leak_nok
+500,000,000, -> POL.W01.INTEGRITY.cost_missed_loc_nok
+50,000 -> POL.W01.INTEGRITY.cost_false_alarm_nok
+40,000 -> TEST.CHK.INSP.cost_nok

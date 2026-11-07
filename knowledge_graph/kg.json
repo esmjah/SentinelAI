@@ -1,0 +1,4862 @@
+{
+ "directed": true,
+ "multigraph": true,
+ "graph": {
+  "schema_version": "1.0.0",
+  "name": "SentinelAI well-integrity KG (synthetic)"
+ },
+ "nodes": [
+  {
+   "type": "Installation",
+   "name": "Ivar Aasen",
+   "view": "asset",
+   "id": "IA"
+  },
+  {
+   "type": "System",
+   "name": "Production system",
+   "view": "asset",
+   "id": "IA.PROD"
+  },
+  {
+   "type": "System",
+   "name": "Gas compression system",
+   "view": "asset",
+   "id": "IA.GC"
+  },
+  {
+   "type": "System",
+   "name": "Water injection system",
+   "view": "asset",
+   "id": "IA.WI"
+  },
+  {
+   "type": "System",
+   "name": "Safety and automation system",
+   "view": "asset",
+   "id": "IA.SAS"
+  },
+  {
+   "type": "EquipmentUnit",
+   "name": "Well W01",
+   "view": "asset",
+   "equipment_class": "Well completion with wellhead and X-mas tree",
+   "tvd_m": 2400.0,
+   "boundary": "from the production packer up to and including the production choke",
+   "id": "W01"
+  },
+  {
+   "type": "EquipmentUnit",
+   "name": "Flowline W01",
+   "view": "asset",
+   "id": "FL-W01"
+  },
+  {
+   "type": "EquipmentUnit",
+   "name": "Production manifold",
+   "view": "asset",
+   "id": "MAN-P1"
+  },
+  {
+   "type": "EquipmentUnit",
+   "name": "1st-stage separator",
+   "view": "asset",
+   "id": "SEP-1"
+  },
+  {
+   "type": "EquipmentUnit",
+   "name": "Wellhead control panel and SIS for W01",
+   "view": "asset",
+   "function": "closes DHSV and master valve on ESD / PSD demand",
+   "id": "SIS-W01"
+  },
+  {
+   "type": "Subunit",
+   "name": "Downhole completion",
+   "view": "asset",
+   "id": "W01.DH"
+  },
+  {
+   "type": "Subunit",
+   "name": "Wellhead",
+   "view": "asset",
+   "id": "W01.WH"
+  },
+  {
+   "type": "Subunit",
+   "name": "X-mas tree",
+   "view": "asset",
+   "id": "W01.XT"
+  },
+  {
+   "type": "Subunit",
+   "name": "Casing and cement",
+   "view": "asset",
+   "id": "W01.CC"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production tubing",
+   "view": "asset",
+   "spec": "4-1/2\" 12.6 lb/ft L80",
+   "id_m": 0.1,
+   "burst_bar": 581.2,
+   "collapse_bar": 517.1,
+   "id": "W01.TUB"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production packer",
+   "view": "asset",
+   "depth_m": 2300.0,
+   "dp_rating_bar": 344.7,
+   "qualification": "ISO 14310 V0 (gas-tight)",
+   "id": "W01.PKR"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Downhole safety valve (SCSSV)",
+   "view": "asset",
+   "design": "tubing-retrievable flapper, fail-safe closed",
+   "depth_m": 450.0,
+   "id": "W01.DHSV"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "DHSV control line",
+   "view": "asset",
+   "fluid": "hydraulic oil",
+   "id": "W01.CL"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Tubing hanger and seals",
+   "view": "asset",
+   "location": "tubing-head spool",
+   "id": "W01.THS"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Tubing-head spool with A-annulus outlet valves",
+   "view": "asset",
+   "working_pressure_bar": 344.7,
+   "id": "W01.THSP"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production-casing hanger pack-off",
+   "view": "asset",
+   "function": "seals A-annulus from B-annulus at surface",
+   "id": "W01.CHS"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Casing-head spool with B-annulus outlet valves",
+   "view": "asset",
+   "working_pressure_bar": 206.8,
+   "id": "W01.CHSP"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Master valve (actuated, SIS final element)",
+   "view": "asset",
+   "id": "W01.MV"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production wing valve",
+   "view": "asset",
+   "id": "W01.PWV"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production choke",
+   "view": "asset",
+   "design": "adjustable, 1/64 in bean",
+   "id": "W01.CHK"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production casing",
+   "view": "asset",
+   "spec": "9-5/8\" 47 lb/ft L80",
+   "burst_bar": 473.7,
+   "collapse_bar": 327.5,
+   "id": "W01.CSG"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Production-casing cement",
+   "view": "asset",
+   "top_of_cement_m": 1200.0,
+   "id": "W01.CEM"
+  },
+  {
+   "type": "MaintainableItem",
+   "name": "Intermediate casing",
+   "view": "asset",
+   "spec": "13-3/8\" 68 lb/ft K55",
+   "burst_bar": 237.9,
+   "collapse_bar": 134.4,
+   "id": "W01.ICSG"
+  },
+  {
+   "type": "ContainmentVolume",
+   "name": "Production conduit (tubing bore)",
+   "view": "asset",
+   "volume_m3": 18.85,
+   "fluid": "oil, water and gas",
+   "id": "W01.BORE"
+  },
+  {
+   "type": "ContainmentVolume",
+   "name": "A-annulus",
+   "view": "asset",
+   "length_m": 2300.0,
+   "volume_m3": 30.0,
+   "fluid": "brine 1030 kg/m3",
+   "gas_cap_nominal_m3": 0.05,
+   "alpha_per_K": 0.00045,
+   "c_wall_per_Pa": 1.55e-09,
+   "c_liq_per_Pa": 4.5e-10,
+   "id": "W01.ANN-A"
+  },
+  {
+   "type": "ContainmentVolume",
+   "name": "B-annulus",
+   "view": "asset",
+   "length_m": 1200.0,
+   "volume_m3": 35.0,
+   "fluid": "brine 1030 kg/m3",
+   "gas_cap_nominal_m3": 0.2,
+   "bottom": "top of production-casing cement",
+   "id": "W01.ANN-B"
+  },
+  {
+   "type": "FormationZone",
+   "name": "Producing reservoir",
+   "view": "asset",
+   "depth_m": 2400.0,
+   "pressure_bar": 250.0,
+   "temperature_C": 90.0,
+   "id": "W01.RES"
+  },
+  {
+   "type": "FormationZone",
+   "name": "Shallow gas zone behind production-casing cement",
+   "view": "asset",
+   "depth_m": 1200.0,
+   "gradient_bar_m": 0.115,
+   "id": "W01.SGZ"
+  },
+  {
+   "type": "ExternalDomain",
+   "name": "Atmosphere / environment at the wellhead",
+   "view": "asset",
+   "id": "ENV"
+  },
+  {
+   "type": "SimulationModel",
+   "name": "W01 well-integrity digital twin",
+   "view": "asset",
+   "model_type": "physics surrogate",
+   "version": "1.0.0",
+   "code": "digital_twin/",
+   "valid_choke_64": [
+    8,
+    96
+   ],
+   "valid_T_A_C": [
+    20,
+    90
+   ],
+   "calibrated_on": "EVT-W01-BLEED-2026-01",
+   "id": "TWIN-W01"
+  },
+  {
+   "type": "SimulationModel",
+   "name": "Production-network multiphase model (assumed to exist at the operator)",
+   "view": "asset",
+   "model_type": "dynamic multiphase",
+   "status": "adapter stub",
+   "id": "TWIN-PROD-OLGA"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-PT-WH",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_wh",
+   "kind": "measured",
+   "sigma": 0.5,
+   "id": "W01-PT-WH"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-PT-WH",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-PT-WH"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-TT-WH",
+   "view": "asset",
+   "unit": "degC",
+   "twin_signal": "T_wh",
+   "kind": "measured",
+   "sigma": 0.3,
+   "id": "W01-TT-WH"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-TT-WH",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-TT-WH"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-ZT-CHK",
+   "view": "asset",
+   "unit": "1/64in",
+   "twin_signal": "choke",
+   "kind": "measured",
+   "sigma": 0.2,
+   "id": "W01-ZT-CHK"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-ZT-CHK",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-ZT-CHK"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-FL-PT",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_fl",
+   "kind": "measured",
+   "sigma": 0.5,
+   "id": "W01-FL-PT"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-FL-PT",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-FL-PT"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-PT-DHG",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_dhg",
+   "kind": "measured",
+   "sigma": 0.1,
+   "id": "W01-PT-DHG"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-PT-DHG",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-PT-DHG"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-TT-DHG",
+   "view": "asset",
+   "unit": "degC",
+   "twin_signal": "T_dhg",
+   "kind": "measured",
+   "sigma": 0.1,
+   "id": "W01-TT-DHG"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-TT-DHG",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-TT-DHG"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-FT-LIQ",
+   "view": "asset",
+   "unit": "Sm3/d",
+   "twin_signal": "q_liq",
+   "kind": "measured",
+   "rel_sigma": 0.03,
+   "id": "W01-FT-LIQ"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-MPFM",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-MPFM"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-FT-GAS",
+   "view": "asset",
+   "unit": "Sm3/d",
+   "twin_signal": "q_gas_sc",
+   "kind": "measured",
+   "rel_sigma": 0.05,
+   "id": "W01-FT-GAS"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-PT-A-ANN",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_A",
+   "kind": "measured",
+   "sigma": 0.5,
+   "id": "W01-PT-A-ANN"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-PT-A-ANN",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-PT-A-ANN"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-PT-B-ANN",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_B",
+   "kind": "measured",
+   "sigma": 0.5,
+   "id": "W01-PT-B-ANN"
+  },
+  {
+   "type": "Sensor",
+   "name": "Sensor W01-PT-B-ANN",
+   "view": "asset",
+   "calibrated": "2025-11-01",
+   "id": "SEN-W01-PT-B-ANN"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-A-BLEED-GAS",
+   "view": "asset",
+   "unit": "Sm3",
+   "twin_signal": "bled_gas_A",
+   "kind": "manual",
+   "resolution": 0.1,
+   "id": "W01-A-BLEED-GAS"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-A-BLEED-LIQ",
+   "view": "asset",
+   "unit": "L",
+   "twin_signal": "bled_liq_A",
+   "kind": "manual",
+   "resolution": 1.0,
+   "id": "W01-A-BLEED-LIQ"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-B-BLEED-GAS",
+   "view": "asset",
+   "unit": "Sm3",
+   "twin_signal": "bled_gas_B",
+   "kind": "manual",
+   "resolution": 0.1,
+   "id": "W01-B-BLEED-GAS"
+  },
+  {
+   "type": "Tag",
+   "name": "W01-B-BLEED-LIQ",
+   "view": "asset",
+   "unit": "L",
+   "twin_signal": "bled_liq_B",
+   "kind": "manual",
+   "resolution": 1.0,
+   "id": "W01-B-BLEED-LIQ"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-P-A-EXP",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_A",
+   "kind": "virtual",
+   "sigma": 3.0,
+   "id": "W01-VT-P-A-EXP"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-P-B-EXP",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_B",
+   "kind": "virtual",
+   "sigma": 3.0,
+   "id": "W01-VT-P-B-EXP"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-T-A",
+   "view": "asset",
+   "unit": "degC",
+   "twin_signal": "T_A",
+   "kind": "virtual",
+   "sigma": 2.0,
+   "id": "W01-VT-T-A"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-T-B",
+   "view": "asset",
+   "unit": "degC",
+   "twin_signal": "T_B",
+   "kind": "virtual",
+   "sigma": 3.0,
+   "id": "W01-VT-T-B"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-Q-LIQ-EXP",
+   "view": "asset",
+   "unit": "Sm3/d",
+   "twin_signal": "q_liq",
+   "kind": "virtual",
+   "sigma": 15.0,
+   "id": "W01-VT-Q-LIQ-EXP"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-P-DHG-EXP",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "P_dhg",
+   "kind": "virtual",
+   "sigma": 2.0,
+   "id": "W01-VT-P-DHG-EXP"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-MAASP-A",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "MAASP_A",
+   "kind": "virtual",
+   "sigma": 10.0,
+   "id": "W01-VT-MAASP-A"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-MAASP-B",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "MAASP_B",
+   "kind": "virtual",
+   "sigma": 10.0,
+   "id": "W01-VT-MAASP-B"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-MARGIN-A",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "margin_A",
+   "kind": "virtual",
+   "sigma": 10.0,
+   "id": "W01-VT-MARGIN-A"
+  },
+  {
+   "type": "VirtualTag",
+   "name": "W01-VT-MARGIN-B",
+   "view": "asset",
+   "unit": "bar",
+   "twin_signal": "margin_B",
+   "kind": "virtual",
+   "sigma": 10.0,
+   "id": "W01-VT-MARGIN-B"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "A-annulus gas cap volume",
+   "view": "asset",
+   "twin_path": "ann_A.V_gas0_m3",
+   "prior": "U(0.0, 0.15)",
+   "prior_kind": "uniform",
+   "unit": "m3",
+   "id": "PAR.A.GASCAP"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "A-annulus wall compliance",
+   "view": "asset",
+   "twin_path": "ann_A.c_wall",
+   "prior": "nominal x exp(N(0, 0.1))",
+   "prior_kind": "lognormal",
+   "unit": "1/Pa",
+   "id": "PAR.A.CWALL"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "A-annulus thermal time constant",
+   "view": "asset",
+   "twin_path": "ann_A.tau_h",
+   "prior": "nominal x exp(N(0, 0.2))",
+   "prior_kind": "lognormal",
+   "unit": "h",
+   "id": "PAR.A.TAU"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "Tubing ballooning coefficient",
+   "view": "asset",
+   "twin_path": "ann_A.k_balloon",
+   "prior": "nominal x exp(N(0, 0.3))",
+   "prior_kind": "lognormal",
+   "unit": "1/Pa",
+   "id": "PAR.A.BALLOON"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "B-annulus gas cap volume",
+   "view": "asset",
+   "twin_path": "ann_B.V_gas0_m3",
+   "prior": "U(0.05, 0.4)",
+   "prior_kind": "uniform",
+   "unit": "m3",
+   "id": "PAR.B.GASCAP"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "B-annulus thermal time constant",
+   "view": "asset",
+   "twin_path": "ann_B.tau_h",
+   "prior": "nominal x exp(N(0, 0.25))",
+   "prior_kind": "lognormal",
+   "unit": "h",
+   "id": "PAR.B.TAU"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "Tubing-to-formation heat transfer",
+   "view": "asset",
+   "twin_path": "U",
+   "prior": "nominal x exp(N(0, 0.15))",
+   "prior_kind": "lognormal",
+   "unit": "W/m2/K",
+   "id": "PAR.U"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "Productivity index",
+   "view": "asset",
+   "twin_path": "PI",
+   "prior": "nominal x exp(N(0, 0.1))",
+   "prior_kind": "lognormal",
+   "unit": "Sm3/d/bar",
+   "id": "PAR.PI"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "Remaining tubing wall thickness",
+   "view": "asset",
+   "twin_path": "wear(tubing)",
+   "prior": "known only at last inspection",
+   "prior_kind": "inspection",
+   "unit": "fraction",
+   "id": "PAR.TUB.WALL"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "Remaining production-casing wall",
+   "view": "asset",
+   "twin_path": "wear(prodcsg)",
+   "prior": "known only at last inspection",
+   "prior_kind": "inspection",
+   "unit": "fraction",
+   "id": "PAR.CSG.WALL"
+  },
+  {
+   "type": "ModelParameter",
+   "name": "Remaining intermediate-casing wall",
+   "view": "asset",
+   "twin_path": "wear(intcsg)",
+   "prior": "known only at last inspection",
+   "prior_kind": "inspection",
+   "unit": "fraction",
+   "id": "PAR.ICSG.WALL"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Tubing connection (thread) leak",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Seal of a premium connection opens a micro-path between tubing and A-annulus.",
+   "simulated": true,
+   "twin_fault": "tubing_connection_leak(depth_m=1500.0, start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -53.3,
+    "dB_pre": -2.2,
+    "dA_post": -2.9,
+    "dB_post": -0.2,
+    "bleed_gas_Sm3": 0.0,
+    "bleed_brine_L": 0.0,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 10.1
+   },
+   "id": "FMech.TUB.THREAD"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Tubing corrosion pit / hole (growing)",
+   "view": "asset",
+   "iso14224_class": "Material - corrosion",
+   "physics": "CO2 / H2S corrosion penetrates the wall; the hole grows with time.",
+   "simulated": true,
+   "twin_fault": "tubing_corrosion_hole(depth_m=900.0, start_h=20.0, growth_per_day=1.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -38.1,
+    "dB_pre": -1.6,
+    "dA_post": 10.2,
+    "dB_post": 0.4,
+    "bleed_gas_Sm3": 0.49,
+    "bleed_brine_L": 46.8,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 22.1
+   },
+   "id": "FMech.TUB.CORR"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Tubing wall loss (pressure-capacity loss)",
+   "view": "asset",
+   "iso14224_class": "Material - corrosion / erosion",
+   "physics": "General wall thinning lowers burst and, more strongly, collapse capacity.",
+   "simulated": true,
+   "twin_fault": "CasingWear(pipe=tubing, wall_loss=0.6, start_h=6.0, ramp_h=24.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": 0.0,
+    "dB_pre": 0.0,
+    "dA_post": 0.0,
+    "dB_post": 0.0,
+    "bleed_gas_Sm3": 0.49,
+    "bleed_brine_L": 295.0,
+    "bleed_reached_target": true,
+    "dMAASP_A": -262.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.0
+   },
+   "id": "FMech.TUB.WALL"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Packer element degradation",
+   "view": "asset",
+   "iso14224_class": "Material - degradation (leakage)",
+   "physics": "Elastomer ageing, chemical attack, decompression or extrusion lets the element leak.",
+   "simulated": true,
+   "twin_fault": "packer_leak(depth_m=2300.0, start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -54.4,
+    "dB_pre": -2.3,
+    "dA_post": -3.9,
+    "dB_post": -0.3,
+    "bleed_gas_Sm3": 0.0,
+    "bleed_brine_L": 0.0,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.045,
+    "dA_shutin": -9.6
+   },
+   "id": "FMech.PKR.ELAST"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Packer movement / unseating",
+   "view": "asset",
+   "iso14224_class": "Mechanical - displacement",
+   "physics": "Tubing thermal and ballooning forces move or unseat the packer (same leak path as element leak; simulated with the same leak model).",
+   "simulated": true,
+   "twin_fault": "packer_leak(depth_m=2300.0, start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -54.4,
+    "dB_pre": -2.3,
+    "dA_post": -3.9,
+    "dB_post": -0.3,
+    "bleed_gas_Sm3": 0.0,
+    "bleed_brine_L": 0.0,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.045,
+    "dA_shutin": -9.6
+   },
+   "id": "FMech.PKR.MOVE"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "DHSV leakage in closed position",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Erosion, scale or debris on flapper and seat let fluid pass when closed.",
+   "simulated": false,
+   "id": "FMech.DHSV.LCP"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "DHSV fail to close on demand",
+   "view": "asset",
+   "iso14224_class": "Mechanical - sticking",
+   "physics": "Scale, debris, wax or a damaged flow tube keep the valve open.",
+   "simulated": false,
+   "id": "FMech.DHSV.FTC"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Control-line leak / communication",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Loss of hydraulic pressure (valve fails closed) or tubing fluid entering the line.",
+   "simulated": false,
+   "id": "FMech.CL.LEAK"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Tubing-hanger seal leak",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Hanger seals degrade; tubing-head pressure reaches the top of the A-annulus.",
+   "simulated": true,
+   "twin_fault": "hanger_seal_leak(start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -4.2,
+    "dB_pre": -0.2,
+    "dA_post": 46.7,
+    "dB_post": 1.9,
+    "bleed_gas_Sm3": 0.39,
+    "bleed_brine_L": 280.1,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 50.1
+   },
+   "id": "FMech.THS.SEAL"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "A-annulus outlet / valve seal leak to environment",
+   "view": "asset",
+   "iso14224_class": "Mechanical - external leakage",
+   "physics": "Valve stem, bonnet or flange seal on the A outlet leaks to atmosphere.",
+   "simulated": true,
+   "twin_fault": "wellhead_external_leak(annulus=A, start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -31.3,
+    "dB_pre": -1.3,
+    "dA_post": -2.0,
+    "dB_post": -0.1,
+    "bleed_gas_Sm3": 0.0,
+    "bleed_brine_L": 116.8,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": -9.9
+   },
+   "id": "FMech.THSP.SEAL"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Casing-hanger pack-off leak",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Pack-off between production casing and casing-head spool leaks: A and B communicate at surface.",
+   "simulated": true,
+   "twin_fault": "casing_leak(depth_m=0.0, start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -15.8,
+    "dB_pre": 12.3,
+    "dA_post": 14.2,
+    "dB_post": -8.4,
+    "bleed_gas_Sm3": 2.6,
+    "bleed_brine_L": 188.3,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 1.9
+   },
+   "id": "FMech.CHS.SEAL"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "B-annulus outlet / valve seal leak to environment",
+   "view": "asset",
+   "iso14224_class": "Mechanical - external leakage",
+   "physics": "Valve or flange seal on the B outlet leaks to atmosphere.",
+   "simulated": true,
+   "twin_fault": "wellhead_external_leak(annulus=B, start_h=20.0)",
+   "bleed_annulus": "B",
+   "signature": {
+    "dA_pre": 0.0,
+    "dB_pre": -17.8,
+    "dA_post": 0.0,
+    "dB_post": -2.6,
+    "bleed_gas_Sm3": 0.0,
+    "bleed_brine_L": 30.6,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.0
+   },
+   "id": "FMech.CHSP.SEAL"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Master valve internal leakage",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Gate and seat wear or debris; leaks when closed.",
+   "simulated": false,
+   "id": "FMech.MV.LEAK"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Master valve fail to close",
+   "view": "asset",
+   "iso14224_class": "Mechanical - sticking",
+   "physics": "Actuator, stem or gate fault prevents closure on demand.",
+   "simulated": false,
+   "id": "FMech.MV.FTC"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Wing valve internal leakage",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Gate and seat wear; leaks when closed.",
+   "simulated": false,
+   "id": "FMech.PWV.LEAK"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Choke trim erosion",
+   "view": "asset",
+   "iso14224_class": "Material - erosion",
+   "physics": "Sand and droplets erode the trim; effective opening grows ~ velocity^2.",
+   "simulated": true,
+   "twin_fault": "ChokeErosion(start_h=6.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": 2.5,
+    "dB_pre": 1.1,
+    "dA_post": 1.9,
+    "dB_post": 2.0,
+    "bleed_gas_Sm3": 0.49,
+    "bleed_brine_L": 310.1,
+    "bleed_reached_target": true,
+    "dMAASP_A": -5.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 75.2,
+    "dP_wh": -2.5,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.1
+   },
+   "id": "FMech.CHK.EROS"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Production-casing leak (hole / connection)",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Hole or leaking connection in the production casing above the top of cement.",
+   "simulated": true,
+   "twin_fault": "casing_leak(depth_m=800.0, start_h=20.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": -16.1,
+    "dB_pre": 12.4,
+    "dA_post": 20.4,
+    "dB_post": -2.0,
+    "bleed_gas_Sm3": 0.49,
+    "bleed_brine_L": 198.4,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 1.7
+   },
+   "id": "FMech.CSG.LEAK"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Production-casing wear / corrosion (capacity loss)",
+   "view": "asset",
+   "iso14224_class": "Material - wear / corrosion",
+   "physics": "Drill-string wear and corrosion thin the wall: burst ~ t, collapse ~ t^2.",
+   "simulated": true,
+   "twin_fault": "CasingWear(pipe=prodcsg, wall_loss=0.6, start_h=6.0, ramp_h=24.0)",
+   "bleed_annulus": "A",
+   "signature": {
+    "dA_pre": 0.0,
+    "dB_pre": 0.0,
+    "dA_post": 0.0,
+    "dB_post": 0.0,
+    "bleed_gas_Sm3": 0.49,
+    "bleed_brine_L": 295.0,
+    "bleed_reached_target": true,
+    "dMAASP_A": -161.4,
+    "dMAASP_B": -149.6,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.0
+   },
+   "id": "FMech.CSG.WEAR"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Cement micro-annulus / channel gas migration",
+   "view": "asset",
+   "iso14224_class": "Material - degradation (leakage)",
+   "physics": "Debonding or channels let shallow-zone gas migrate into the B-annulus.",
+   "simulated": true,
+   "twin_fault": "cement_gas_migration(depth_m=1200.0, start_h=12.0)",
+   "bleed_annulus": "B",
+   "signature": {
+    "dA_pre": 0.0,
+    "dB_pre": 3.2,
+    "dA_post": 0.0,
+    "dB_post": 16.2,
+    "bleed_gas_Sm3": 3.6,
+    "bleed_brine_L": 39.4,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.0
+   },
+   "id": "FMech.CEM.MICRO"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Intermediate-casing wear / corrosion (capacity loss)",
+   "view": "asset",
+   "iso14224_class": "Material - wear / corrosion",
+   "physics": "Wall loss lowers the burst capacity that limits B-annulus pressure.",
+   "simulated": true,
+   "twin_fault": "CasingWear(pipe=intcsg, wall_loss=0.6, start_h=6.0, ramp_h=24.0)",
+   "bleed_annulus": "B",
+   "signature": {
+    "dA_pre": 0.0,
+    "dB_pre": 0.0,
+    "dA_post": 0.0,
+    "dB_post": 0.0,
+    "bleed_gas_Sm3": 2.11,
+    "bleed_brine_L": 60.9,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": -120.6,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.0
+   },
+   "id": "FMech.ICSG.WEAR"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Intermediate-casing leak to formation",
+   "view": "asset",
+   "iso14224_class": "Mechanical - leakage",
+   "physics": "Hole in the intermediate casing: B-annulus communicates with an open formation.",
+   "simulated": true,
+   "twin_fault": "LeakPath(id=LK-ICSG, src=B, snk=formation, depth_m=600.0, C=2e-07, start_h=20.0)",
+   "bleed_annulus": "B",
+   "signature": {
+    "dA_pre": 0.0,
+    "dB_pre": -13.1,
+    "dA_post": 0.0,
+    "dB_post": 5.7,
+    "bleed_gas_Sm3": 1.71,
+    "bleed_brine_L": 0.0,
+    "bleed_reached_target": true,
+    "dMAASP_A": 0.0,
+    "dMAASP_B": 0.0,
+    "dq_liq": 0.0,
+    "dP_wh": 0.0,
+    "void_A_m3": 0.0,
+    "dA_shutin": 0.0
+   },
+   "id": "FMech.ICSG.LEAK"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Annulus transmitter frozen / stuck",
+   "view": "asset",
+   "iso14224_class": "Instrument - faulty signal",
+   "physics": "Transmitter output stops changing; reports 'stable' while the annulus changes.",
+   "simulated": true,
+   "twin_fault": "sensor_fault(frozen_at_h=40.0)",
+   "bleed_annulus": "A",
+   "id": "FMech.SEN.FROZEN"
+  },
+  {
+   "type": "FailureMechanism",
+   "name": "Downhole gauge drift",
+   "view": "asset",
+   "iso14224_class": "Instrument - out of adjustment",
+   "physics": "Slow bias of a permanent gauge; looks like reservoir change.",
+   "simulated": true,
+   "twin_fault": "sensor_fault(drift_per_day=0.5)",
+   "bleed_annulus": "A",
+   "id": "FMech.SEN.DRIFT"
+  },
+  {
+   "type": "Test",
+   "name": "A-annulus residual vs twin (both directions)",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "A-annulus residual vs twin (both directions)",
+   "predicts": [
+    "dA_pre"
+   ],
+   "requires_bleed_of": [
+    null
+   ],
+   "id": "TEST.RES.A"
+  },
+  {
+   "type": "Test",
+   "name": "B-annulus residual vs twin",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "B-annulus residual vs twin",
+   "predicts": [
+    "dB_pre"
+   ],
+   "requires_bleed_of": [
+    null
+   ],
+   "id": "TEST.RES.B"
+  },
+  {
+   "type": "Test",
+   "name": "Joint A/B residual sign check",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "Joint A/B residual sign check",
+   "predicts": [
+    "dA_pre",
+    "dB_pre"
+   ],
+   "requires_bleed_of": [
+    null,
+    null
+   ],
+   "id": "TEST.AB.SIGN"
+  },
+  {
+   "type": "Test",
+   "name": "Choke performance vs twin",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "Choke performance vs twin",
+   "predicts": [
+    "dq_liq",
+    "dP_wh"
+   ],
+   "requires_bleed_of": [
+    null,
+    null
+   ],
+   "id": "TEST.CHOKE"
+  },
+  {
+   "type": "Test",
+   "name": "Margin-to-MAASP monitor (twin integrity model)",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "Margin-to-MAASP monitor (twin integrity model)",
+   "predicts": [
+    "dMAASP_A",
+    "dMAASP_B"
+   ],
+   "requires_bleed_of": [
+    null,
+    null
+   ],
+   "id": "TEST.MARGIN"
+  },
+  {
+   "type": "Test",
+   "name": "Data-quality check (flat line, range, gaps)",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "Data-quality check (flat line, range, gaps)",
+   "id": "TEST.DQ"
+  },
+  {
+   "type": "Test",
+   "name": "Downhole-gauge cross-check vs twin profile",
+   "view": "asset",
+   "reliability": "C",
+   "cost_nok": 0.0,
+   "online": true,
+   "duration_h": 0.0,
+   "description": "Downhole-gauge cross-check vs twin profile",
+   "id": "TEST.DHG.X"
+  },
+  {
+   "type": "Test",
+   "name": "A-annulus bleed-down and build-up",
+   "view": "asset",
+   "reliability": "B",
+   "cost_nok": 50000.0,
+   "online": false,
+   "duration_h": 12.0,
+   "description": "A-annulus bleed-down and build-up",
+   "predicts": [
+    "dA_post",
+    "dB_post"
+   ],
+   "requires_bleed_of": [
+    "A",
+    "A"
+   ],
+   "id": "TEST.BLEED.A"
+  },
+  {
+   "type": "Test",
+   "name": "B-annulus bleed-down and build-up",
+   "view": "asset",
+   "reliability": "B",
+   "cost_nok": 50000.0,
+   "online": false,
+   "duration_h": 12.0,
+   "description": "B-annulus bleed-down and build-up",
+   "predicts": [
+    "dB_post"
+   ],
+   "requires_bleed_of": [
+    "B"
+   ],
+   "id": "TEST.BLEED.B"
+  },
+  {
+   "type": "Test",
+   "name": "Shut-in communication test",
+   "view": "asset",
+   "reliability": "B",
+   "cost_nok": 300000.0,
+   "online": false,
+   "duration_h": 22.0,
+   "description": "Shut-in communication test",
+   "predicts": [
+    "dA_shutin"
+   ],
+   "requires_bleed_of": [
+    null
+   ],
+   "id": "TEST.SHUTIN"
+  },
+  {
+   "type": "Test",
+   "name": "Bled-gas sampling and composition",
+   "view": "asset",
+   "reliability": "B",
+   "cost_nok": 80000.0,
+   "online": false,
+   "duration_h": 0.0,
+   "description": "Bled-gas sampling and composition",
+   "id": "TEST.GASCOMP"
+  },
+  {
+   "type": "Test",
+   "name": "Annulus top-up volume",
+   "view": "asset",
+   "reliability": "B",
+   "cost_nok": 30000.0,
+   "online": false,
+   "duration_h": 2.0,
+   "description": "Annulus top-up volume",
+   "id": "TEST.TOPUP"
+  },
+  {
+   "type": "Test",
+   "name": "Tubing pressure test against a plug",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 2000000.0,
+   "online": false,
+   "duration_h": 24.0,
+   "description": "Tubing pressure test against a plug",
+   "id": "TEST.PT.TUB"
+  },
+  {
+   "type": "Test",
+   "name": "A-annulus pressure test (MIT-A)",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 1500000.0,
+   "online": false,
+   "duration_h": 12.0,
+   "description": "A-annulus pressure test (MIT-A)",
+   "id": "TEST.PT.ANN.A"
+  },
+  {
+   "type": "Test",
+   "name": "B-annulus pressure test",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 1000000.0,
+   "online": false,
+   "duration_h": 12.0,
+   "description": "B-annulus pressure test",
+   "id": "TEST.PT.ANN.B"
+  },
+  {
+   "type": "Test",
+   "name": "DHSV inflow (leak) test",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 100000.0,
+   "online": false,
+   "duration_h": 4.0,
+   "description": "DHSV inflow (leak) test",
+   "id": "TEST.DHSV.INFLOW"
+  },
+  {
+   "type": "Test",
+   "name": "Valve closure function test (DHSV, master valve)",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 50000.0,
+   "online": false,
+   "duration_h": 2.0,
+   "description": "Valve closure function test (DHSV, master valve)",
+   "id": "TEST.SIS.FUNC"
+  },
+  {
+   "type": "Test",
+   "name": "X-mas tree valve leak test",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 80000.0,
+   "online": false,
+   "duration_h": 4.0,
+   "description": "X-mas tree valve leak test",
+   "id": "TEST.XT.LEAK"
+  },
+  {
+   "type": "Test",
+   "name": "Control-line pressure test",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 50000.0,
+   "online": false,
+   "duration_h": 2.0,
+   "description": "Control-line pressure test",
+   "id": "TEST.CL.PT"
+  },
+  {
+   "type": "Test",
+   "name": "Hanger and pack-off seal test through test ports",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 50000.0,
+   "online": false,
+   "duration_h": 2.0,
+   "description": "Hanger and pack-off seal test through test ports",
+   "id": "TEST.HGR.PORT"
+  },
+  {
+   "type": "Test",
+   "name": "Annulus outlet valve and seal leak test",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 30000.0,
+   "online": false,
+   "duration_h": 2.0,
+   "description": "Annulus outlet valve and seal leak test",
+   "id": "TEST.WH.VALVE"
+  },
+  {
+   "type": "Test",
+   "name": "Temperature / noise leak-detection log",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 1500000.0,
+   "online": false,
+   "duration_h": 24.0,
+   "description": "Temperature / noise leak-detection log",
+   "id": "TEST.LOG.TEMP"
+  },
+  {
+   "type": "Test",
+   "name": "Caliper / electromagnetic thickness log",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 1200000.0,
+   "online": false,
+   "duration_h": 24.0,
+   "description": "Caliper / electromagnetic thickness log",
+   "id": "TEST.LOG.CAL"
+  },
+  {
+   "type": "Test",
+   "name": "Cement bond / ultrasonic log",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 2500000.0,
+   "online": false,
+   "duration_h": 24.0,
+   "description": "Cement bond / ultrasonic log",
+   "id": "TEST.LOG.CBL"
+  },
+  {
+   "type": "Test",
+   "name": "Choke inspection and trim measurement",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 40000.0,
+   "online": false,
+   "duration_h": 4.0,
+   "description": "Choke inspection and trim measurement",
+   "id": "TEST.CHK.INSP"
+  },
+  {
+   "type": "Test",
+   "name": "Transmitter / gauge calibration check",
+   "view": "asset",
+   "reliability": "A",
+   "cost_nok": 10000.0,
+   "online": false,
+   "duration_h": 1.0,
+   "description": "Transmitter / gauge calibration check",
+   "id": "TEST.SEN.CAL"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Sustained casing pressure in A",
+   "view": "risk",
+   "observed_as": "A-annulus pressure rebuilds after bleed-down at stable temperature",
+   "id": "FM.SCP.A"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Sustained casing pressure in B",
+   "view": "risk",
+   "observed_as": "B-annulus pressure rebuilds after bleed-down; bleed returns extra gas",
+   "id": "FM.SCP.B"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Tubing to A-annulus communication",
+   "view": "risk",
+   "observed_as": "A below thermal expectation while producing; A rises when shut in",
+   "id": "FM.COMM.TA"
+  },
+  {
+   "type": "FailureMode",
+   "name": "A-annulus to B-annulus communication",
+   "view": "risk",
+   "observed_as": "Opposite-sign residuals in A and B; pressures converge",
+   "id": "FM.COMM.AB"
+  },
+  {
+   "type": "FailureMode",
+   "name": "A-annulus fluid loss",
+   "view": "risk",
+   "observed_as": "Fluid level drops (void); annulus needs top-up",
+   "id": "FM.FLUIDLOSS.A"
+  },
+  {
+   "type": "FailureMode",
+   "name": "B-annulus fluid loss",
+   "view": "risk",
+   "observed_as": "B drains below expectation; needs top-up",
+   "id": "FM.FLUIDLOSS.B"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Annulus to formation communication",
+   "view": "risk",
+   "observed_as": "Annulus fluid lost to an open formation",
+   "id": "FM.XFLOW"
+  },
+  {
+   "type": "FailureMode",
+   "name": "External leak at the wellhead",
+   "view": "risk",
+   "observed_as": "Annulus pressure decays; gas or fluid at the outlet",
+   "id": "FM.EXT"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Annulus cannot be bled down",
+   "view": "risk",
+   "observed_as": "Bleed valve cannot reach target pressure",
+   "id": "FM.NOBLEED"
+  },
+  {
+   "type": "FailureMode",
+   "name": "A-annulus pressure above limit",
+   "view": "risk",
+   "observed_as": "P_A above MAWOP / MAASP",
+   "id": "FM.MAASP.A"
+  },
+  {
+   "type": "FailureMode",
+   "name": "B-annulus pressure above limit",
+   "view": "risk",
+   "observed_as": "P_B above MAWOP / MAASP",
+   "id": "FM.MAASP.B"
+  },
+  {
+   "type": "FailureMode",
+   "name": "A-annulus integrity margin low",
+   "view": "risk",
+   "observed_as": "Twin-computed MAASP_A falls toward P_A",
+   "id": "FM.MARGIN.A"
+  },
+  {
+   "type": "FailureMode",
+   "name": "B-annulus integrity margin low",
+   "view": "risk",
+   "observed_as": "Twin-computed MAASP_B falls toward P_B",
+   "id": "FM.MARGIN.B"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Failure to isolate the well on demand",
+   "view": "risk",
+   "observed_as": "Valve fails test or fails to close",
+   "id": "FM.ISOLATION"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Loss of flow control",
+   "view": "risk",
+   "observed_as": "Rate and tubing-head pressure drift at fixed choke",
+   "id": "FM.FLOWCTRL"
+  },
+  {
+   "type": "FailureMode",
+   "name": "Loss of barrier monitoring",
+   "view": "risk",
+   "observed_as": "Frozen, drifting or missing integrity data",
+   "id": "FM.MONITOR"
+  },
+  {
+   "type": "BarrierEnvelope",
+   "name": "Primary well barrier envelope",
+   "view": "risk",
+   "norsok_well_barrier": true,
+   "id": "BE.PRIMARY"
+  },
+  {
+   "type": "BarrierEnvelope",
+   "name": "Secondary well barrier envelope",
+   "view": "risk",
+   "norsok_well_barrier": true,
+   "id": "BE.SECONDARY"
+  },
+  {
+   "type": "BarrierEnvelope",
+   "name": "Outer annulus containment (not a NORSOK well barrier)",
+   "view": "risk",
+   "norsok_well_barrier": false,
+   "id": "BE.OUTER"
+  },
+  {
+   "type": "Hazard",
+   "name": "Loss of containment to surface (hydrocarbon release, blowout)",
+   "view": "risk",
+   "id": "HZ.LOC"
+  },
+  {
+   "type": "Hazard",
+   "name": "Underground uncontrolled flow (cross-flow, possible broaching)",
+   "view": "risk",
+   "id": "HZ.UGB"
+  },
+  {
+   "type": "Limit",
+   "name": "MAASP ANN-A rev C",
+   "view": "risk",
+   "kind": "MAASP",
+   "value": 330.0,
+   "unit": "bar",
+   "revision": "C",
+   "effective_from": "2026-03-01",
+   "source_doc": "WIMS-W01-MAASP-A",
+   "basis": "packer differential while producing",
+   "superseded_by": null,
+   "id": "LIM.W01.MAASP-A.C"
+  },
+  {
+   "type": "Limit",
+   "name": "MAASP ANN-A rev B (superseded)",
+   "view": "risk",
+   "kind": "MAASP",
+   "value": 345.0,
+   "unit": "bar",
+   "revision": "B",
+   "effective_from": "2024-06-01",
+   "source_doc": "WIMS-W01-MAASP-A",
+   "basis": "tubing-head spool rating only",
+   "superseded_by": "LIM.W01.MAASP-A.C",
+   "id": "LIM.W01.MAASP-A.B"
+  },
+  {
+   "type": "Limit",
+   "name": "MAASP ANN-B rev A",
+   "view": "risk",
+   "kind": "MAASP",
+   "value": 205.0,
+   "unit": "bar",
+   "revision": "A",
+   "effective_from": "2025-01-15",
+   "source_doc": "WIMS-W01-MAASP-B",
+   "basis": "casing-head spool rating",
+   "superseded_by": null,
+   "id": "LIM.W01.MAASP-B.A"
+  },
+  {
+   "type": "Limit",
+   "name": "MAWOP ANN-A rev A",
+   "view": "risk",
+   "kind": "MAWOP",
+   "value": 236.8,
+   "unit": "bar",
+   "revision": "A",
+   "effective_from": "2025-01-15",
+   "source_doc": "WIMS-W01-MAWOP",
+   "basis": "min(50 % production-casing burst, 80 % tubing collapse)",
+   "superseded_by": null,
+   "id": "LIM.W01.MAWOP-A.A"
+  },
+  {
+   "type": "Limit",
+   "name": "MAWOP ANN-B rev A",
+   "view": "risk",
+   "kind": "MAWOP",
+   "value": 118.9,
+   "unit": "bar",
+   "revision": "A",
+   "effective_from": "2025-01-15",
+   "source_doc": "WIMS-W01-MAWOP",
+   "basis": "min(50 % intermediate-casing burst, 80 % production-casing collapse)",
+   "superseded_by": null,
+   "id": "LIM.W01.MAWOP-B.A"
+  },
+  {
+   "type": "DecisionPolicy",
+   "name": "W01 well-integrity decision policy",
+   "view": "risk",
+   "version": "1.0.0",
+   "cost_false_alarm_nok": 50000,
+   "cost_missed_leak_nok": 20000000,
+   "cost_missed_loc_nok": 500000000,
+   "abstain_interval_width": 0.4,
+   "min_dwell_min": 30,
+   "trip_authority": "SIS only",
+   "trip_authority_node": "SIS-W01",
+   "id": "POL.W01.INTEGRITY"
+  }
+ ],
+ "edges": [
+  {
+   "type": "PART_OF",
+   "source": "IA.PROD",
+   "target": "IA",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "IA.GC",
+   "target": "IA",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "IA.WI",
+   "target": "IA",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "IA.SAS",
+   "target": "IA",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01",
+   "target": "IA.PROD",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "FL-W01",
+   "target": "IA.PROD",
+   "key": "PART_OF"
+  },
+  {
+   "type": "FLOWS_TO",
+   "source": "FL-W01",
+   "target": "MAN-P1",
+   "key": "FLOWS_TO"
+  },
+  {
+   "type": "PART_OF",
+   "source": "MAN-P1",
+   "target": "IA.PROD",
+   "key": "PART_OF"
+  },
+  {
+   "type": "FLOWS_TO",
+   "source": "MAN-P1",
+   "target": "SEP-1",
+   "key": "FLOWS_TO"
+  },
+  {
+   "type": "PART_OF",
+   "source": "SEP-1",
+   "target": "IA.PROD",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "SIS-W01",
+   "target": "IA.SAS",
+   "key": "PART_OF"
+  },
+  {
+   "type": "ACTUATES",
+   "source": "SIS-W01",
+   "target": "W01.MV",
+   "key": "ACTUATES"
+  },
+  {
+   "type": "ACTUATES",
+   "source": "SIS-W01",
+   "target": "W01.DHSV",
+   "key": "ACTUATES"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.DH",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.WH",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.XT",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CC",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.TUB",
+   "target": "W01.DH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.TUB",
+   "target": "FMech.TUB.THREAD",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.TUB",
+   "target": "FMech.TUB.CORR",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.TUB",
+   "target": "FMech.TUB.WALL",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.PKR",
+   "target": "W01.DH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.PKR",
+   "target": "FMech.PKR.ELAST",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.PKR",
+   "target": "FMech.PKR.MOVE",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.DHSV",
+   "target": "W01.DH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.DHSV",
+   "target": "FMech.DHSV.LCP",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.DHSV",
+   "target": "FMech.DHSV.FTC",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CL",
+   "target": "W01.DH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CL",
+   "target": "FMech.CL.LEAK",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.THS",
+   "target": "W01.WH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.THS",
+   "target": "FMech.THS.SEAL",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.THSP",
+   "target": "W01.WH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.THSP",
+   "target": "FMech.THSP.SEAL",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CHS",
+   "target": "W01.WH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CHS",
+   "target": "FMech.CHS.SEAL",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CHSP",
+   "target": "W01.WH",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CHSP",
+   "target": "FMech.CHSP.SEAL",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.MV",
+   "target": "W01.XT",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.MV",
+   "target": "FMech.MV.LEAK",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.MV",
+   "target": "FMech.MV.FTC",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.PWV",
+   "target": "W01.XT",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.PWV",
+   "target": "FMech.PWV.LEAK",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CHK",
+   "target": "W01.XT",
+   "key": "PART_OF"
+  },
+  {
+   "type": "FLOWS_TO",
+   "source": "W01.CHK",
+   "target": "FL-W01",
+   "key": "FLOWS_TO"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CHK",
+   "target": "FMech.CHK.EROS",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CSG",
+   "target": "W01.CC",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CSG",
+   "target": "FMech.CSG.LEAK",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CSG",
+   "target": "FMech.CSG.WEAR",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.CEM",
+   "target": "W01.CC",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.CEM",
+   "target": "FMech.CEM.MICRO",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.ICSG",
+   "target": "W01.CC",
+   "key": "PART_OF"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.ICSG",
+   "target": "FMech.ICSG.WEAR",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "W01.ICSG",
+   "target": "FMech.ICSG.LEAK",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.BORE",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.BORE",
+   "target": "W01.TUB",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.BORE",
+   "target": "W01.DHSV",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.BORE",
+   "target": "W01.THS",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.BORE",
+   "target": "W01.MV",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.BORE",
+   "target": "W01.PWV",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.BORE",
+   "target": "W01.CHK",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "FLOWS_TO",
+   "source": "W01.BORE",
+   "target": "W01.CHK",
+   "key": "FLOWS_TO"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.ANN-A",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-A",
+   "target": "W01.TUB",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-A",
+   "target": "W01.PKR",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-A",
+   "target": "W01.THS",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-A",
+   "target": "W01.THSP",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-A",
+   "target": "W01.CHS",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-A",
+   "target": "W01.CSG",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "MANIFESTS_IN",
+   "note": "thermal annular pressure build-up",
+   "source": "W01.ANN-A",
+   "target": "FM.MAASP.A",
+   "key": "MANIFESTS_IN"
+  },
+  {
+   "type": "PART_OF",
+   "source": "W01.ANN-B",
+   "target": "W01",
+   "key": "PART_OF"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-B",
+   "target": "W01.CSG",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-B",
+   "target": "W01.ICSG",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-B",
+   "target": "W01.CEM",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-B",
+   "target": "W01.CHS",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "BOUNDED_BY",
+   "source": "W01.ANN-B",
+   "target": "W01.CHSP",
+   "key": "BOUNDED_BY"
+  },
+  {
+   "type": "MANIFESTS_IN",
+   "note": "thermal annular pressure build-up",
+   "source": "W01.ANN-B",
+   "target": "FM.MAASP.B",
+   "key": "MANIFESTS_IN"
+  },
+  {
+   "type": "FLOWS_TO",
+   "source": "W01.RES",
+   "target": "W01.BORE",
+   "key": "FLOWS_TO"
+  },
+  {
+   "type": "CONSUMES",
+   "source": "TWIN-W01",
+   "target": "W01-PT-WH",
+   "key": "CONSUMES"
+  },
+  {
+   "type": "CONSUMES",
+   "source": "TWIN-W01",
+   "target": "W01-TT-WH",
+   "key": "CONSUMES"
+  },
+  {
+   "type": "CONSUMES",
+   "source": "TWIN-W01",
+   "target": "W01-ZT-CHK",
+   "key": "CONSUMES"
+  },
+  {
+   "type": "CONSUMES",
+   "source": "TWIN-W01",
+   "target": "W01-FL-PT",
+   "key": "CONSUMES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-P-A-EXP",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-P-B-EXP",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-T-A",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-T-B",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-Q-LIQ-EXP",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-P-DHG-EXP",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-MAASP-A",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-MAASP-B",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-MARGIN-A",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "PRODUCES",
+   "source": "TWIN-W01",
+   "target": "W01-VT-MARGIN-B",
+   "key": "PRODUCES"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.A.GASCAP",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.A.CWALL",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.A.TAU",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.A.BALLOON",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.B.GASCAP",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.B.TAU",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.U",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.PI",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.TUB.WALL",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.CSG.WALL",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "HAS_PARAMETER",
+   "source": "TWIN-W01",
+   "target": "PAR.ICSG.WALL",
+   "key": "HAS_PARAMETER"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "tubing_connection_leak(depth_m=1500.0, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.TUB.THREAD",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "tubing_corrosion_hole(depth_m=900.0, start_h=20.0, growth_per_day=1.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.TUB.CORR",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "CasingWear(pipe=tubing, wall_loss=0.6, start_h=6.0, ramp_h=24.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.TUB.WALL",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "packer_leak(depth_m=2300.0, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.PKR.ELAST",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "packer_leak(depth_m=2300.0, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.PKR.MOVE",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "hanger_seal_leak(start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.THS.SEAL",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "wellhead_external_leak(annulus=A, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.THSP.SEAL",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "casing_leak(depth_m=0.0, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.CHS.SEAL",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "wellhead_external_leak(annulus=B, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.CHSP.SEAL",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "ChokeErosion(start_h=6.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.CHK.EROS",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "casing_leak(depth_m=800.0, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.CSG.LEAK",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "CasingWear(pipe=prodcsg, wall_loss=0.6, start_h=6.0, ramp_h=24.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.CSG.WEAR",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "cement_gas_migration(depth_m=1200.0, start_h=12.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.CEM.MICRO",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "CasingWear(pipe=intcsg, wall_loss=0.6, start_h=6.0, ramp_h=24.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.ICSG.WEAR",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "LeakPath(id=LK-ICSG, src=B, snk=formation, depth_m=600.0, C=2e-07, start_h=20.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.ICSG.LEAK",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "sensor_fault(frozen_at_h=40.0)",
+   "source": "TWIN-W01",
+   "target": "FMech.SEN.FROZEN",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "SIMULATES",
+   "fault": "sensor_fault(drift_per_day=0.5)",
+   "source": "TWIN-W01",
+   "target": "FMech.SEN.DRIFT",
+   "key": "SIMULATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "scope": "flowline and network",
+   "source": "TWIN-PROD-OLGA",
+   "target": "FL-W01",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "MEASURES",
+   "property": "pressure",
+   "location": "wellhead",
+   "source": "W01-PT-WH",
+   "target": "W01.BORE",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-PT-WH",
+   "target": "SEN-W01-PT-WH",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-PT-WH",
+   "target": "W01.XT",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "temperature",
+   "location": "wellhead",
+   "source": "W01-TT-WH",
+   "target": "W01.BORE",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-TT-WH",
+   "target": "SEN-W01-TT-WH",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-TT-WH",
+   "target": "W01.XT",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "position",
+   "location": "actuator",
+   "source": "W01-ZT-CHK",
+   "target": "W01.CHK",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-ZT-CHK",
+   "target": "SEN-W01-ZT-CHK",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-ZT-CHK",
+   "target": "W01.CHK",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "pressure",
+   "location": "downstream_choke",
+   "source": "W01-FL-PT",
+   "target": "FL-W01",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-FL-PT",
+   "target": "SEN-W01-FL-PT",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-FL-PT",
+   "target": "FL-W01",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "pressure",
+   "location": "2250 m",
+   "source": "W01-PT-DHG",
+   "target": "W01.BORE",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-PT-DHG",
+   "target": "SEN-W01-PT-DHG",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-PT-DHG",
+   "target": "W01.TUB",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "SEN-W01-PT-DHG",
+   "target": "FMech.SEN.DRIFT",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "MEASURES",
+   "property": "temperature",
+   "location": "2250 m",
+   "source": "W01-TT-DHG",
+   "target": "W01.BORE",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-TT-DHG",
+   "target": "SEN-W01-TT-DHG",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-TT-DHG",
+   "target": "W01.TUB",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "liquid_rate",
+   "location": "multiphase meter",
+   "source": "W01-FT-LIQ",
+   "target": "W01",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-FT-LIQ",
+   "target": "SEN-W01-MPFM",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-MPFM",
+   "target": "FL-W01",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "gas_rate",
+   "location": "multiphase meter",
+   "source": "W01-FT-GAS",
+   "target": "W01",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-FT-GAS",
+   "target": "SEN-W01-MPFM",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "MEASURES",
+   "property": "pressure",
+   "location": "wellhead",
+   "source": "W01-PT-A-ANN",
+   "target": "W01.ANN-A",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-PT-A-ANN",
+   "target": "SEN-W01-PT-A-ANN",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-PT-A-ANN",
+   "target": "W01.THSP",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "HAS_MECHANISM",
+   "source": "SEN-W01-PT-A-ANN",
+   "target": "FMech.SEN.FROZEN",
+   "key": "HAS_MECHANISM"
+  },
+  {
+   "type": "MEASURES",
+   "property": "pressure",
+   "location": "wellhead",
+   "source": "W01-PT-B-ANN",
+   "target": "W01.ANN-B",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-PT-B-ANN",
+   "target": "SEN-W01-PT-B-ANN",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "INSTALLED_ON",
+   "source": "SEN-W01-PT-B-ANN",
+   "target": "W01.CHSP",
+   "key": "INSTALLED_ON"
+  },
+  {
+   "type": "MEASURES",
+   "property": "gas_returned",
+   "location": "bleed line",
+   "source": "W01-A-BLEED-GAS",
+   "target": "W01.ANN-A",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-A-BLEED-GAS",
+   "target": "TEST.BLEED.A",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "MEASURES",
+   "property": "brine_returned",
+   "location": "bleed line",
+   "source": "W01-A-BLEED-LIQ",
+   "target": "W01.ANN-A",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-A-BLEED-LIQ",
+   "target": "TEST.BLEED.A",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "MEASURES",
+   "property": "gas_returned",
+   "location": "bleed line",
+   "source": "W01-B-BLEED-GAS",
+   "target": "W01.ANN-B",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-B-BLEED-GAS",
+   "target": "TEST.BLEED.B",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "MEASURES",
+   "property": "brine_returned",
+   "location": "bleed line",
+   "source": "W01-B-BLEED-LIQ",
+   "target": "W01.ANN-B",
+   "key": "MEASURES"
+  },
+  {
+   "type": "PRODUCED_BY",
+   "source": "W01-B-BLEED-LIQ",
+   "target": "TEST.BLEED.B",
+   "key": "PRODUCED_BY"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "expected_pressure",
+   "location": "wellhead",
+   "source": "W01-VT-P-A-EXP",
+   "target": "W01.ANN-A",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "expected_pressure",
+   "location": "wellhead",
+   "source": "W01-VT-P-B-EXP",
+   "target": "W01.ANN-B",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "temperature",
+   "location": "mean",
+   "source": "W01-VT-T-A",
+   "target": "W01.ANN-A",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "temperature",
+   "location": "mean",
+   "source": "W01-VT-T-B",
+   "target": "W01.ANN-B",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "expected_liquid_rate",
+   "location": "choke model",
+   "source": "W01-VT-Q-LIQ-EXP",
+   "target": "W01",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "expected_pressure",
+   "location": "2250 m",
+   "source": "W01-VT-P-DHG-EXP",
+   "target": "W01.BORE",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "operational_maasp",
+   "location": "wellhead",
+   "source": "W01-VT-MAASP-A",
+   "target": "W01.ANN-A",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "operational_maasp",
+   "location": "wellhead",
+   "source": "W01-VT-MAASP-B",
+   "target": "W01.ANN-B",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "margin_to_maasp",
+   "location": "wellhead",
+   "source": "W01-VT-MARGIN-A",
+   "target": "W01.ANN-A",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "ESTIMATES",
+   "property": "margin_to_maasp",
+   "location": "wellhead",
+   "source": "W01-VT-MARGIN-B",
+   "target": "W01.ANN-B",
+   "key": "ESTIMATES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.A.GASCAP",
+   "target": "W01.ANN-A",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.A.CWALL",
+   "target": "W01.ANN-A",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.A.TAU",
+   "target": "W01.ANN-A",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.A.BALLOON",
+   "target": "W01.ANN-A",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.B.GASCAP",
+   "target": "W01.ANN-B",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.B.TAU",
+   "target": "W01.ANN-B",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.U",
+   "target": "W01",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.PI",
+   "target": "W01.RES",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.TUB.WALL",
+   "target": "W01.TUB",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.CSG.WALL",
+   "target": "W01.CSG",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "DESCRIBES",
+   "source": "PAR.ICSG.WALL",
+   "target": "W01.ICSG",
+   "key": "DESCRIBES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.TUB.THREAD",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.TUB.THREAD",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.TUB.THREAD",
+   "target": "FM.COMM.TA",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "shut in / above balance depth",
+   "source": "FMech.TUB.THREAD",
+   "target": "FM.SCP.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.TUB.CORR",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.TUB.CORR",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.TUB.CORR",
+   "target": "FM.COMM.TA",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after bleed",
+   "source": "FMech.TUB.CORR",
+   "target": "FM.SCP.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "when the hole is large",
+   "source": "FMech.TUB.CORR",
+   "target": "FM.NOBLEED",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.TUB.WALL",
+   "target": "FM.MARGIN.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.PKR.ELAST",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.PKR.ELAST",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.PKR.ELAST",
+   "target": "FM.COMM.TA",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.PKR.ELAST",
+   "target": "FM.FLUIDLOSS.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "shut in",
+   "source": "FMech.PKR.ELAST",
+   "target": "FM.SCP.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.PKR.MOVE",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.PKR.MOVE",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.PKR.MOVE",
+   "target": "FM.COMM.TA",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.PKR.MOVE",
+   "target": "FM.FLUIDLOSS.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.DHSV.LCP",
+   "target": "W01.RES",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.DHSV.LCP",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "on test / demand",
+   "source": "FMech.DHSV.LCP",
+   "target": "FM.ISOLATION",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "on demand",
+   "source": "FMech.DHSV.FTC",
+   "target": "FM.ISOLATION",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.CL.LEAK",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.CL.LEAK",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CL.LEAK",
+   "target": "FM.ISOLATION",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CL.LEAK",
+   "target": "FM.COMM.TA",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.THS.SEAL",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.THS.SEAL",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after bleed",
+   "source": "FMech.THS.SEAL",
+   "target": "FM.SCP.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.THS.SEAL",
+   "target": "FM.COMM.TA",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "orifice-type leak",
+   "source": "FMech.THS.SEAL",
+   "target": "FM.NOBLEED",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.THSP.SEAL",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.THSP.SEAL",
+   "target": "ENV",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.THSP.SEAL",
+   "target": "FM.EXT",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.THSP.SEAL",
+   "target": "FM.FLUIDLOSS.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.CHS.SEAL",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.CHS.SEAL",
+   "target": "W01.ANN-B",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CHS.SEAL",
+   "target": "FM.COMM.AB",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after B bleed",
+   "source": "FMech.CHS.SEAL",
+   "target": "FM.SCP.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after A bleed (B pushes back)",
+   "source": "FMech.CHS.SEAL",
+   "target": "FM.SCP.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.CHSP.SEAL",
+   "target": "W01.ANN-B",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.CHSP.SEAL",
+   "target": "ENV",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CHSP.SEAL",
+   "target": "FM.EXT",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CHSP.SEAL",
+   "target": "FM.FLUIDLOSS.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.MV.LEAK",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.MV.LEAK",
+   "target": "ENV",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "on test / demand",
+   "source": "FMech.MV.LEAK",
+   "target": "FM.ISOLATION",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "on demand",
+   "source": "FMech.MV.FTC",
+   "target": "FM.ISOLATION",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.PWV.LEAK",
+   "target": "W01.BORE",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.PWV.LEAK",
+   "target": "ENV",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "on test / demand",
+   "source": "FMech.PWV.LEAK",
+   "target": "FM.ISOLATION",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing",
+   "source": "FMech.CHK.EROS",
+   "target": "FM.FLOWCTRL",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.CSG.LEAK",
+   "target": "W01.ANN-A",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.CSG.LEAK",
+   "target": "W01.ANN-B",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CSG.LEAK",
+   "target": "FM.COMM.AB",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after B bleed",
+   "source": "FMech.CSG.LEAK",
+   "target": "FM.SCP.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after A bleed (B pushes back)",
+   "source": "FMech.CSG.LEAK",
+   "target": "FM.SCP.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CSG.WEAR",
+   "target": "FM.MARGIN.A",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CSG.WEAR",
+   "target": "FM.MARGIN.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.CEM.MICRO",
+   "target": "W01.SGZ",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.CEM.MICRO",
+   "target": "W01.ANN-B",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.CEM.MICRO",
+   "target": "FM.SCP.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.ICSG.WEAR",
+   "target": "FM.MARGIN.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "src",
+   "source": "FMech.ICSG.LEAK",
+   "target": "W01.ANN-B",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CONNECTS",
+   "role": "snk",
+   "source": "FMech.ICSG.LEAK",
+   "target": "W01.SGZ",
+   "key": "CONNECTS"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "producing (B above formation)",
+   "source": "FMech.ICSG.LEAK",
+   "target": "FM.FLUIDLOSS.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.ICSG.LEAK",
+   "target": "FM.XFLOW",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "after B bleed (formation gas enters)",
+   "source": "FMech.ICSG.LEAK",
+   "target": "FM.SCP.B",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.SEN.FROZEN",
+   "target": "FM.MONITOR",
+   "key": "CAUSES"
+  },
+  {
+   "type": "CAUSES",
+   "condition": "any",
+   "source": "FMech.SEN.DRIFT",
+   "target": "FM.MONITOR",
+   "key": "CAUSES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.RES.A",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.RES.A",
+   "target": "W01-VT-P-A-EXP",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.PKR.ELAST",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.PKR.MOVE",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.CL.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.THSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.A",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.RES.A",
+   "target": "FM.MAASP.A",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.RES.B",
+   "target": "W01-PT-B-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.RES.B",
+   "target": "W01-VT-P-B-EXP",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.B",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.B",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.B",
+   "target": "FMech.CEM.MICRO",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.B",
+   "target": "FMech.CHSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.RES.B",
+   "target": "FMech.ICSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.RES.B",
+   "target": "FM.MAASP.B",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.AB.SIGN",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.AB.SIGN",
+   "target": "W01-PT-B-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.AB.SIGN",
+   "target": "W01-VT-P-A-EXP",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.AB.SIGN",
+   "target": "W01-VT-P-B-EXP",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.AB.SIGN",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.AB.SIGN",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.CHOKE",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.CHOKE",
+   "target": "W01-FL-PT",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.CHOKE",
+   "target": "W01-ZT-CHK",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.CHOKE",
+   "target": "W01-FT-LIQ",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.CHOKE",
+   "target": "W01-VT-Q-LIQ-EXP",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.CHOKE",
+   "target": "FMech.CHK.EROS",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.CHOKE",
+   "target": "FM.FLOWCTRL",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.MARGIN",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.MARGIN",
+   "target": "W01-PT-B-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.MARGIN",
+   "target": "W01-VT-MAASP-A",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.MARGIN",
+   "target": "W01-VT-MAASP-B",
+   "key": "USES"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.MARGIN",
+   "target": "FM.MAASP.A",
+   "key": "MONITORS"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.MARGIN",
+   "target": "FM.MAASP.B",
+   "key": "MONITORS"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.MARGIN",
+   "target": "FM.MARGIN.A",
+   "key": "MONITORS"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.MARGIN",
+   "target": "FM.MARGIN.B",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DQ",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DQ",
+   "target": "W01-PT-B-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.DQ",
+   "target": "FMech.SEN.FROZEN",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.DQ",
+   "target": "FM.MONITOR",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DHG.X",
+   "target": "W01-PT-DHG",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DHG.X",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DHG.X",
+   "target": "W01-FT-LIQ",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DHG.X",
+   "target": "W01-VT-P-DHG-EXP",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.DHG.X",
+   "target": "FMech.SEN.DRIFT",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.DHG.X",
+   "target": "FM.MONITOR",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.BLEED.A",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.BLEED.A",
+   "target": "W01-A-BLEED-GAS",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.BLEED.A",
+   "target": "W01-A-BLEED-LIQ",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.A",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.A",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.A",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.A",
+   "target": "FMech.THSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.A",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.A",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.BLEED.A",
+   "target": "FM.SCP.A",
+   "key": "MONITORS"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.BLEED.A",
+   "target": "FM.NOBLEED",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.BLEED.B",
+   "target": "W01-PT-B-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.BLEED.B",
+   "target": "W01-B-BLEED-GAS",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.BLEED.B",
+   "target": "W01-B-BLEED-LIQ",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.B",
+   "target": "FMech.CEM.MICRO",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.B",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.B",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.B",
+   "target": "FMech.CHSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.BLEED.B",
+   "target": "FMech.ICSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.BLEED.B",
+   "target": "FM.SCP.B",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.SHUTIN",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.SHUTIN",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SHUTIN",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SHUTIN",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SHUTIN",
+   "target": "FMech.PKR.ELAST",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SHUTIN",
+   "target": "FMech.PKR.MOVE",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SHUTIN",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SHUTIN",
+   "target": "FMech.CL.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.SHUTIN",
+   "target": "FM.COMM.TA",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.GASCOMP",
+   "target": "W01-A-BLEED-GAS",
+   "key": "USES"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.GASCOMP",
+   "target": "W01-B-BLEED-GAS",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.GASCOMP",
+   "target": "FMech.CEM.MICRO",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.GASCOMP",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.GASCOMP",
+   "target": "FMech.PKR.ELAST",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.GASCOMP",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.TOPUP",
+   "target": "FMech.PKR.ELAST",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.TOPUP",
+   "target": "FMech.PKR.MOVE",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.TOPUP",
+   "target": "FMech.THSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.TOPUP",
+   "target": "FMech.ICSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.TOPUP",
+   "target": "FM.FLUIDLOSS.A",
+   "key": "MONITORS"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.TOPUP",
+   "target": "FM.FLUIDLOSS.B",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.PT.TUB",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.TUB",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.TUB",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.TUB",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.PT.ANN.A",
+   "target": "W01-PT-A-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.PKR.ELAST",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.PKR.MOVE",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.CL.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.A",
+   "target": "FMech.THSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.PT.ANN.B",
+   "target": "W01-PT-B-ANN",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.B",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.B",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.B",
+   "target": "FMech.ICSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.PT.ANN.B",
+   "target": "FMech.CHSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.DHSV.INFLOW",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.DHSV.INFLOW",
+   "target": "FMech.DHSV.LCP",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.DHSV.INFLOW",
+   "target": "FM.ISOLATION",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.SIS.FUNC",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SIS.FUNC",
+   "target": "FMech.DHSV.FTC",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SIS.FUNC",
+   "target": "FMech.MV.FTC",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SIS.FUNC",
+   "target": "FMech.CL.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.SIS.FUNC",
+   "target": "FM.ISOLATION",
+   "key": "MONITORS"
+  },
+  {
+   "type": "USES",
+   "source": "TEST.XT.LEAK",
+   "target": "W01-PT-WH",
+   "key": "USES"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.XT.LEAK",
+   "target": "FMech.MV.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.XT.LEAK",
+   "target": "FMech.PWV.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.XT.LEAK",
+   "target": "FM.ISOLATION",
+   "key": "MONITORS"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.CL.PT",
+   "target": "FMech.CL.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.HGR.PORT",
+   "target": "FMech.THS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.HGR.PORT",
+   "target": "FMech.CHS.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.WH.VALVE",
+   "target": "FMech.THSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.WH.VALVE",
+   "target": "FMech.CHSP.SEAL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.WH.VALVE",
+   "target": "FM.EXT",
+   "key": "MONITORS"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.TUB.THREAD",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.PKR.ELAST",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.PKR.MOVE",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.CSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.CEM.MICRO",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.TEMP",
+   "target": "FMech.ICSG.LEAK",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.CAL",
+   "target": "FMech.TUB.WALL",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.CAL",
+   "target": "FMech.TUB.CORR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.CAL",
+   "target": "FMech.CSG.WEAR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.CAL",
+   "target": "FMech.ICSG.WEAR",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.LOG.CAL",
+   "target": "FM.MARGIN.A",
+   "key": "MONITORS"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.LOG.CAL",
+   "target": "FM.MARGIN.B",
+   "key": "MONITORS"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.LOG.CBL",
+   "target": "FMech.CEM.MICRO",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.CHK.INSP",
+   "target": "FMech.CHK.EROS",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.CHK.INSP",
+   "target": "FM.FLOWCTRL",
+   "key": "MONITORS"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SEN.CAL",
+   "target": "FMech.SEN.FROZEN",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "EVIDENCE_FOR",
+   "source": "TEST.SEN.CAL",
+   "target": "FMech.SEN.DRIFT",
+   "key": "EVIDENCE_FOR"
+  },
+  {
+   "type": "MONITORS",
+   "source": "TEST.SEN.CAL",
+   "target": "FM.MONITOR",
+   "key": "MONITORS"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "a primary element leaks into A",
+   "source": "FM.SCP.A",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "cement or production casing breached",
+   "source": "FM.SCP.B",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "more external load on the production casing",
+   "source": "FM.SCP.B",
+   "target": "FM.MARGIN.B",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "tubing, packer, hanger or control-line path open",
+   "source": "FM.COMM.TA",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "production casing or its pack-off breached",
+   "source": "FM.COMM.AB",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "A pressure reaches B, whose wellhead rating is lower",
+   "source": "FM.COMM.AB",
+   "target": "FM.MAASP.B",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "lost brine column: casing support and monitoring weakened",
+   "source": "FM.FLUIDLOSS.A",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "loss of internal support raises production-casing collapse load",
+   "source": "FM.FLUIDLOSS.A",
+   "target": "FM.MARGIN.B",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "outer containment breached",
+   "source": "FM.FLUIDLOSS.B",
+   "target": "BE.OUTER",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "outer containment breached",
+   "source": "FM.XFLOW",
+   "target": "BE.OUTER",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "LEADS_TO",
+   "why": "flow between formations has started",
+   "source": "FM.XFLOW",
+   "target": "HZ.UGB",
+   "key": "LEADS_TO"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "wellhead element breached",
+   "source": "FM.EXT",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "LEADS_TO",
+   "why": "release has already reached the environment",
+   "source": "FM.EXT",
+   "target": "HZ.LOC",
+   "key": "LEADS_TO"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "large leak path",
+   "source": "FM.NOBLEED",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "pressure cannot be relieved",
+   "source": "FM.NOBLEED",
+   "target": "FM.MAASP.A",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "packer / tubing collapse load",
+   "source": "FM.MAASP.A",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "production-casing burst load",
+   "source": "FM.MAASP.A",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "CHECKED_AGAINST",
+   "tier": "MAASP",
+   "source": "FM.MAASP.A",
+   "target": "LIM.W01.MAASP-A.C",
+   "key": "CHECKED_AGAINST"
+  },
+  {
+   "type": "CHECKED_AGAINST",
+   "tier": "MAWOP",
+   "source": "FM.MAASP.A",
+   "target": "LIM.W01.MAWOP-A.A",
+   "key": "CHECKED_AGAINST"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "production-casing collapse load",
+   "source": "FM.MAASP.B",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "intermediate-casing burst load",
+   "source": "FM.MAASP.B",
+   "target": "BE.OUTER",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "CHECKED_AGAINST",
+   "tier": "MAASP",
+   "source": "FM.MAASP.B",
+   "target": "LIM.W01.MAASP-B.A",
+   "key": "CHECKED_AGAINST"
+  },
+  {
+   "type": "CHECKED_AGAINST",
+   "tier": "MAWOP",
+   "source": "FM.MAASP.B",
+   "target": "LIM.W01.MAWOP-B.A",
+   "key": "CHECKED_AGAINST"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "tubing / packer capacity",
+   "source": "FM.MARGIN.A",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "production-casing burst capacity",
+   "source": "FM.MARGIN.A",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "lower limit: normal pressures become violations",
+   "source": "FM.MARGIN.A",
+   "target": "FM.MAASP.A",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "production-casing collapse capacity",
+   "source": "FM.MARGIN.B",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "intermediate-casing burst capacity",
+   "source": "FM.MARGIN.B",
+   "target": "BE.OUTER",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "lower limit: normal pressures become violations",
+   "source": "FM.MARGIN.B",
+   "target": "FM.MAASP.B",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "DHSV cannot isolate",
+   "source": "FM.ISOLATION",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "tree valves cannot isolate",
+   "source": "FM.ISOLATION",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "an external leak cannot be isolated",
+   "source": "FM.ISOLATION",
+   "target": "FM.EXT",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "tree component degrading",
+   "source": "FM.FLOWCTRL",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "LEADS_TO",
+   "why": "choke body wash-out / downstream overpressure",
+   "source": "FM.FLOWCTRL",
+   "target": "HZ.LOC",
+   "key": "LEADS_TO"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "barrier status cannot be verified",
+   "source": "FM.MONITOR",
+   "target": "BE.PRIMARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "DEGRADES",
+   "how": "barrier status cannot be verified",
+   "source": "FM.MONITOR",
+   "target": "BE.SECONDARY",
+   "key": "DEGRADES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "masks detection",
+   "source": "FM.MONITOR",
+   "target": "FM.SCP.A",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "AGGRAVATES",
+   "why": "masks detection",
+   "source": "FM.MONITOR",
+   "target": "FM.MAASP.A",
+   "key": "AGGRAVATES"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.PRIMARY",
+   "target": "W01.TUB",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.PRIMARY",
+   "target": "W01.PKR",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.PRIMARY",
+   "target": "W01.DHSV",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "part of DHSV system",
+   "source": "BE.PRIMARY",
+   "target": "W01.CL",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "section below the packer",
+   "source": "BE.PRIMARY",
+   "target": "W01.CSG",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "section below the packer",
+   "source": "BE.PRIMARY",
+   "target": "W01.CEM",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "LEADS_TO",
+   "source": "BE.PRIMARY",
+   "target": "HZ.LOC",
+   "key": "LEADS_TO"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "section above the packer",
+   "source": "BE.SECONDARY",
+   "target": "W01.CSG",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "cap above reservoir",
+   "source": "BE.SECONDARY",
+   "target": "W01.CEM",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.SECONDARY",
+   "target": "W01.THS",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "incl. A-annulus valves",
+   "source": "BE.SECONDARY",
+   "target": "W01.THSP",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.SECONDARY",
+   "target": "W01.CHS",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.SECONDARY",
+   "target": "W01.MV",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.SECONDARY",
+   "target": "W01.PWV",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "LEADS_TO",
+   "source": "BE.SECONDARY",
+   "target": "HZ.LOC",
+   "key": "LEADS_TO"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "",
+   "source": "BE.OUTER",
+   "target": "W01.ICSG",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "IMPLEMENTED_BY",
+   "section": "incl. B-annulus valves",
+   "source": "BE.OUTER",
+   "target": "W01.CHSP",
+   "key": "IMPLEMENTED_BY"
+  },
+  {
+   "type": "LEADS_TO",
+   "source": "BE.OUTER",
+   "target": "HZ.UGB",
+   "key": "LEADS_TO"
+  },
+  {
+   "type": "APPLIES_TO",
+   "active": true,
+   "source": "LIM.W01.MAASP-A.C",
+   "target": "W01.ANN-A",
+   "key": "APPLIES_TO"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-A.C",
+   "target": "W01.PKR",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-A.C",
+   "target": "W01.THSP",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-A.C",
+   "target": "W01.CSG",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-A.C",
+   "target": "W01.TUB",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "APPLIES_TO",
+   "active": false,
+   "source": "LIM.W01.MAASP-A.B",
+   "target": "W01.ANN-A",
+   "key": "APPLIES_TO"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-A.B",
+   "target": "W01.THSP",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "APPLIES_TO",
+   "active": true,
+   "source": "LIM.W01.MAASP-B.A",
+   "target": "W01.ANN-B",
+   "key": "APPLIES_TO"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-B.A",
+   "target": "W01.CHSP",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-B.A",
+   "target": "W01.ICSG",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAASP-B.A",
+   "target": "W01.CSG",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "APPLIES_TO",
+   "active": true,
+   "source": "LIM.W01.MAWOP-A.A",
+   "target": "W01.ANN-A",
+   "key": "APPLIES_TO"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAWOP-A.A",
+   "target": "W01.CSG",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAWOP-A.A",
+   "target": "W01.TUB",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "APPLIES_TO",
+   "active": true,
+   "source": "LIM.W01.MAWOP-B.A",
+   "target": "W01.ANN-B",
+   "key": "APPLIES_TO"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAWOP-B.A",
+   "target": "W01.ICSG",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "LIMITED_BY",
+   "source": "LIM.W01.MAWOP-B.A",
+   "target": "W01.CSG",
+   "key": "LIMITED_BY"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.SCP.A",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.SCP.B",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.COMM.TA",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.COMM.AB",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.MAASP.A",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.MAASP.B",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.MARGIN.A",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.MARGIN.B",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.EXT",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.XFLOW",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.FLUIDLOSS.A",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.FLUIDLOSS.B",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.NOBLEED",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.ISOLATION",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.FLOWCTRL",
+   "key": "GOVERNS"
+  },
+  {
+   "type": "GOVERNS",
+   "source": "POL.W01.INTEGRITY",
+   "target": "FM.MONITOR",
+   "key": "GOVERNS"
+  }
+ ]
+}

@@ -1,0 +1,255 @@
+twin_version: 1.0.0
+operations: 'shut in to 6 h, choke 32/64, bleed at 48 h; shut-in test: shut in at
+  50 h'
+mechanisms:
+  FMech.TUB.THREAD:
+    twin_fault: tubing_connection_leak(depth_m=1500.0, start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -53.3
+    dB_pre: -2.2
+    dA_post: -2.9
+    dB_post: -0.2
+    bleed_gas_Sm3: 0.0
+    bleed_brine_L: 0.0
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 10.1
+  FMech.TUB.CORR:
+    twin_fault: tubing_corrosion_hole(depth_m=900.0, start_h=20.0, growth_per_day=1.0)
+    bleed_annulus: A
+    dA_pre: -38.1
+    dB_pre: -1.6
+    dA_post: 10.2
+    dB_post: 0.4
+    bleed_gas_Sm3: 0.49
+    bleed_brine_L: 46.8
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 22.1
+  FMech.TUB.WALL:
+    twin_fault: CasingWear(pipe=tubing, wall_loss=0.6, start_h=6.0, ramp_h=24.0)
+    bleed_annulus: A
+    dA_pre: 0.0
+    dB_pre: 0.0
+    dA_post: 0.0
+    dB_post: 0.0
+    bleed_gas_Sm3: 0.49
+    bleed_brine_L: 295.0
+    bleed_reached_target: true
+    dMAASP_A: -262.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 0.0
+  FMech.PKR.ELAST:
+    twin_fault: packer_leak(depth_m=2300.0, start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -54.4
+    dB_pre: -2.3
+    dA_post: -3.9
+    dB_post: -0.3
+    bleed_gas_Sm3: 0.0
+    bleed_brine_L: 0.0
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.045
+    dA_shutin: -9.6
+  FMech.PKR.MOVE:
+    twin_fault: packer_leak(depth_m=2300.0, start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -54.4
+    dB_pre: -2.3
+    dA_post: -3.9
+    dB_post: -0.3
+    bleed_gas_Sm3: 0.0
+    bleed_brine_L: 0.0
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.045
+    dA_shutin: -9.6
+  FMech.THS.SEAL:
+    twin_fault: hanger_seal_leak(start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -4.2
+    dB_pre: -0.2
+    dA_post: 46.7
+    dB_post: 1.9
+    bleed_gas_Sm3: 0.39
+    bleed_brine_L: 280.1
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 50.1
+  FMech.THSP.SEAL:
+    twin_fault: wellhead_external_leak(annulus=A, start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -31.3
+    dB_pre: -1.3
+    dA_post: -2.0
+    dB_post: -0.1
+    bleed_gas_Sm3: 0.0
+    bleed_brine_L: 116.8
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: -9.9
+  FMech.CHS.SEAL:
+    twin_fault: casing_leak(depth_m=0.0, start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -15.8
+    dB_pre: 12.3
+    dA_post: 14.2
+    dB_post: -8.4
+    bleed_gas_Sm3: 2.6
+    bleed_brine_L: 188.3
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 1.9
+  FMech.CHSP.SEAL:
+    twin_fault: wellhead_external_leak(annulus=B, start_h=20.0)
+    bleed_annulus: B
+    dA_pre: 0.0
+    dB_pre: -17.8
+    dA_post: 0.0
+    dB_post: -2.6
+    bleed_gas_Sm3: 0.0
+    bleed_brine_L: 30.6
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 0.0
+  FMech.CHK.EROS:
+    twin_fault: ChokeErosion(start_h=6.0)
+    bleed_annulus: A
+    dA_pre: 2.5
+    dB_pre: 1.1
+    dA_post: 1.9
+    dB_post: 2.0
+    bleed_gas_Sm3: 0.49
+    bleed_brine_L: 310.1
+    bleed_reached_target: true
+    dMAASP_A: -5.0
+    dMAASP_B: 0.0
+    dq_liq: 75.2
+    dP_wh: -2.5
+    void_A_m3: 0.0
+    dA_shutin: 0.1
+  FMech.CSG.LEAK:
+    twin_fault: casing_leak(depth_m=800.0, start_h=20.0)
+    bleed_annulus: A
+    dA_pre: -16.1
+    dB_pre: 12.4
+    dA_post: 20.4
+    dB_post: -2.0
+    bleed_gas_Sm3: 0.49
+    bleed_brine_L: 198.4
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 1.7
+  FMech.CSG.WEAR:
+    twin_fault: CasingWear(pipe=prodcsg, wall_loss=0.6, start_h=6.0, ramp_h=24.0)
+    bleed_annulus: A
+    dA_pre: 0.0
+    dB_pre: 0.0
+    dA_post: 0.0
+    dB_post: 0.0
+    bleed_gas_Sm3: 0.49
+    bleed_brine_L: 295.0
+    bleed_reached_target: true
+    dMAASP_A: -161.4
+    dMAASP_B: -149.6
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 0.0
+  FMech.CEM.MICRO:
+    twin_fault: cement_gas_migration(depth_m=1200.0, start_h=12.0)
+    bleed_annulus: B
+    dA_pre: 0.0
+    dB_pre: 3.2
+    dA_post: 0.0
+    dB_post: 16.2
+    bleed_gas_Sm3: 3.6
+    bleed_brine_L: 39.4
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 0.0
+  FMech.ICSG.WEAR:
+    twin_fault: CasingWear(pipe=intcsg, wall_loss=0.6, start_h=6.0, ramp_h=24.0)
+    bleed_annulus: B
+    dA_pre: 0.0
+    dB_pre: 0.0
+    dA_post: 0.0
+    dB_post: 0.0
+    bleed_gas_Sm3: 2.11
+    bleed_brine_L: 60.9
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: -120.6
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 0.0
+  FMech.ICSG.LEAK:
+    twin_fault: LeakPath(id=LK-ICSG, src=B, snk=formation, depth_m=600.0, C=2e-07,
+      start_h=20.0)
+    bleed_annulus: B
+    dA_pre: 0.0
+    dB_pre: -13.1
+    dA_post: 0.0
+    dB_post: 5.7
+    bleed_gas_Sm3: 1.71
+    bleed_brine_L: 0.0
+    bleed_reached_target: true
+    dMAASP_A: 0.0
+    dMAASP_B: 0.0
+    dq_liq: 0.0
+    dP_wh: 0.0
+    void_A_m3: 0.0
+    dA_shutin: 0.0
+healthy:
+  P_A_pre: 56.1
+  P_B_pre: 28.1
+  MAASP_A: 332.2
+  MAASP_B: 206.8
+  bleed_A_gas_Sm3: 0.49
+  bleed_A_brine_L: 295.0
+  bleed_B_gas_Sm3: 2.11
+  bleed_B_brine_L: 60.9
+  P_A_shutin_end: 10.9

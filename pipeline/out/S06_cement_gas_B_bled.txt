@@ -1,0 +1,65 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S06_cement_gas_B_bled]: TEST (gate EXPECTED_LOSS) [DEC.W01.S06_cement_gas_B_bled].
+A-annulus pressure is 56.4 bar against 56.2 bar expected by [TWIN-W01]; the residual of 0.1 bar is z = 0.05 with sigma 3.04 bar [RA.W01.S06_cement_gas_B_bled].
+B-annulus pressure is 23.8 bar against 8.7 bar expected; the residual of 15.3 bar is z = 5.04 with sigma 3.04 bar [RA.W01.S06_cement_gas_B_bled].
+The B-annulus was bled 19.8 h ago; the returns differed from the twin's by 1.49 Sm3 gas and -13.1 L brine [RA.W01.S06_cement_gas_B_bled].
+Probability that a failure mode is active is 0.0105 (90% interval 0.0007 to 0.012) at an operational prior of 0.002 [RA.W01.S06_cement_gas_B_bled].
+The leading failure mode is [FM.SCP.B] with probability 0.01 [RA.W01.S06_cement_gas_B_bled].
+The next most likely is [FM.XFLOW] with probability 0.0004 [RA.W01.S06_cement_gas_B_bled].
+[FMech.CEM.MICRO] can cause [FM.SCP.B]; distance to its twin signature is 0.18 [DEC.W01.S06_cement_gas_B_bled].
+[FMech.ICSG.LEAK] can cause [FM.SCP.B]; distance to its twin signature is 1.93 [DEC.W01.S06_cement_gas_B_bled].
+[FM.SCP.B] degrades [BE.SECONDARY].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.3 bar, margin 275.8 bar [RA.W01.S06_cement_gas_B_bled].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 183.0 bar [RA.W01.S06_cement_gas_B_bled].
+Expected losses: no action NOK 461,866, follow-up test NOK 318,152, alarm NOK 1,049,473; expected cost of a miss NOK 43,804,038 [DEC.W01.S06_cement_gas_B_bled].
+Policy costs: missed leak NOK 20,000,000, missed loss of containment NOK 500,000,000, false alarm NOK 50,000 [POL.W01.INTEGRITY].
+Confirmatory test costs NOK 1,000,000 [TEST.PT.ANN.B].
+Follow-up test costs NOK 30,000 [TEST.TOPUP]; sensitivity 0.5 and specificity 0.95 (assumed default) [DEC.W01.S06_cement_gas_B_bled].
+Recommended next evidence: [TEST.TOPUP] [DEC.W01.S06_cement_gas_B_bled].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S06_cement_gas_B_bled.t_eval_h
+56.4 -> RA.W01.S06_cement_gas_B_bled.P_A_bar
+56.2 -> RA.W01.S06_cement_gas_B_bled.P_A_exp_bar
+0.1 -> RA.W01.S06_cement_gas_B_bled.r_A_bar
+0.05 -> RA.W01.S06_cement_gas_B_bled.z_A
+3.04 -> RA.W01.S06_cement_gas_B_bled.sigma_A_bar
+23.8 -> RA.W01.S06_cement_gas_B_bled.P_B_bar
+8.7 -> RA.W01.S06_cement_gas_B_bled.P_B_exp_bar
+15.3 -> RA.W01.S06_cement_gas_B_bled.r_B_bar
+5.04 -> RA.W01.S06_cement_gas_B_bled.z_B
+3.04 -> RA.W01.S06_cement_gas_B_bled.sigma_A_bar
+19.8 -> RA.W01.S06_cement_gas_B_bled.hours_since_bleed_B
+1.49 -> RA.W01.S06_cement_gas_B_bled.d_gas_B_Sm3
+-13.1 -> RA.W01.S06_cement_gas_B_bled.d_brine_B_L
+0.0105 -> RA.W01.S06_cement_gas_B_bled.p_fail
+90% -> RA.W01.S06_cement_gas_B_bled.interval_level
+0.0007 -> RA.W01.S06_cement_gas_B_bled.p_lo
+0.012 -> RA.W01.S06_cement_gas_B_bled.p_hi
+0.002 -> RA.W01.S06_cement_gas_B_bled.prior_op_fail
+0.01 -> RA.W01.S06_cement_gas_B_bled.p_fail
+0.0004 -> RA.W01.S06_cement_gas_B_bled.p_FM_XFLOW
+[FMech.CEM.MICRO] can cause [FM.SCP.B] -> CAUSES edge
+0.18 -> DEC.W01.S06_cement_gas_B_bled.mechanism_1_distance
+[FMech.ICSG.LEAK] can cause [FM.SCP.B] -> CAUSES edge
+1.93 -> DEC.W01.S06_cement_gas_B_bled.mechanism_2_distance
+[FM.SCP.B] degrades [BE.SECONDARY] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.3 -> RA.W01.S06_cement_gas_B_bled.maasp_A_bar
+275.8 -> RA.W01.S06_cement_gas_B_bled.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S06_cement_gas_B_bled.maasp_B_bar
+183.0 -> RA.W01.S06_cement_gas_B_bled.margin_B_bar
+461,866, -> DEC.W01.S06_cement_gas_B_bled.loss_no_action_nok
+318,152, -> DEC.W01.S06_cement_gas_B_bled.loss_test_nok
+1,049,473 -> DEC.W01.S06_cement_gas_B_bled.loss_alarm_nok
+43,804,038 -> DEC.W01.S06_cement_gas_B_bled.C_bar_nok
+20,000,000, -> POL.W01.INTEGRITY.cost_missed_leak_nok
+500,000,000, -> POL.W01.INTEGRITY.cost_missed_loc_nok
+50,000 -> POL.W01.INTEGRITY.cost_false_alarm_nok
+1,000,000 -> TEST.PT.ANN.B.cost_nok
+30,000 -> TEST.TOPUP.cost_nok
+0.5 -> DEC.W01.S06_cement_gas_B_bled.followup_sensitivity
+0.95 -> DEC.W01.S06_cement_gas_B_bled.followup_specificity
