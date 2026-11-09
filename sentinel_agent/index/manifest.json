@@ -1,0 +1,31 @@
+{
+ "index_version": "35031b4e02ed",
+ "built_at": "2026-11-08T19:21:15.157614+00:00",
+ "n_documents": 21,
+ "n_chunks": 80,
+ "n_quarantined": 1,
+ "documents": {
+  "DS-PKR-W01@1": "active",
+  "DS-TUBCSG-W01@1": "active",
+  "DS-WH-W01@2": "active",
+  "GOV-SAI-001@1": "active",
+  "HIST-WI-EVENTS@5": "active",
+  "OPS-LOG-W01-2026-10@1": "active",
+  "PROC-WI-010@3": "active",
+  "PROC-WI-011@2": "active",
+  "PROC-WI-012@1": "active",
+  "PROC-WI-020@4": "active",
+  "WBS-W01@2": "active",
+  "WIMS-W01-MAASP-A@B": "superseded",
+  "WIMS-W01-MAASP-A@C": "active",
+  "WIMS-W01-MAASP-B@A": "active",
+  "WIMS-W01-MAWOP@A": "active",
+  "REGN-30CFR250-CPM@1": "active",
+  "STDN-API-RP90-1@1": "active",
+  "STDN-IEC61511@1": "active",
+  "STDN-ISO14224@1": "active",
+  "STDN-ISO16530-2@1": "active",
+  "STDN-NORSOK-D010@1": "active"
+ },
+ "embedder": "local:hashing-1536"
+}

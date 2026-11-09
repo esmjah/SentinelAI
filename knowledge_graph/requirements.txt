@@ -1,0 +1,7 @@
+networkx
+pydantic
+pyyaml
+numpy
+scipy        # the minimum-cost test cover (analysis.min_cost_cover) and the figures
+matplotlib   # only for visualize.py
+pytest       # optional

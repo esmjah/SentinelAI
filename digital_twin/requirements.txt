@@ -1,0 +1,4 @@
+numpy
+scipy
+matplotlib   # only for scenarios.py and the figures (the physics, analysis and reproduce need numpy and scipy)
+pytest       # optional

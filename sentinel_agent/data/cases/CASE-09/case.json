@@ -1,0 +1,11 @@
+{
+ "case_id": "CASE-09",
+ "well": "W01",
+ "hours": 60.0,
+ "startup_h": 6.0,
+ "choke_64": 32.0,
+ "shut_in_h": null,
+ "bleed": null,
+ "known_findings": [],
+ "sample_interval_min": 5
+}

@@ -1,0 +1,16 @@
+# sentinel_agent (plus the requirements of digital_twin, knowledge_graph and decision_engine)
+pydantic-ai-slim[openai]>=1.0
+openai>=1.40
+supabase>=2.0
+python-dotenv>=1.0
+tiktoken>=0.7
+numpy
+scipy
+pandas
+networkx>=3.2
+pydantic>=2.6
+pyyaml
+scikit-learn==1.5.1        # the released calibration artifact is version-specific
+joblib
+matplotlib
+pytest                     # optional: pytest sentinel_agent/test_analysis.py

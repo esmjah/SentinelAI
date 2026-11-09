@@ -1,0 +1,22 @@
+{
+ "case_id": "CASE-10",
+ "well": "W01",
+ "hours": 60.0,
+ "startup_h": 6.0,
+ "choke_64": 32.0,
+ "shut_in_h": null,
+ "bleed": null,
+ "known_findings": [
+  {
+   "type": "CasingWear",
+   "pipe": "prodcsg",
+   "wall_loss": 0.6,
+   "start_h": 0.0,
+   "ramp_h": 1.0,
+   "mechanism": "FMech.CSG.WEAR",
+   "id": "CSG-WEAR",
+   "description": "Casing wear / corrosion: wall loss reduces burst and collapse capacity"
+  }
+ ],
+ "sample_interval_min": 5
+}

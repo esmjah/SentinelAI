@@ -1,0 +1,9 @@
+numpy
+scipy
+matplotlib
+networkx
+pydantic
+pyyaml
+scikit-learn==1.5.1   # the released artifact is pickled with 1.5.1
+joblib
+pytest                # optional

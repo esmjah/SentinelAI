@@ -1,6 +1,6 @@
 """Read-only queries over the well-integrity knowledge graph.
 
-Used by pipeline/ (residual, diagnosis, decision, rationale) and by demo_queries.py.
+Used by decision_engine/ (evidence, diagnosis, decision, rationale) and by demo_queries.py.
 """
 from __future__ import annotations
 
@@ -145,6 +145,16 @@ def risk_paths(g, mid: str, max_len: int = 6) -> list[list[str]]:
 
 def hazards_reachable(g, mid: str) -> list[str]:
     return sorted({p[-1] for p in risk_paths(g, mid)})
+
+
+def direct_hazards(g, fm_id: str) -> list[str]:
+    """Hazards a failure mode LEADS_TO directly (the release has already started)."""
+    return [h for h in _out(g, fm_id, E.LEADS_TO) if g.nodes[h]["type"] == N.HAZARD.value]
+
+
+def degraded_barriers(g, fm_id: str) -> list[str]:
+    """Barrier envelopes a failure mode DEGRADES."""
+    return _out(g, fm_id, E.DEGRADES)
 
 
 def compound_paths(g) -> list[list[str]]:

@@ -1,0 +1,78 @@
+{
+ "CASE-01": {
+  "scenario": "S01_healthy",
+  "description": "Healthy well: start-up heating only",
+  "mechanism": null,
+  "extra": []
+ },
+ "CASE-02": {
+  "scenario": "S02_tubing_thread_leak",
+  "description": "Tubing thread leak at 1,500 m from 20 h, producing",
+  "mechanism": "FMech.TUB.THREAD",
+  "extra": []
+ },
+ "CASE-03": {
+  "scenario": "S03_packer_leak",
+  "description": "Packer element leak at 2,300 m from 20 h, producing",
+  "mechanism": "FMech.PKR.ELAST",
+  "extra": []
+ },
+ "CASE-04": {
+  "scenario": "S04_hanger_seal_bled",
+  "description": "Tubing-hanger seal leak from 20 h; A bled at 40 h",
+  "mechanism": "FMech.THS.SEAL",
+  "extra": []
+ },
+ "CASE-05": {
+  "scenario": "S05_casing_leak_AB",
+  "description": "Production-casing leak A<->B at 800 m from 20 h",
+  "mechanism": "FMech.CSG.LEAK",
+  "extra": []
+ },
+ "CASE-06": {
+  "scenario": "S06_cement_gas_B_bled",
+  "description": "Cement micro-annulus gas into B from 12 h; B bled at 40 h",
+  "mechanism": "FMech.CEM.MICRO",
+  "extra": []
+ },
+ "CASE-07": {
+  "scenario": "S07_A_outlet_leak_env",
+  "description": "A-annulus outlet seal leaking to environment from 20 h",
+  "mechanism": "FMech.THSP.SEAL",
+  "extra": []
+ },
+ "CASE-08": {
+  "scenario": "S08_int_casing_leak_bled",
+  "description": "Intermediate-casing leak to formation from 20 h; B bled at 40 h",
+  "mechanism": "FMech.ICSG.LEAK",
+  "extra": []
+ },
+ "CASE-09": {
+  "scenario": "S09_choke_erosion",
+  "description": "Choke trim erosion from 6 h",
+  "mechanism": "FMech.CHK.EROS",
+  "extra": []
+ },
+ "CASE-10": {
+  "scenario": "S10_compound_silent",
+  "description": "Known 60 % casing wear + packer leak + cement gas",
+  "mechanism": "FMech.PKR.ELAST",
+  "extra": [
+   "FMech.CEM.MICRO"
+  ]
+ },
+ "CASE-11": {
+  "scenario": "S11_frozen_transmitter",
+  "description": "A transmitter frozen at 40 h; thread leak from 46 h",
+  "mechanism": "FMech.SEN.FROZEN",
+  "extra": [
+   "FMech.TUB.THREAD"
+  ]
+ },
+ "CASE-12": {
+  "scenario": "S12_outside_envelope",
+  "description": "Choke 100/64, outside the twin envelope",
+  "mechanism": null,
+  "extra": []
+ }
+}

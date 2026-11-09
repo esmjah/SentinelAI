@@ -1,0 +1,65 @@
+{
+ "calibration": "CAL-W01-1.0.0",
+ "decisions": {
+  "S01_healthy": [
+   "NO_ACTION",
+   "EXPECTED_LOSS",
+   "FM.SCP.B"
+  ],
+  "S02_tubing_thread_leak": [
+   "ALARM",
+   "EXPECTED_LOSS",
+   "FM.COMM.TA"
+  ],
+  "S03_packer_leak": [
+   "ALARM",
+   "EXPECTED_LOSS",
+   "FM.COMM.TA"
+  ],
+  "S04_hanger_seal_bled": [
+   "ALARM",
+   "G4_ROBUST",
+   "FM.COMM.TA"
+  ],
+  "S05_casing_leak_AB": [
+   "ALARM",
+   "G4_ROBUST",
+   "FM.COMM.AB"
+  ],
+  "S06_cement_gas_B_bled": [
+   "TEST",
+   "EXPECTED_LOSS",
+   "FM.SCP.B"
+  ],
+  "S07_A_outlet_leak_env": [
+   "ALARM",
+   "EXPECTED_LOSS",
+   "FM.COMM.TA"
+  ],
+  "S08_int_casing_leak_bled": [
+   "TEST",
+   "EXPECTED_LOSS",
+   "FM.SCP.B"
+  ],
+  "S09_choke_erosion": [
+   "ALARM",
+   "EXPECTED_LOSS",
+   "FM.FLOWCTRL"
+  ],
+  "S10_compound_silent": [
+   "ALARM",
+   "G2_MARGIN",
+   "FM.MARGIN.B"
+  ],
+  "S11_frozen_transmitter": [
+   "ABSTAIN",
+   "G1_DATA_QUALITY",
+   "FM.MONITOR"
+  ],
+  "S12_outside_envelope": [
+   "ABSTAIN",
+   "G3_MODEL_VALIDITY",
+   "FM.SCP.B"
+  ]
+ }
+}

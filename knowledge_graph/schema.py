@@ -42,8 +42,8 @@ class NodeType(str, Enum):
     HAZARD = "Hazard"
     LIMIT = "Limit"
     DECISION_POLICY = "DecisionPolicy"
-    RISK_ASSESSMENT = "RiskAssessment"   # written at runtime by pipeline/
-    DECISION = "Decision"                # written at runtime by pipeline/
+    RISK_ASSESSMENT = "RiskAssessment"   # written at runtime by decision_engine/
+    DECISION = "Decision"                # written at runtime by decision_engine/
 
 
 RISK_TYPES = {NodeType.FAILURE_MODE, NodeType.BARRIER_ENVELOPE, NodeType.HAZARD, NodeType.LIMIT,
@@ -85,7 +85,7 @@ class EdgeType(str, Enum):
     LEADS_TO = "LEADS_TO"                # barrier envelope or failure mode -> hazard
     CHECKED_AGAINST = "CHECKED_AGAINST"  # failure mode -> limit
     GOVERNS = "GOVERNS"                  # policy -> failure mode
-    # runtime (pipeline/)
+    # runtime (decision_engine/)
     ASSESSES = "ASSESSES"
     BASED_ON = "BASED_ON"
     RESULTS_IN = "RESULTS_IN"

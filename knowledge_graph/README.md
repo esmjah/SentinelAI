@@ -6,7 +6,9 @@
 > module of SentinelAI. It teaches the engineering background (well construction, well barriers,
 > annulus pressure management, failure taxonomy, testing) and shows how each idea becomes nodes and
 > edges in a graph that can be queried. Every number quoted is produced by the code
-> (`python -m knowledge_graph.demo_queries`, `python -m knowledge_graph.twin_link`).
+> (`python -m knowledge_graph.demo_queries`, `python -m knowledge_graph.twin_link`) and is checked against
+> this manual by `python -m knowledge_graph.reproduce` (Chapter 23). The equations carry the numbers (G.1) to
+> (G.14) they have in Appendix G of the *End-to-End Solution Description*.
 >
 > **Synthetic and illustrative.** *Ivar Aasen* and *W01* are used only as names. All tags, ratings,
 > limits, costs and parameters are invented but physically consistent with the `digital_twin`
@@ -14,6 +16,8 @@
 > of the cited documents for normative requirements.
 
 ![The two coupled views of the knowledge graph](kg_two_views.png)
+
+*Figure 1. The whole graph as two coupled views, drawn from the graph itself: the Asset view (hierarchy, items, mechanisms with their best test class and the twin badge) and the Risk view (failure modes, barrier envelopes, hazards, the active limits). Cross-view `CAUSES` edges are coloured by the annulus of the failure mode.*
 
 ---
 
@@ -34,6 +38,22 @@
 reliability, with twin-predicted outcomes), and *what it means* (which barrier is degraded, which
 hazard comes closer, which limit applies). Every one of those statements is a node or an edge
 that can be inspected, versioned and cited.
+
+---
+
+## What changed in this revision
+
+**The graph did not change.** `catalog.py`, `build_graph.py`, `twin_link.py`, `demo_queries.py`, `tag_map.yaml`, `signatures.yaml` and `kg.json` are byte-for-byte the files of the module you provided (`kg.json` is regenerated identically by `build_graph.py`). `schema.py` and `queries.py` differ only in comments, where `pipeline/` now reads `decision_engine/`. `__init__.py` additionally exports `analysis`. The graph still has 156 nodes and 488 edges, passes 9 structural rules and the 7 original consistency tests, and `SCHEMA_VERSION` stays `1.0.0`. All 21 chapters of the earlier manual are kept, in the same order, with their tables and equations. This revision adds:
+
+| Addition | Where |
+|---|---|
+| Equation numbers **(G.1)** to **(G.14)**, the numbers the equations have in Appendix G of the *End-to-End Solution Description*: the graph as a typed multigraph, the rules as formulas, risk paths, the evidence matrix and its minimum-cost cover, likelihood ratios and the error probability of a test | Chapter 22; 14.4 |
+| One figure style for all figures (the palette of the Solution Description, 300 dpi). Your three figures are redrawn from the graph; two are new: `kg_schema.png` and `kg_math.png` | Figures 1 to 5 |
+| `analysis.py` (the quantities of the manual as functions), `reproduce.py` (recomputes 330 quoted numbers, 565 with `--twin`), `figstyle.py`, `requirements.txt`, `verification_report.md`; `visualize.py` rewritten, `test_graph.py` extended from 7 to 17 tests | Chapters 18, 22, 23 |
+| Clarifications, each with its evidence: one wording change of this README, five points for the Solution Description | 23.4 |
+| Notation of the maths chapter | 22.10 |
+
+If you prefer the module exactly as you provided it, keep your own `visualize.py`, `test_graph.py` and `__init__.py` and leave out `analysis.py`, `reproduce.py` and `figstyle.py`. The graph, the tables and all results in this manual are unchanged by that choice; only the passages that cite those files, the new figures and Chapters 22 and 23 need them.
 
 ---
 
@@ -60,6 +80,8 @@ that can be inspected, versioned and cited.
 19. [Limitations](#19-limitations)
 20. [Glossary](#20-glossary)
 21. [References](#21-references)
+22. [Formal and mathematical reference](#22-formal-and-mathematical-reference)
+23. [Verification: reproducing every number](#23-verification-reproducing-every-number)
 
 ---
 
@@ -90,6 +112,10 @@ and show its work.
 They are two perspectives on **one** graph, joined by explicit cross-view edges: `CAUSES`
 (mechanism → failure mode), `IMPLEMENTED_BY` (barrier → item), `APPLIES_TO` and `LIMITED_BY`
 (limit → volume, item), `MANIFESTS_IN` (volume → failure mode).
+
+![The schema of the two views](kg_schema.png)
+
+*Figure 2. The schema on one page: what each view holds and how the views are joined. Every count is read from the graph.*
 
 ### 1.3 Why a graph and not tables
 
@@ -458,6 +484,8 @@ and 295 L brine; B bleed returns 2.11 Sm³ gas and 60.9 L brine; A after the shu
 
 ![Twin fingerprints](kg_signatures.png)
 
+*Figure 3. Twin-computed fingerprint of every simulated mechanism: pressure differences to the healthy twin (left) and change of the twin-computed MAASP (right). `PKR.MOVE` shares the leak model of `PKR.ELAST`, so its bars are identical.*
+
 ### 9.2 Production tubing
 
 **`FMech.TUB.THREAD` Tubing connection (thread) leak** — *Mechanical, leakage*; bore ↔ A at 1,500 m.
@@ -774,6 +802,8 @@ decision layer ask *which evidence to buy next*.
 
 ![Evidence map](kg_test_matrix.png)
 
+*Figure 4. Evidence map: which of the 26 tests can reveal which of the 23 mechanisms, by reliability class. The top strip shows the silent mechanisms (red): no online test can reveal them.*
+
 ### 12.4 Twin-predicted outcomes
 
 Some tests read exactly a quantity the twin computes. Their **predicted outcome** for each
@@ -804,6 +834,8 @@ For {thread leak, packer leak} the result is `TEST.TOPUP` (coverage: only the pa
 fluid level), `TEST.SHUTIN` (outcome: **+10.1 vs −9.6 bar**), and `TEST.PT.TUB` (coverage). Note
 that `TEST.BLEED.A` is *not* listed: both predict almost the same post-bleed reading (−2.9 vs
 −3.9). Coverage alone would wrongly suggest the bleed helps.
+
+The 6 bar threshold has a decision-theoretic reading (Section 22.5). For two equally likely mechanisms whose predicted readings differ by $\Delta$, with residual scale $\sigma_r = 3.04$ bar, the probability of choosing the wrong one is $\Phi(-\Delta/2\sigma_r)$: **0.06 %** for the shut-in test ($\Delta = 19.7$ bar), 16 % at the threshold, and **43 %** for the bleed test ($\Delta = 1.0$ bar), hardly better than a coin.
 
 ### 12.6 Silent mechanisms
 
@@ -925,16 +957,20 @@ in; every mechanism said to cause A–B communication must give opposite-sign re
 capacity-loss mechanism must lower MAASP by more than 50 bar. If the twin changes, the test shows
 which graph statements no longer hold.
 
+The signatures are reproducible. `python -m knowledge_graph.reproduce --twin` reruns `twin_link.py` against `digital_twin` and compares every stored value (234 numbers for the 15 mechanisms and the healthy reference) with `signatures.yaml`; the attachment of the signatures to the graph nodes is checked by `test_signatures_in_the_graph_equal_the_yaml`.
+
 ### 14.4 Signature matching
 
 `match_signature(g, observed)` ranks mechanisms by the distance between an observation and each
 signature, in units of a tolerance τ (default 5 bar):
 
-$$d(m) = \sqrt{\sum_k \left(\frac{x_k^{obs} - s_k(m)}{\tau}\right)^2}$$
+$$d(m) = \sqrt{\sum_k \left(\frac{x_k^{obs} - s_k(m)}{\tau}\right)^2} \qquad (\text{G.10})$$
 
 A pseudo-mechanism "(healthy)" with all signatures zero is ranked too, so "nothing is wrong" is
 always a candidate. This is a transparent first-pass diagnosis; a calibrated probability needs the
-statistical layer (`pipeline/`), which can use the same signatures as features.
+statistical layer (`decision_engine/`), which can use the same signatures as features.
+
+For the first observation of Section 17.1, $(-50, -2)$ bar, the distances are 0.66 (thread leak), 0.88 (packer), 2.38 (corrosion hole), 3.74 (A outlet seal) and 10.01 for the healthy pseudo-mechanism. Section 22.5 turns two distances into a likelihood ratio and a posterior.
 
 ### 14.5 Validity
 
@@ -983,7 +1019,7 @@ without touching the graph's engineering content.
 | Risk | `FailureMode` | 16 | `FM.COMM.AB` |
 | Risk | `BarrierEnvelope` / `Hazard` | 3 / 2 | `BE.OUTER`, `HZ.UGB` |
 | Risk | `Limit` / `DecisionPolicy` | 5 / 1 | `LIM.W01.MAWOP-B.A` |
-| Risk | `RiskAssessment` / `Decision` | runtime | written by `pipeline/` |
+| Risk | `RiskAssessment` / `Decision` | runtime | written by `decision_engine/` |
 
 ### 16.2 Edge types (count)
 
@@ -1031,11 +1067,13 @@ silent mechanisms truly leave no pressure trace; the common-cause elements are e
 production casing and its cement; MAWOP is below MAASP for both annuli; the shut-in test separates
 the thread leak from the packer leak.
 
+The module has 17 tests in `test_graph.py`: these 7, plus 10 that check the quantities of Chapter 22 (census, each rule separately, candidates and splitting tests, risk paths, the evidence matrix and its cover, likelihood ratio and error probability, miss costs, signatures against the YAML, the consistency predicates) and the full reproduction of Chapter 23. Section 22.7 lists the predicates.
+
 ---
 
 ## 17. Worked examples
 
-All outputs below are produced by `python -m knowledge_graph.demo_queries`.
+All outputs below are produced by `python -m knowledge_graph.demo_queries`, and every number is checked by `python -m knowledge_graph.reproduce` (Chapter 23).
 
 ### 17.1 A drops 50 bar below the twin while producing
 
@@ -1050,6 +1088,7 @@ All outputs below are produced by `python -m knowledge_graph.demo_queries`.
    | PKR.MOVE | 0.88 |
    | TUB.CORR | 2.38 |
    | THSP.SEAL | 3.74 |
+   | (healthy) | 10.01 |
 
 4. **What the ranking says.** A tubing or packer leak is draining A. These are primary-barrier
    failures (`risk_paths` → `BE.PRIMARY` → `HZ.LOC`).
@@ -1106,19 +1145,26 @@ All outputs below are produced by `python -m knowledge_graph.demo_queries`.
 | `build_graph.py` | Builds and validates the graph; exports `kg.json` |
 | `queries.py` | Read-only queries (table below) |
 | `demo_queries.py` | Prints the worked examples |
-| `visualize.py` | Draws `kg_two_views.png`, `kg_test_matrix.png`, `kg_signatures.png` |
-| `test_graph.py` | Consistency tests |
+| `visualize.py` | Draws the five figures: `kg_two_views.png`, `kg_schema.png`, `kg_test_matrix.png`, `kg_signatures.png`, `kg_math.png` |
+| `test_graph.py` | Consistency tests (17) |
+| `analysis.py` | The quantities of Chapter 22 as functions over the graph (no plotting, no file output) |
+| `reproduce.py` | Recomputes every number of this manual and compares it with the printed value (Chapter 23) |
+| `figstyle.py` | Figure style shared with the *End-to-End Solution Description* |
+| `verification_report.md` | The 330 checks of the last run, one row each |
+| `requirements.txt` | Packages |
 | `kg.json` | Node-link snapshot for Neo4j or industrial data-model import |
 
 ### 18.2 Commands (from the repository root)
 
 ```bash
-pip install networkx pydantic pyyaml matplotlib numpy scipy
+pip install -r knowledge_graph/requirements.txt
 python -m knowledge_graph.twin_link        # (re)compute signatures from digital_twin (~1 min)
 python -m knowledge_graph.build_graph      # build, validate, write kg.json
 python -m knowledge_graph.demo_queries     # worked examples
-python -m knowledge_graph.visualize        # figures
-python -m knowledge_graph.test_graph       # consistency tests (or pytest)
+python -m knowledge_graph.visualize        # the five figures (~15 s)
+python -m knowledge_graph.reproduce        # recompute every number of this manual: 330 checks (~5 s)
+python -m knowledge_graph.reproduce --twin # + rerun twin_link.py and compare with signatures.yaml: 565 checks (~40 s)
+python -m knowledge_graph.test_graph       # 17 consistency tests (or pytest)
 ```
 
 ### 18.3 Queries
@@ -1165,6 +1211,9 @@ python -m knowledge_graph.test_graph       # consistency tests (or pytest)
   uncertainty and mechanism frequencies.
 - `CAUSES` conditions are text; a reasoning layer still has to interpret the operating state.
 - `AGGRAVATES` is qualitative; the size of the effect comes from the twin.
+- The risk-path counts and the minimum-cost test cover of Chapter 22 are **structural** measures:
+  they say how connected a mechanism is to a hazard and which tests can reveal what, not how likely
+  a failure is or how often a test is run.
 
 These choices keep every statement inspectable. Each can be refined without changing the schema.
 
@@ -1195,6 +1244,11 @@ These choices keep every statement inspectable. Each can be refined without chan
 | **SIS** | Safety instrumented system, which holds trip authority |
 | **Virtual tag** | Model-computed data stream with its own uncertainty |
 | **WBE / WBS** | Well barrier element / well barrier schematic |
+| **Bayes error** | Probability of choosing the wrong one of two equally likely hypotheses; for Gaussian noise it depends only on the spread of the predicted readings relative to the residual scale (Section 22.5) |
+| **Incidence matrix** | Test × mechanism matrix of the `EVIDENCE_FOR` edges (Section 22.4) |
+| **Likelihood ratio** | Ratio of the likelihoods of two mechanisms for one observation (Section 22.5) |
+| **Minimum-cost cover** | Cheapest set of tests that can reveal every mechanism at least once (Section 22.4) |
+| **Risk path** | Simple path from a mechanism to a hazard along `CAUSES`, `AGGRAVATES`, `DEGRADES`, `LEADS_TO` (Section 22.3) |
 
 ---
 
@@ -1214,3 +1268,273 @@ These choices keep every statement inspectable. Each can be refined without chan
 - IEC 61508 and IEC 61511, *Functional safety*; Offshore Norge Guideline 070, *Application of IEC 61508 and IEC 61511 in the Norwegian petroleum industry.*
 - ISO 17776, *Offshore production installations — Major accident hazard management.*
 - ISO 31000, *Risk management — Guidelines.*
+- Karp, R. M. (1972). *Reducibility among combinatorial problems.* (The set-cover problem of Section 22.4.)
+- Van Trees, H. L. (1968). *Detection, Estimation, and Modulation Theory.* Wiley. (Likelihood ratios and the error probability of two Gaussian hypotheses, Section 22.5.)
+- Hagberg, A. A., Schult, D. A., Swart, P. J. (2008). *Exploring network structure, dynamics, and function using NetworkX.* Proceedings of the 7th Python in Science Conference. (The graph library.)
+
+
+---
+
+## 22. Formal and mathematical reference
+
+Chapters 1 to 21 describe what the graph contains. This chapter states what it **is**, formally, and the quantitative results that follow from its structure. The equations carry the numbers (G.1) to (G.14) they have in Appendix G of the *End-to-End Solution Description*. Every number is recomputed from the code by `analysis.py` and checked by `reproduce.py` (Chapter 23).
+
+### 22.1 The graph as a typed, attributed multigraph
+
+**Definition.** The knowledge graph is $G = (V, E, \tau, \nu, \pi)$. $V$ is the set of nodes, $\tau$ assigns every node one of 22 node types (20 static, 2 written at run time), $\nu$ assigns every node type to one of the two views, $E$ is a set of labelled edges (a multigraph: two nodes may be joined by several edge types) of 31 edge types (28 static, 3 at run time), and $\pi$ holds the attributes. An edge $(u, v, \rho)$ is admissible only if $(\tau(u), \tau(v))$ belongs to the **signature** of its edge type $\rho$, the "From → to" column of Section 16.2. The size of the static graph is
+
+$$\lvert V\rvert = 156, \qquad \lvert E\rvert = 488, \qquad \text{density} = \frac{\lvert E\rvert}{\lvert V\rvert\,(\lvert V\rvert - 1)} = 0.0202, \qquad \text{mean degree} = \frac{2\lvert E\rvert}{\lvert V\rvert} = 6.26 \qquad (\text{G.1})$$
+
+The 156 nodes are 1 installation, 4 systems, 5 equipment units, 4 subunits, 14 maintainable items, 3 containment volumes, 3 formation zones or external domains, 23 failure mechanisms, 9 sensors, 14 tags, 10 virtual tags, 2 simulation models, 11 parameters, 26 tests, 16 failure modes, 3 barrier envelopes, 2 hazards, 5 limits and 1 policy; 129 of them belong to the Asset view and 27 to the Risk view. The edge counts add up to 488 (Section 16.2).
+
+### 22.2 The structural rules as formulas
+
+For an edge type $\rho$ write $\rho(u, v)$ for $(u, v, \rho) \in E$, and $\text{Reach}(f)$ for the set of nodes reachable from $f$ by directed edges. The nine rules of Section 16.3 are universally quantified statements over $G$. Rules R1 to R4 are equation (G.2) and R5 to R9 equation (G.3) of Appendix G.
+
+| Rule | Formula | In words |
+|---|---|---|
+| R1 | $\forall m \in \text{Mech}\ \exists!\,u:\ \text{HAS\_MECHANISM}(u, m)$, with $u$ an item or a sensor | every mechanism has exactly one owner |
+| R2 | $\forall m\ \exists f:\ \text{CAUSES}(m, f)$ | every mechanism causes a failure mode |
+| R3 | $\forall m\ \exists t:\ \text{EVIDENCE\_FOR}(t, m)$ | every mechanism can be revealed by a test |
+| R4 | $\forall i \in \text{Item}\ \exists m:\ \text{HAS\_MECHANISM}(i, m)$ | every item can fail in some way |
+| R5 | $\forall f \in \text{Mode}:\ \text{Reach}(f) \cap \text{Hazard} \ne \emptyset$ | every failure mode has a path to a hazard |
+| R6 | $\forall f:\ \text{in-degree}_{\text{CAUSES}}(f) + \text{in-degree}_{\text{MANIFESTS\_IN}}(f) \ge 1$ | every failure mode is caused by something |
+| R7 | $\forall t \in \text{Tag}:\ \text{out-degree}_{\text{MEASURES}}(t) \ge 1$ | every measured or manual tag measures something |
+| R8 | $\forall t \in \text{Test}:\ \text{out-degree}_{\text{EVIDENCE\_FOR}}(t) + \text{out-degree}_{\text{MONITORS}}(t) \ge 1$ | every test gives evidence |
+| R9 | for each annulus $v$: $\lvert\{l : \text{APPLIES\_TO}(l, v),\ \text{kind}(l) = \text{MAASP},\ \text{superseded}(l) = \text{none}\}\rvert = 1$ | exactly one active MAASP |
+
+R1 to R4 make the Asset view complete (nothing fails without an owner, a consequence or a test); R5 and R6 make the Risk view complete; R9 states that the **current** limit is unique, which is what makes "the versioned graph wins" well defined. `analysis.rule_violations(g)` evaluates the nine rules separately; all nine have no violation.
+
+### 22.3 Queries as set expressions, and the risk paths
+
+The **candidate mechanisms** of a volume $v$ are those whose leak path connects to it, plus those of the items that form its walls:
+
+$$\text{Cand}(v) = \{m : \text{CONNECTS}(m, v)\} \cup \{m : \exists\, i,\ \text{BOUNDED\_BY}(v, i) \wedge \text{HAS\_MECHANISM}(i, m)\} \qquad (\text{G.4})$$
+
+so $\lvert\text{Cand}(\text{ANN-A})\rvert = 11$ and $\lvert\text{Cand}(\text{ANN-B})\rvert = 7$. The other queries have the same set-theoretic form:
+
+| Query | Definition |
+|---|---|
+| `tests_for(m)` | $\{t : \text{EVIDENCE\_FOR}(t, m)\}$, ordered by class (C, B, A) and then cost |
+| `active_limits(v)` | $\{l : \text{APPLIES\_TO}(l, v),\ \text{superseded}(l) = \text{none}\}$ |
+| `silent_mechanisms` | $\{m : \nexists\, t,\ \text{online}(t) \wedge \text{EVIDENCE\_FOR}(t, m)\}$: 8 mechanisms |
+| `shared_inputs(t1, t2)` | $\{x : \text{USES}(t_1, x)\} \cap \{x : \text{USES}(t_2, x)\}$ |
+| `common_cause_items` | items that `IMPLEMENT` two barrier envelopes: the production casing and its cement |
+| `risk_paths(m)` | simple paths from $m$ to a hazard in the risk subgraph (below) |
+| `compound_paths` | all simple `AGGRAVATES` paths with at least three nodes (here: two) |
+
+**Miss cost.** The cost of missing a failure mode is read from the policy node, never hard-coded:
+
+$$C_{miss}(f) = C_{LOC}\ \text{if}\ f\ \text{leads directly to a hazard}, \qquad C_{miss}(f) = C_{leak}\ \text{otherwise}, \qquad C_{LOC} = 500\ \text{MNOK},\ C_{leak} = 20\ \text{MNOK} \qquad (\text{G.5})$$
+
+Only three modes lead to a hazard directly: `FM.EXT`, `FM.XFLOW` and `FM.FLOWCTRL` (`analysis.miss_cost_nok`).
+
+**Risk paths.** The risk subgraph has the edges of type `CAUSES`, `AGGRAVATES`, `DEGRADES` and `LEADS_TO` (78 edges). It is a **directed acyclic graph** (checked), so the set $\Pi(m)$ of simple paths from a mechanism to a hazard is finite; the longest path has 6 nodes, so the cutoff of six edges in `risk_paths` never binds. The number of paths is a crude measure of the exposure of a mechanism through the structure:
+
+$$N_\pi(m) = \lvert\Pi(m)\rvert = \left\lvert\{\text{simple paths}\ m \leadsto h,\ h \in \text{Hazard}\}\right\rvert \qquad (\text{G.6})$$
+
+All 23 mechanisms reach a hazard. 10 reach **both** hazards, 13 reach loss of containment only, and none reaches underground flow alone (right panel of Figure 5):
+
+| Reaches both hazards | $N_\pi$ | Reaches loss of containment only | $N_\pi$ |
+|---|---|---|---|
+| `CHS.SEAL` | 9 | `CL.LEAK` | 5 |
+| `CSG.LEAK` | 9 | `SEN.DRIFT` | 5 |
+| `CSG.WEAR` | 8 | `SEN.FROZEN` | 5 |
+| `ICSG.LEAK` | 8 | `THS.SEAL` | 5 |
+| `PKR.ELAST` | 7 | `TUB.CORR` | 5 |
+| `THSP.SEAL` | 7 | `DHSV.FTC` | 4 |
+| `PKR.MOVE` | 6 | `DHSV.LCP` | 4 |
+| `CEM.MICRO` | 5 | `MV.FTC` | 4 |
+| `ICSG.WEAR` | 4 | `MV.LEAK` | 4 |
+| `CHSP.SEAL` | 3 | `PWV.LEAK` | 4 |
+|  |  | `TUB.WALL` | 4 |
+|  |  | `CHK.EROS` | 2 |
+|  |  | `TUB.THREAD` | 2 |
+
+The eight paths of production-casing wear, the silent mechanism of Section 17.3, run through all three barrier envelopes:
+
+| # | Path |
+|---|---|
+| 1 | wear → `MARGIN.A` → primary barrier → `HZ.LOC` |
+| 2 | wear → `MARGIN.A` → secondary barrier → `HZ.LOC` |
+| 3 | wear → `MARGIN.B` → secondary barrier → `HZ.LOC` |
+| 4 | wear → `MARGIN.B` → outer containment → `HZ.UGB` |
+| 5, 6 | wear → `MARGIN.A` → `MAASP.A` → primary or secondary barrier → `HZ.LOC` |
+| 7, 8 | wear → `MARGIN.B` → `MAASP.B` → secondary barrier → `HZ.LOC`, or outer containment → `HZ.UGB` |
+
+The `AGGRAVATES` subgraph (9 edges) has exactly two chains of three modes: `SCP.B` → `MARGIN.B` → `MAASP.B` and `FLUIDLOSS.A` → `MARGIN.B` → `MAASP.B`. Both end at the B limit, which is why Section 11.4 shows the silent compound as a collapse-margin story.
+
+### 22.4 Evidence as a bipartite graph: coverage and the minimum-cost cover
+
+The evidence structure is a bipartite graph between the 26 tests and the 23 mechanisms. Its incidence matrix $\mathbf{E}$ has $E_{tm} = 1$ exactly when $\text{EVIDENCE\_FOR}(t, m)$:
+
+$$\sum_{t, m} E_{tm} = 86, \qquad \bar d_{test} = \frac{86}{26} = 3.31\ (\max 9), \qquad \bar d_{mech} = \frac{86}{23} = 3.74\ (\min 1,\ \max 8) \qquad (\text{G.7})$$
+
+| | Class C (screening) | Class B (discriminating) | Class A (confirmatory) |
+|---|---|---|---|
+| tests | 7 | 5 | 14 |
+| `EVIDENCE_FOR` edges | 19 | 25 | 42 |
+
+The seven online (class C) tests cover only **15 of the 23** mechanisms; the other 8 are the silent ones: wall loss of the tubing, the production casing and the intermediate casing, and leakage and fail-to-close of the DHSV and the tree valves.
+
+**Minimum-cost cover.** Which tests must be run to be able to reveal every mechanism at least once, and what is the cheapest such set? With test costs $c_t$ this is the set-cover integer program
+
+$$\min_{x \in \{0, 1\}^{26}}\ \mathbf{c}^{T} x \qquad \text{subject to} \qquad \mathbf{E}^{T} x \ge \mathbf{1} \qquad (\text{G.8})$$
+
+solved exactly (`analysis.min_cost_cover`, `scipy.optimize.milp`). The optimum is **1,430 kNOK** with ten tests: the six free online tests (`RES.A`, `RES.B`, `AB.SIGN`, `CHOKE`, `DQ`, `DHG.X`) plus `SIS.FUNC` (50), `XT.LEAK` (80), `DHSV.INFLOW` (100) and `LOG.CAL` (1,200). The whole cost is the price of covering the eight silent mechanisms, and 84 % of it is one caliper log. The cover ignores reliability, timing and interactions between tests; it shows the **structural** fact behind Section 12.6: silent mechanisms can only be covered by scheduled class A tests, and the schedule, not an alarm, is their control.
+
+### 22.5 Signatures: matching, likelihood ratio and when a test separates
+
+**Signature.** For a simulated mechanism $m$ the twin is run with and without the fault under identical operations; the signature is the vector of differences of the observable quantities (Section 14.3):
+
+$$\mathbf{s}_m = \mathbf{y}(m, \text{ops}) - \mathbf{y}(\text{healthy}, \text{ops}) \qquad (\text{G.9})$$
+
+with components $\Delta A_{pre}$, $\Delta B_{pre}$, $\Delta A_{post}$, $\Delta B_{post}$, $\Delta A_{shutin}$, $\Delta\text{MAASP}_A$, $\Delta\text{MAASP}_B$, $\Delta q$, $\Delta P_{wh}$ and the bleed returns. **Matching** ranks an observation against all signatures plus the all-zero "healthy" pseudo-mechanism by the scaled distance (G.10) of Section 14.4, over the components the caller passes.
+
+| Observation $(\Delta A_{pre}, \Delta B_{pre})$ | Nearest | Next | Next | Healthy |
+|---|---|---|---|---|
+| $(-50, -2)$ bar | thread leak **0.66** | packer 0.88 | corrosion hole 2.38 | 10.01 |
+| $(-16, +12)$ bar | pack-off leak **0.07** | casing leak 0.08 | hanger seal 3.39 | 4.00 |
+
+**From distance to probability.** If the residual noise is isotropic Gaussian with standard deviation $\sigma_r = \sqrt{\sigma_{tag}^2 + \sigma_{virtual}^2} = 3.04$ bar (Section 13.3), then $-2 \ln \mathcal{L}_m = (\tau/\sigma_r)^2 d^2$, so the likelihood ratio of two mechanisms with distances $d_1$ and $d_2$ is
+
+$$\mathrm{LR}_{12} = \exp\left[\frac{1}{2}\left(\frac{\tau}{\sigma_r}\right)^2 \left(d_2^2 - d_1^2\right)\right], \qquad \left(\frac{\tau}{\sigma_r}\right)^2 = 2.70 \qquad (\text{G.11})$$
+
+For the first observation, $d_1^2 = 0.437$ (thread) and $d_2^2 = 0.778$ (packer), so $\mathrm{LR} = \exp(0.5 \times 2.70 \times 0.341) = 1.585$: with equal priors the posterior is **61 % thread, 39 % packer**. For the second, $\mathrm{LR} = 1.002$: the pack-off leak and the casing leak are **indistinguishable** from producing data. The distance is a transparent first-pass ranking, not a probability; the calibrated probability of a *mode* comes from the decision engine.
+
+**Which test separates two candidates?** A test with a twin-predicted reading $s_{m,k}$ for each candidate separates the set $M_c$ if the spread of the predictions exceeds a threshold $\delta$ of about two residual standard deviations:
+
+$$\text{spread}_k(M_c) = \max_{m \in M_c} s_{m,k} - \min_{m \in M_c} s_{m,k}, \qquad \text{separates} \iff \max_k\, \text{spread}_k \gt \delta = 6\ \text{bar} \qquad (\text{G.12})$$
+
+The threshold has a decision-theoretic reading. For two equally likely hypotheses whose predicted readings differ by $\Delta$, with isotropic Gaussian noise, the Bayes error probability of choosing between them is
+
+$$P_e = \Phi\left(-\frac{\Delta}{2\sigma_r}\right) \qquad (\text{G.13})$$
+
+where $\Phi$ is the standard normal distribution function (`analysis.bayes_error`).
+
+| Test and pair | Spread $\Delta$ | $P_e$ | Consequence |
+|---|---|---|---|
+| shut-in test: thread vs packer ($+10.1$ vs $-9.6$ bar) | 19.7 bar | **0.06 %** | separates; proposed |
+| the threshold $\delta = 2\sigma_r$ | 6 bar | 16 % | |
+| bleed test: thread vs packer ($-2.9$ vs $-3.9$ bar) | 1.0 bar | **43 %** | hardly better than a coin; not proposed |
+
+This is why the graph proposes the shut-in test and not the bleed test for this pair, although both "cover" both mechanisms.
+
+![Separability and risk-path exposure](kg_math.png)
+
+*Figure 5. Left: probability of confusing two mechanisms as a function of the spread of their predicted readings, with the three tests of the table. Right: number of risk paths from each of the 23 mechanisms to a hazard.*
+
+### 22.6 Limits as functions of the ratings
+
+The operating screen is the lesser of half the burst rating of the casing evaluated and 80 % of the collapse rating of the next inner string:
+
+$$\text{MAWOP}_X = \min\left(0.5\,R_b^{ev},\ 0.8\,R_c^{inner}\right) \qquad (\text{G.14})$$
+
+| Annulus | $0.5\,R_b$ (casing evaluated) | $0.8\,R_c$ (inner string) | MAWOP |
+|---|---|---|---|
+| A | $0.5 \times 473.7 = 236.85$ (production casing) | $0.8 \times 517.1 = 413.7$ (tubing) | **236.8 bar** |
+| B | $0.5 \times 237.9 = 118.95$ (intermediate casing) | $0.8 \times 327.5 = 262.0$ (production casing) | **118.9 bar** |
+
+For both annuli MAWOP is below MAASP (236.8 against 330 bar, 118.9 against 205 bar), which is one of the consistency tests. The policy node holds the three costs, the abstention width and the dwell; because $C_{miss}$ is derived from the graph by (G.5), the decision thresholds are a function of the graph and change when a node changes.
+
+### 22.7 Consistency between graph and twin
+
+Each consistency test is a predicate on the signatures and the limits (`analysis.consistency_predicates` evaluates them by name):
+
+| Predicate | In `test_graph.py` |
+|---|---|
+| structure valid: the nine rules hold | `test_structure_valid` |
+| every simulated mechanism has a signature | `test_every_simulated_mechanism_has_a_signature` |
+| mechanisms that cause tubing–A communication drain A while producing ($\Delta A_{pre} \lt -6$) or raise it when shut in ($\Delta A_{shutin} \gt 6$); those that cause A–B communication give opposite-sign residuals; those that cause SCP in B and are bled in B rebuild B by more than 3 bar; capacity-loss mechanisms lower MAASP by more than 50 bar; flow-control mechanisms change the rate by more than 20 Sm³/d | `test_signatures_agree_with_causes` |
+| silent simulated mechanisms leave less than 1 bar on every pressure | `test_silent_mechanisms_have_no_pressure_signature` |
+| the common-cause elements are exactly the production casing and its cement | `test_common_cause_is_detected` |
+| MAWOP is below MAASP for both annuli | `test_mawop_below_maasp` |
+| the shut-in test separates thread and packer leaks ($19.7 \gt 6$ bar) | `test_shutin_discriminates_thread_from_packer` |
+
+If the twin changes, the predicates that fail show exactly which statements of the graph are no longer true.
+
+### 22.8 Computational remarks
+
+The queries are cheap: `candidate_mechanisms` is $O(\deg)$, `discriminating_tests` is $O(\lvert T\rvert \cdot \lvert M_c\rvert)$ with 26 tests, and `risk_paths` enumerates at most nine paths per mechanism because the risk subgraph is acyclic. The set cover is a small integer program solved once. Building the graph, validating the nine rules and running the 17 tests takes a few seconds, so a change to the catalogue cannot enter the system unchecked.
+
+### 22.9 The functions of `analysis.py`
+
+| Function | Returns | Equation |
+|---|---|---|
+| `census(g)` | node and edge counts by type, density, mean degree, views | (G.1) |
+| `rule_violations(g)` | violations of each rule R1 to R9 | (G.2), (G.3) |
+| `risk_subgraph(g)`, `risk_exposure(g)` | the risk DAG; paths, hazards and length per mechanism | (G.6) |
+| `miss_cost_nok(g, mode)` | cost of missing a failure mode, from the policy | (G.5) |
+| `evidence_matrix(g)`, `evidence_summary(g)` | the incidence matrix; degrees, class split, online coverage, silent set | (G.7) |
+| `min_cost_cover(g)` | cheapest test set that covers every mechanism | (G.8) |
+| `signature_distance(g, observed, m)` | scaled distance to a mechanism or to "healthy" | (G.10) |
+| `likelihood_ratio(d1, d2, sigma_r)`, `posterior_equal_priors(lr)` | likelihood ratio and posterior | (G.11) |
+| `spread(g, test, mechanisms)` | spread of the twin-predicted readings of a test | (G.12) |
+| `bayes_error(delta, sigma_r)` | error probability of two equally likely hypotheses | (G.13) |
+| `mawop_bar(burst, collapse)` | MAWOP and its two terms | (G.14) |
+| `consistency_predicates(g)` | the consistency checks as named predicates | 22.7 |
+
+### 22.10 Notation
+
+| Symbol | Meaning |
+|---|---|
+| $G$, $V$, $E$, $\tau$, $\nu$, $\pi$ | the graph, its nodes, labelled edges, node-type map, view map and attributes |
+| $\rho(u, v)$, $\Sigma_\rho$ | the edge $(u, v, \rho)$; the signature (admissible type pairs) of the edge type $\rho$ |
+| $\text{Cand}(v)$, $\text{Reach}(f)$, $\Pi(m)$, $N_\pi(m)$ | candidate mechanisms of a volume, reachable set, set and number of risk paths |
+| $\mathbf{E}$, $\mathbf{c}$, $x$ | evidence incidence matrix (26 × 23), test costs, cover indicator |
+| $\mathbf{s}_m$, $s_{m,k}$ | signature of mechanism $m$ and its component $k$ |
+| $d$, $\tau$ | signature distance and its tolerance (5 bar) |
+| $\sigma_{tag}$, $\sigma_{virtual}$, $\sigma_r$ | transmitter noise (0.5), virtual-tag model scale (3.0), residual scale (3.04 bar) |
+| $\mathrm{LR}_{12}$, $\delta$, $\Delta$, $P_e$, $\Phi$ | likelihood ratio, discrimination threshold (6 bar), spread of predicted readings, Bayes error, normal distribution function |
+| $C_{miss}$, $C_{LOC}$, $C_{leak}$ | miss cost of a failure mode and the two policy values |
+| $R_b$, $R_c$ | burst and collapse ratings (bar) |
+
+
+---
+
+## 23. Verification: reproducing every number
+
+### 23.1 The command
+
+```bash
+python -m knowledge_graph.reproduce              # 330 checks, about 5 s
+python -m knowledge_graph.reproduce --twin       # + rerun twin_link.py against digital_twin: 565 checks, about 40 s
+python -m knowledge_graph.reproduce --md verification_report.md --json verification_report.json
+```
+
+Each check recomputes one quoted quantity from the code and compares it with the value printed in this manual or in the *End-to-End Solution Description*. It passes when the absolute difference is within a tolerance, which is half a unit of the last printed digit unless stated. The exit code is 1 if any check fails, so the command can run in CI. The 330 checks of the last run (all passed) are in `verification_report.md`.
+
+| What is checked | Checks |
+|---|---|
+| Size, node and edge counts by type, views | 57 |
+| The nine structural rules, one by one | 10 |
+| Candidates, signature matching, tests that split candidates, silent set, common cause, risk paths, compound chains | 50 |
+| Twin reach, limits and MAWOP, policy, miss costs, tag scales | 37 |
+| Evidence matrix and the minimum-cost cover | 23 |
+| The 15 fingerprints, bleed returns and the healthy reference | 137 |
+| Likelihood ratio, error probability, consistency predicates | 16 |
+| **Total** | **330** |
+
+With `--twin` the script also reruns `twin_link.py` (which needs `digital_twin` v1.0.0) and compares all 234 stored values (225 for the 15 mechanisms, 9 for the healthy reference) with `signatures.yaml`; with the twin version this adds 235 checks. `twin_link.py` and `signatures.yaml` are unchanged.
+
+### 23.2 How the pieces relate
+
+`build_graph.py` turns the catalogue into the graph and `validate()` checks the nine rules. `queries.py` answers questions about it. `analysis.py` computes the quantities that Chapter 22 states; it never changes the graph. `test_graph.py` keeps the graph consistent with the twin's signatures, and `reproduce.py` keeps this manual consistent with the code: when a number in a table changes, one of the two fails. Nothing in `analysis.py` is a second model of the well; the physics is in `digital_twin/`.
+
+### 23.3 What the check found
+
+Recomputing every quoted number from the code showed that **the graph agrees with the manual**: all counts, distances, paths, costs and limits match, `kg.json` regenerates identically, and `twin_link.py` reproduces the stored signatures. The points below are clarifications, not corrections of the graph.
+
+### 23.4 Clarifications made while reproducing the numbers
+
+| # | Earlier statement | Clarified | Evidence |
+|---|---|---|---|
+| 1 | The statistical layer is called `pipeline/` (Section 14.4, the node-type table 16.1, `schema.py`, `queries.py`) | `decision_engine/`; "pipeline" is reserved for training and CI/CD | Solution Description, Section 3.6 |
+
+Five further points concern the *End-to-End Solution Description*, not this README, and are listed for its next revision:
+
+- **Likelihood ratio.** Its G.5 prints the thread / packer ratio as 1.59. The exact value is 1.585 and rounds to **1.58** (posterior 61 % either way).
+- **Figure of the fingerprints.** Its Figure 11 draws 14 mechanisms; the graph stores 15 signatures, the extra one being `PKR.MOVE` with the same values as `PKR.ELAST` (Figure 3 here marks it).
+- **Consistency tests.** Its G.7 lists seven predicates, which group the checks of one test (`test_signatures_agree_with_causes`) into three rows and omit the two structural tests (structure valid, every simulated mechanism has a signature). Section 22.7 gives the one-to-one list.
+- **`compound_paths`.** Its G.3 calls them "maximal" chains; the function returns all simple `AGGRAVATES` paths with at least three nodes. The result is the same here (two chains).
+- **Which components are matched.** Its G.5 says the observation is restricted to the components valid for the operating state; `match_signature` uses the components the caller passes. Choosing them by operating state (a bleed experiment needs the post-bleed components) is done by the decision engine.

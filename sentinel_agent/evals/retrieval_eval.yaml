@@ -1,0 +1,36 @@
+# Retrieval evaluation set: question -> the document (and optionally section) that must be retrieved.
+# relevant: list of "DOC_ID" or "DOC_ID|section substring"
+- {q: "What is the current MAASP of the A-annulus?", relevant: ["WIMS-W01-MAASP-A|Result"]}
+- {q: "Which element governs the A-annulus MAASP while producing?", relevant: ["WIMS-W01-MAASP-A|Result"]}
+- {q: "MAASP of the B-annulus and the casing-head spool rating", relevant: ["WIMS-W01-MAASP-B|Result"]}
+- {q: "Why can the B-annulus MAASP fall when the A-annulus is bled?", relevant: ["WIMS-W01-MAASP-B|Sensitivity"]}
+- {q: "How is MAWOP calculated?", relevant: ["WIMS-W01-MAWOP|Rule"]}
+- {q: "MAWOP value for the B-annulus", relevant: ["WIMS-W01-MAWOP|Values"]}
+- {q: "How do I perform an annulus bleed-down and build-up test?", relevant: ["PROC-WI-011|Steps"]}
+- {q: "How to interpret a rebuild towards tubing-head pressure after a bleed", relevant: ["PROC-WI-011|Interpretation"]}
+- {q: "Can we bleed the annulus while it is still heating up?", relevant: ["PROC-WI-011|Preconditions"]}
+- {q: "How long should the build-up be recorded after a bleed?", relevant: ["PROC-WI-011|Steps"]}
+- {q: "Shut-in communication test between tubing and A-annulus", relevant: ["PROC-WI-012"]}
+- {q: "Why does a tubing leak drain the annulus while producing?", relevant: ["PROC-WI-012|Principle", "HIST-WI-EVENTS|W07"]}
+- {q: "What does the procedure say when pressure exceeds MAWOP?", relevant: ["PROC-WI-010|Escalation"]}
+- {q: "Categories of annulus pressure: thermal, operator imposed, sustained", relevant: ["PROC-WI-010|Categories", "STDN-API-RP90-1"]}
+- {q: "Who has authority to shut in the well?", relevant: ["GOV-SAI-001|Role", "PROC-WI-010|Escalation"]}
+- {q: "Cost of an A-annulus pressure test MIT-A", relevant: ["PROC-WI-020"]}
+- {q: "How much does a cement bond log cost?", relevant: ["PROC-WI-020"]}
+- {q: "Packer differential pressure rating and validation grade", relevant: ["DS-PKR-W01|Ratings"]}
+- {q: "Packer element material and temperature limit", relevant: ["DS-PKR-W01|Ratings"]}
+- {q: "Burst and collapse rating of the production casing", relevant: ["DS-TUBCSG-W01|Strings"]}
+- {q: "Effect of wall loss on collapse capacity", relevant: ["DS-TUBCSG-W01|Wall loss"]}
+- {q: "Rating of the tubing-head spool and the master valve", relevant: ["DS-WH-W01|Equipment"]}
+- {q: "Which elements form the primary well barrier?", relevant: ["WBS-W01|Primary", "STDN-NORSOK-D010"]}
+- {q: "Common well barrier elements shared by primary and secondary barrier", relevant: ["WBS-W01|Common", "STDN-NORSOK-D010|Independence"]}
+- {q: "Is the B-annulus a well barrier?", relevant: ["WBS-W01|Outer"]}
+- {q: "Past event where a low A-annulus pressure was dismissed as cooling", relevant: ["HIST-WI-EVENTS|W07"]}
+- {q: "Historical B-annulus rebuild caused by cement gas migration", relevant: ["HIST-WI-EVENTS|W03"]}
+- {q: "Frozen annulus transmitter event", relevant: ["HIST-WI-EVENTS|W01-2025"]}
+- {q: "Two-barrier principle in NORSOK D-010", relevant: ["STDN-NORSOK-D010"]}
+- {q: "ISO 14224 failure mode versus failure mechanism", relevant: ["STDN-ISO14224"]}
+- {q: "Proof testing of valves that fail on demand", relevant: ["STDN-IEC61511"]}
+- {q: "Can an AI model trip the well?", relevant: ["GOV-SAI-001|Role", "STDN-IEC61511|Consequence"]}
+- {q: "Costs of a false alarm and of a missed loss of containment", relevant: ["GOV-SAI-001|Costs"]}
+- {q: "US regulation for casing pressure management", relevant: ["REGN-30CFR250-CPM"]}
