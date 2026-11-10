@@ -10,7 +10,7 @@ SentinelAI decides, in near real time, whether a barrier in an oil well is faili
 
 ## The solution in one paragraph
 
-A physics-based **digital twin** says what the well *should* do. A **knowledge graph** says what exists, how it can fail, which tests reveal each failure, which limits apply and what each mistake costs. A **decision engine** turns the difference between measurement and twin into a calibrated probability for each failure mode, with an uncertainty interval. It then picks the action with the smallest expected cost after four safety gates. A **conversational agent** retrieves documents, reads data and explains the result in plain language. Its text is accepted only if every number, citation, limit revision, causal claim and action word can be traced to evidence. The agent never decides, and no part of the system trips the well: that stays with the safety instrumented system (SIS).
+A physics-based **digital twin** says what the well *should* do. A **knowledge graph** says what exists, how it can fail, which tests reveal each failure, which limits apply and what each mistake costs. A **decision engine** turns the difference between measurement and twin into a calibrated probability for each failure mode, with an uncertainty interval. It then picks the action with the smallest expected cost after five safety gates and a dwell-and-hysteresis filter. A **conversational agent** retrieves documents, reads data and explains the result in plain language. Its text is accepted only if every number, citation, limit revision, causal claim and action word can be traced to evidence. The agent never decides, and no part of the system trips the well: that stays with the safety instrumented system (SIS).
 
 > **The principle:** the deterministic layer decides, the language model explains, the gate verifies; the safety system trips.
 
@@ -93,7 +93,7 @@ The modules are layered from physics at the bottom to conversation at the top. E
 | Layer | Owns | Does not do |
 |---|---|---|
 | `sentinel_agent` | Conversation, choice of tools, document retrieval, plain-language explanation, scope guard, grounding gate, audit | Set or change an action, invent a number, act on the well |
-| `decision_engine` | Evidence from residuals, calibrated failure-mode probabilities, cost-based action, four gates, rationale draft, release of the calibration model | Free-form conversation, document retrieval |
+| `decision_engine` | Evidence from residuals, calibrated failure-mode probabilities, cost-based action, five gates, escalation filter, rationale draft, release of the calibration model | Free-form conversation, document retrieval |
 | `knowledge_graph` | Assets, mechanisms, modes, barriers, hazards, tests, limits with revisions, costs, policy, twin signatures | Time-series reasoning or learning |
 | `digital_twin` | Expected pressures, temperatures, rates and limits; failure injection; bleed and shut-in predictions; sensor model | Decisions; knowledge of what failures cost |
 
@@ -140,7 +140,7 @@ The graph has 156 nodes and 488 edges in two coupled views. The **asset view** i
 
 ![The decision engine](decision_engine/de_engine_flow.png)
 
-*The four runtime steps, the four gates and what each step reads from the knowledge graph and from the released artifact (from `decision_engine/`).*
+*The four runtime steps, the five gates and what each step reads from the knowledge graph and from the released artifact (from `decision_engine/`).*
 
 | Step | File | Question |
 |---|---|---|

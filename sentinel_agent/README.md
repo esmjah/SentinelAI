@@ -144,7 +144,7 @@ SentinelAI has four modules, layered from physics to conversation:
 |---|---|
 | **decision engine** | `decision_engine/`: the runtime component that turns evidence into an action. "Deterministic" means its *inference* is a pure function of the inputs and a versioned artifact; the artifact itself is a trained, calibrated statistical model |
 | **advisor** | the agent tool `assess_well`, which calls the decision engine |
-| **training pipeline** | `decision_engine/training/`: the offline job that generates data, fits the calibrator and must pass release gates RG1–RG4 before an artifact is used |
+| **training pipeline** | `decision_engine/training/`: the offline job that generates data, fits the calibrator and must pass release gates RG1–RG5 before an artifact is used |
 | **CI/CD pipeline** | the release automation that runs the tests and evaluations of all four modules (Section 13.2) |
 | **ingestion / retrieval pipeline** | `ingest/`: parse, chunk, screen, embed and index the documents (Chapter 5) |
 
@@ -753,7 +753,7 @@ A reading passes through two coupled stochastic systems: the numeric model and t
 
 ```
 sensor noise ─► twin error ─► residual z ─► calibrated p(mode) [interval] ─► cost-based action ─┐
-   (σ tag)        (σ virtual)                (isotonic, prior shift,           (gates G1–G4)      │
+   (σ tag)        (σ virtual)                (isotonic, prior shift,           (gates G1–G5)      │
                                               bootstrap)                                          ▼
                      retrieval: right document? current revision? ─► passages ─┐          Decision node
                      generation: sampling, hallucination, faithfulness ────────┼──► text ──► gate ──► operator

@@ -34,7 +34,7 @@
 | **Output** | One of `NO_ACTION`, `TEST`, `ALARM`, `ABSTAIN`, with failure mode, calibrated probability and interval, next evidence, expected losses, limits and a cited rationale |
 | **Four runtime steps** | `evidence.py` → `diagnosis.py` → `decision.py` → `rationale.py` |
 | **Deterministic?** | At inference, yes: same inputs + same released artifact ⇒ same decision. The artifact itself is a *trained statistical model* (gradient-boosted trees + isotonic calibration + bootstrap ensemble) |
-| **Training** | `training/` — offline job: 1,200 synthetic runs, split by run, fit, bootstrap, evaluate, **release gates RG1–RG4**, promote or reject |
+| **Training** | `training/` — offline job: 1,200 synthetic runs, split by run, fit, bootstrap, evaluate, **release gates RG1–RG5**, promote or reject |
 | **Released artifact** | `artifacts/calibration_W01.joblib` + model card `calibration_W01.json` + `golden_decisions.json` |
 | **Quality** | ECE 0.019 (naive 0.166); Brier 0.124 (naive 0.234); 12/12 golden scenarios reproduced |
 | **Safety boundary** | Advisory only; trip authority stays with the SIS named on the policy node |
@@ -135,7 +135,7 @@ The answer is one of four actions:
 
 ![The decision engine](de_engine_flow.png)
 
-*Figure 2. The four runtime steps, the four gates and what each step reads from the knowledge graph and from the released artifact.*
+*Figure 2. The four runtime steps, the five gates and what each step reads from the knowledge graph and from the released artifact.*
 
 ### 1.4 Design principles
 
@@ -282,7 +282,7 @@ decision_engine/
 ├── __init__.py                 public API (Scenario, collect, features_at, FailureModeCalibrator, decide, ...)
 ├── evidence.py                 Step 1  residuals, features, data quality, twin validity, operational MAASP
 ├── diagnosis.py                Step 2  classes from the graph; FailureModeCalibrator (load + predict only)
-├── decision.py                 Step 3  costs and tests from the graph, expected loss, gates G1-G4
+├── decision.py                 Step 3  costs and tests from the graph, expected loss, gates G1-G5
 ├── rationale.py                Step 4  runtime graph nodes, cited draft, grounding gate R1-R7
 ├── escalation.py               post-engine dwell and hysteresis on the action stream (operator-facing state)
 ├── monitoring.py               stream replay of the scenarios: alarm rate, chatter, detection delay, PSI, ECE helper
@@ -298,7 +298,7 @@ decision_engine/
 │                               golden_decisions.json, reliability.png, confusion.png
 ├── training/                   OFFLINE job (never imported by the runtime)
 │   ├── dataset.py              synthetic labelled runs (cache dataset_W01.npz, git-ignored)
-│   └── train_calibrator.py     split, fit, bootstrap, evaluate, release gates RG1-RG4, promote
+│   └── train_calibrator.py     split, fit, bootstrap, evaluate, release gates RG1-RG5, promote
 ├── decision_scenarios.png
 └── out/                        per-scenario rationale + gate verdict, hallucination demo, audit.jsonl
 ```
@@ -309,7 +309,7 @@ decision_engine/
 |---|---|---|
 | `evidence.py` | Plant vs twin, A/B residuals, bleed returns, choke model, data quality, twin validity, operational MAASP | 4 |
 | `diagnosis.py` | Classes from the graph, applying the ensemble, isotonic maps, prior shift, interval, out-of-range check | 5 |
-| `decision.py` | Costs and tests from the graph, mechanism ranking, expected loss, value of information, four gates | 6 |
+| `decision.py` | Costs and tests from the graph, mechanism ranking, expected loss, value of information, five gates | 6 |
 | `rationale.py` | Runtime graph nodes, cited explanation, grounding gate R1–R7 | 7 |
 | `escalation.py` | Dwell and hysteresis on the stream of engine actions; changes what is surfaced, never the decision | 6.10 |
 | `monitoring.py`, `test_escalation.py` | Replay of the scenarios as a stream; alarm rate, chatter, detection delay, PSI drift, ECE helper; 7 tests | 10.8 |
@@ -965,7 +965,7 @@ apart. Please confirm. Advisory only; trips remain with the SIS."*
 ```
                      OFFLINE (CI job / retraining trigger)                         ONLINE (operator-facing)
  digital_twin ─► training/dataset.py ─► training/train_calibrator.py ─► gates ─► artifacts/ ─► diagnosis.py
- knowledge_graph   1,200 runs, cached     split, fit, bootstrap,          RG1-RG4   joblib +     load + predict
+ knowledge_graph   1,200 runs, cached     split, fit, bootstrap,          RG1-RG5   joblib +     load + predict
                    (dataset_W01.npz)      evaluate, figures                         model card   (never trains)
                                                                         └─ fail ─► artifacts/candidate/ (not used)
 ```
@@ -1236,7 +1236,7 @@ node in the graph, versioned like the limits.
 | **Model card** | Machine-readable description of an artifact: data, metrics, gates, versions |
 | **Operational MAASP** | MAASP computed from current pressures and known wall loss |
 | **Pre-posterior analysis** | Expected value of a test before it is done |
-| **Release gate** | A requirement an artifact must meet before it is used (RG1–RG4) |
+| **Release gate** | A requirement an artifact must meet before it is used (RG1–RG5) |
 | **Residual** | Measured minus twin-expected value |
 | **Signature** | Twin-computed difference between faulty and healthy behaviour |
 | **Silent mechanism** | Mechanism without online evidence |
