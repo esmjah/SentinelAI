@@ -16,6 +16,8 @@ A physics-based **digital twin** says what the well *should* do. A **knowledge g
 
 ---
 
+> **Presenting this repo?** Start with [`INTERVIEW.md`](INTERVIEW.md): focus choice, case-to-code map, the uncertainty trace, a self-critique, live-adaptation answers and the known gaps.
+
 ## Contents
 
 1. [The problem](#1-the-problem)
@@ -151,14 +153,17 @@ The residual of each annulus is scaled by its uncertainty, $z = r/\sigma$, with 
 
 **Probabilities and preferences are kept apart.** The diagnosis estimates what is probably true. The decision applies what each mistake costs, choosing the action with the smallest expected loss. For example, doing nothing costs $p \cdot \bar C$ in expectation. The action thresholds therefore follow from the costs, per failure mode, and a cost change moves them at once without retraining.
 
-**Four gates, in dependence order:**
+**Five gates:**
 
 - **G1 data quality:** a frozen or missing transmitter → `ABSTAIN`.
 - **G2 hard limits:** pressure at MAWOP, or less than 30 bar margin to the operational MAASP → `ALARM` before any probability is used.
 - **G3 model validity:** twin outside its envelope or a feature out of range → `ABSTAIN`.
 - **G4 decision-relevant uncertainty:** when the interval is wide and the best action differs across it, the engine takes the action with the smallest worst-case loss and asks for human review.
+- **G5 no evidence:** a `TEST` or `ALARM` is held back (→ `NO_ACTION`) when even the upper end of the interval is less than 3× the operational prior in odds. A probability at the base rate is not evidence, and without G5 the cost-derived thresholds fired on healthy wells.
 
-**Training is separate from inference.** An offline job (`training/`) generates 1,200 synthetic runs from the twin, fits the model and must pass four release gates (RG1–RG4) before an artifact is released. The runtime only loads the released artifact and never trains.
+**Training is separate from inference.** An offline job (`training/`) generates 1,200 synthetic runs from the twin, fits the model and must pass five release gates (RG1–RG5) before an artifact is released. RG5 requires zero raw alarms on healthy streams. The runtime only loads the released artifact and never trains.
+
+An optional escalation filter (`escalation.py`: dwell and hysteresis) sits after the engine and before the operator, and `monitoring.py` replays the scenarios as streams to measure alarm rate, chatter, detection delay and drift.
 
 → [`decision_engine/README.md`](decision_engine/README.md)
 
@@ -214,6 +219,24 @@ Case **CASE-05** is a production-casing leak between A and B that begins at 20 h
 
 ## 6. How uncertainty is handled
 
+### What does "0.5" mean?
+
+Many systems print a score such as 0.5 and treat it as "50 % chance of danger". In plain language, that is usually wrong:
+
+- A raw model output is a **ranking**, not a probability. 0.5 only means "scores higher than 0.3 and lower than 0.8". It says nothing about how often such readings are really failures. On a rare event (here about 1 in 500) a score of 0.5 may correspond to a real failure rate of 5 % or of 0.01 %.
+- A **fixed threshold at 0.5** is a convention, not a decision. It ignores that a missed leak costs thousands of times more than a false alarm.
+- A single number also hides **how sure** the model is. 0.5 from a well-understood reading and 0.5 from an unusual one look the same.
+
+How SentinelAI handles it:
+
+1. **No raw score reaches the decision.** The model output is calibrated (isotonic) so it means "of readings like this, this fraction were failures", then shifted from the training mix to the real base rate (0.002).
+2. **A range, not a point.** Every probability comes with a bootstrap interval. A wide interval means "not sure", and the engine then abstains or sends the case to a human (G4).
+3. **Thresholds come from costs.** The engine compares the expected loss of doing nothing, testing and alarming, using the policy costs for a miss and a false alarm. Change a cost and the thresholds move, without retraining.
+4. **Weak evidence is not escalated.** A probability barely above the base rate is held back (G5), and an alarm must persist before it is shown (dwell).
+5. **Bad data or unfamiliar conditions abstain** (G1, G3) instead of producing a confident-looking number.
+
+So the system answers "how likely, how sure, and what is the cheapest safe action", not "is it above 0.5".
+
 A reading passes through two coupled chains, and both end at the same Decision node:
 
 - **Numeric chain:** sensor → twin expectation → residual → calibrated probability → cost-based decision.
@@ -249,11 +272,12 @@ Every answer records the versions of everything that shaped it:
 | Document index | `index_version` (hash of embedder, chunk ids, content hashes) |
 | Prompt and model | prompt version and hash, model name |
 
-- **Release gates:** a new calibration artifact is promoted only if RG1–RG4 all pass:
+- **Release gates:** a new calibration artifact is promoted only if RG1–RG5 all pass:
   - RG1: calibration error at most 0.05
   - RG2: better than a naive baseline
   - RG3: test performance estimated on enough samples
   - RG4: the 12 golden scenarios keep their action, gate and failure mode
+  - RG5: no raw ALARM on three healthy streams with sampled plants, evaluated hourly (monitoring replay)
 
   A behaviour change on the golden set needs an explicit human decision.
 - **Training/serving parity:** one feature function serves both training and operations. The agent's advisor reproduces the engine's offline decisions exactly.
@@ -273,6 +297,8 @@ Every answer records the versions of everything that shaped it:
 | Twelve reference scenarios | 8 ALARM, 1 TEST, 1 NO_ACTION, 2 ABSTAIN; all rationales pass the gate |
 | Silent compound risk (60 % casing wear + packer leak + cement gas) | operational MAASP of B falls from 206.8 to 48.9 bar while every gauge looks normal; G2 alarms before any probability is used |
 | Agent: advisor reproduces the offline engine | 12 / 12 identical decisions |
+| Healthy streams, raw engine ALARM evaluations (stream replay) | 0 of 50 on S01 and 0 of 150 on three sampled plants (RG5); before gate G5: 7 of 50 |
+| Leak scenarios in the replay: first raw alarm for a fault from 20 h | 21 h; 23 h after the dwell filter |
 | Agent: answers grounded on the first attempt | 36 / 36 |
 | Agent: red-team attacks caught before the operator | 7 / 7 |
 | Retrieval, hybrid search on 34 labelled questions | hit@5 0.91, 0 superseded passages returned |
@@ -284,6 +310,7 @@ Every answer records the versions of everything that shaped it:
 ```
 SentinelAI/
 ├── README.md            this file
+├── INTERVIEW.md         interview guide: focus, case-to-code map, critique, findings
 ├── digital_twin/        physics: production, annulus, failure_modes, integrity, simulator, sensors, uncertainty
 ├── knowledge_graph/     schema, catalog, tag_map.yaml, twin_link, signatures.yaml, build_graph, queries
 ├── decision_engine/     evidence, diagnosis, decision, rationale, scenarios, artifacts/, training/
@@ -302,6 +329,8 @@ python -m sentinel_agent.data.generate                 # historian data for 12 c
 python -m sentinel_agent.ingest.ingest --local         # chunk, screen, embed and index the documents (offline)
 python -m sentinel_agent.chat --case CASE-05 --offline # talk to the agent (scripted model, no API key)
 python -m sentinel_agent.evals.run_evals               # evaluation suite E1–E4
+python -m decision_engine.monitoring                   # stream replay: alarm rate, chatter, drift (slow, minutes)
+python -m pytest decision_engine/test_escalation.py    # escalation filter and monitoring helpers
 ```
 
 With `OPENAI_API_KEY`, `LLM_MODEL`, `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` set in `sentinel_agent/.env`, the agent uses a real language model, OpenAI embeddings and Supabase pgvector. Without them, everything runs offline with a local vector store, a hashing embedder and a scripted model.
@@ -315,7 +344,11 @@ With `OPENAI_API_KEY`, `LLM_MODEL`, `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` se
 - **Some failures are invisible until tested.** Early cement gas and early choke erosion can stay near the prior until a bleed or test. Silent mechanisms such as casing wear are managed by scheduled inspections, not alarms.
 - **Offline retrieval numbers use a lexical embedder.** The fusion must be confirmed on the production embedder.
 - **The gate checks traceability, not wisdom.** A fully cited text can still emphasise the wrong thing; human review samples remain part of the process.
-- **Monitoring and deployment are not built.** No dashboards, alerts, infrastructure-as-code or hysteresis on escalation yet. Monitoring signals are defined and partly present in the audit lines.
+- **Monitoring and deployment are only prototyped.** `decision_engine/escalation.py` adds dwell and hysteresis, and `decision_engine/monitoring.py` replays the scenarios to compute alarm rate, chatter and PSI drift. There are no dashboards, alerts or infrastructure-as-code.
+- **Gate G5 trades early sensitivity for fewer false alarms.** The minimum evidence ratio of 3 (alarm only if the upper interval end exceeds about 0.006 for the prior 0.002) is an untuned constant, and it relies on the claim that base-rate risk is covered by the scheduled test programme. Slow faults that stay near the prior (S06 cement gas: 19 evaluations held back) stay silent until a test. See [`INTERVIEW.md`](INTERVIEW.md), section 5.
+- **The dwell filter delays flickering real alarms** (S08 is surfaced 20 h after its first raw alarm).
+- **Four older tests fail** because the released model card no longer reproduces some numbers quoted in the manual (they also fail on a clean checkout of the previous commit).
+- **No redaction of sensitive text before it reaches an external embedder or LLM.** Classification and row-level security exist; redaction does not.
 - **Constants live in code.** Some priors and gate thresholds are code constants rather than versioned graph nodes.
 
 ---

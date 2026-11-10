@@ -1,0 +1,19 @@
+Decision: NO_ACTION [DEC.W01.S02_llm_draft].
+Leak probability is 0.99 [RA.W01.S02_llm_draft].
+MAASP is 345 bar [LIM.W01.MAASP-A.B], so there is ample margin.
+The current limit is 345 bar [LIM.W01.MAASP-A.C].
+[FMech.CEM.MICRO] can cause [FM.COMM.TA].
+Similar wells leaked in 3 of 5 cases.
+See also [LIM.W01.MAASP-A.D].
+Shut in the well immediately.
+
+--- grounding gate: REJECTED ---
+R6 action 'NO_ACTION' contradicts decision ALARM in: Decision: NO_ACTION [DEC.W01.S02_llm_draft].
+R4 '0.99' matches no property of ['RA.W01.S02_llm_draft'] in: Leak probability is 0.99 [RA.W01.S02_llm_draft].
+R3 superseded source [LIM.W01.MAASP-A.B] (superseded by LIM.W01.MAASP-A.C) in: MAASP is 345 bar [LIM.W01.MAASP-A.B], so there is ample margin.
+R4 '345' matches no property of ['LIM.W01.MAASP-A.C'] in: The current limit is 345 bar [LIM.W01.MAASP-A.C].
+R7 claim '[FMech.CEM.MICRO] can cause [FM.COMM.TA]' is not an edge of the graph
+R1 uncited number '3' in: Similar wells leaked in 3 of 5 cases.
+R1 uncited number '5' in: Similar wells leaked in 3 of 5 cases.
+R2 unknown node [LIM.W01.MAASP-A.D] in: See also [LIM.W01.MAASP-A.D].
+R5 missing advisory statement with cited trip authority

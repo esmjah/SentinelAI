@@ -1,0 +1,19 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S11_frozen_transmitter]: ABSTAIN (gate G1_DATA_QUALITY) [DEC.W01.S11_frozen_transmitter].
+The A-annulus transmitter reports FROZEN data [RA.W01.S11_frozen_transmitter], so no probability is used and [FM.MONITOR] is assessed [DEC.W01.S11_frozen_transmitter].
+[FM.MONITOR] degrades [BE.PRIMARY].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.2 bar, margin 276.7 bar [RA.W01.S11_frozen_transmitter].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 179.0 bar [RA.W01.S11_frozen_transmitter].
+Recommended next evidence: [TEST.SEN.CAL] [DEC.W01.S11_frozen_transmitter].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S11_frozen_transmitter.t_eval_h
+[FM.MONITOR] degrades [BE.PRIMARY] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.2 -> RA.W01.S11_frozen_transmitter.maasp_A_bar
+276.7 -> RA.W01.S11_frozen_transmitter.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S11_frozen_transmitter.maasp_B_bar
+179.0 -> RA.W01.S11_frozen_transmitter.margin_B_bar

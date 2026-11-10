@@ -17,6 +17,8 @@ service. Steps:
                    RG3 every follow-up test performance estimated on >= 100 held-out samples
                    RG4 golden set: the 12 reference scenarios give the same (action, gate, failure mode) as
                        artifacts/golden_decisions.json (behaviour change needs --accept-golden: a human decision)
+                   RG5 healthy streams: no raw ALARM when healthy wells (plants drawn from the twin's priors) are
+                       evaluated every hour from 10 h to 60 h (monitoring.healthy_stream_alarms)
   7  promote       gates pass  -> artifacts/calibration_W01.joblib + model card calibration_W01.json + figures
                    gates fail  -> artifacts/candidate/ only; the released artifact is untouched; exit code 1
 """
@@ -44,7 +46,7 @@ from .dataset import make_dataset, DATASET
 CAL_ID = "CAL-W01-1.0.0"
 N_BOOT = 16
 TEST_POSITIVE_P = 0.90       # a follow-up test is "positive" if p(failure, training prior) exceeds this
-GATES = dict(max_ece=0.05, min_test_samples=100)
+GATES = dict(max_ece=0.05, min_test_samples=100, max_healthy_alarms=0)
 GOLDEN = ARTIFACTS / "golden_decisions.json"
 CANDIDATE = ARTIFACTS / "candidate"
 ENGINE = Path(__file__).parent.parent
@@ -167,6 +169,11 @@ def release_gates(bundle, accept_golden: bool = False):
     else:
         ok, detail = True, "no golden set yet: this release creates it"
     rep.append(("RG4 golden scenarios unchanged", ok, detail))
+    from ..monitoring import healthy_stream_alarms
+    from knowledge_graph.build_graph import build_graph as _bg
+    h = healthy_stream_alarms(cand, _bg())
+    rep.append((f"RG5 healthy streams: raw ALARM <= {GATES['max_healthy_alarms']}", h["raw_alarms"] <= GATES["max_healthy_alarms"],
+                f"{h['raw_alarms']} ALARM in {h['evaluations']} evaluations (G5 held back {h['held_back_by_g5']})"))
     return all(r[1] for r in rep), rep, now
 
 

@@ -1,0 +1,60 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S01_healthy]: NO_ACTION (gate EXPECTED_LOSS) [DEC.W01.S01_healthy].
+A-annulus pressure is 56.3 bar against 56.2 bar expected by [TWIN-W01]; the residual of -0.3 bar is z = -0.09 with sigma 3.04 bar [RA.W01.S01_healthy].
+B-annulus pressure is 30.0 bar against 29.3 bar expected; the residual of 0.1 bar is z = 0.04 with sigma 3.04 bar [RA.W01.S01_healthy].
+Probability that a failure mode is active is 0.0009 (90% interval 0.0008 to 0.0027) at an operational prior of 0.002 [RA.W01.S01_healthy].
+The leading failure mode is [FM.SCP.B] with probability 0.0005 [RA.W01.S01_healthy].
+The next most likely is [FM.COMM.TA] with probability 0.0002 [RA.W01.S01_healthy].
+[FMech.CEM.MICRO] can cause [FM.SCP.B]; distance to its twin signature is 0.62 [DEC.W01.S01_healthy].
+[FMech.ICSG.LEAK] can cause [FM.SCP.B]; distance to its twin signature is 2.64 [DEC.W01.S01_healthy].
+[FM.SCP.B] degrades [BE.SECONDARY].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.1 bar, margin 275.8 bar [RA.W01.S01_healthy].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 176.9 bar [RA.W01.S01_healthy].
+Expected losses: no action NOK 78,298, follow-up test NOK 108,298, alarm NOK 1,049,954; expected cost of a miss NOK 84,945,686 [DEC.W01.S01_healthy].
+Policy costs: missed leak NOK 20,000,000, missed loss of containment NOK 500,000,000, false alarm NOK 50,000 [POL.W01.INTEGRITY].
+Confirmatory test costs NOK 1,000,000 [TEST.PT.ANN.B].
+Follow-up test costs NOK 30,000 [TEST.TOPUP]; sensitivity 0.5 and specificity 0.95 (assumed default) [DEC.W01.S01_healthy].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S01_healthy.t_eval_h
+56.3 -> RA.W01.S01_healthy.P_A_bar
+56.2 -> RA.W01.S01_healthy.P_A_exp_bar
+-0.3 -> RA.W01.S01_healthy.r_A_bar
+-0.09 -> RA.W01.S01_healthy.z_A
+3.04 -> RA.W01.S01_healthy.sigma_A_bar
+30.0 -> RA.W01.S01_healthy.dwell_min
+29.3 -> RA.W01.S01_healthy.P_B_exp_bar
+0.1 -> RA.W01.S01_healthy.r_B_bar
+0.04 -> RA.W01.S01_healthy.z_B
+3.04 -> RA.W01.S01_healthy.sigma_A_bar
+0.0009 -> RA.W01.S01_healthy.p_fail
+90% -> RA.W01.S01_healthy.interval_level
+0.0008 -> RA.W01.S01_healthy.p_lo
+0.0027 -> RA.W01.S01_healthy.p_hi
+0.002 -> RA.W01.S01_healthy.prior_op_fail
+0.0005 -> RA.W01.S01_healthy.p_top
+0.0002 -> RA.W01.S01_healthy.p_FM_COMM_TA
+[FMech.CEM.MICRO] can cause [FM.SCP.B] -> CAUSES edge
+0.62 -> DEC.W01.S01_healthy.mechanism_1_distance
+[FMech.ICSG.LEAK] can cause [FM.SCP.B] -> CAUSES edge
+2.64 -> DEC.W01.S01_healthy.mechanism_2_distance
+[FM.SCP.B] degrades [BE.SECONDARY] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.1 -> RA.W01.S01_healthy.maasp_A_bar
+275.8 -> RA.W01.S01_healthy.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S01_healthy.maasp_B_bar
+176.9 -> RA.W01.S01_healthy.margin_B_bar
+78,298, -> DEC.W01.S01_healthy.loss_no_action_nok
+108,298, -> DEC.W01.S01_healthy.loss_test_nok
+1,049,954 -> DEC.W01.S01_healthy.loss_alarm_nok
+84,945,686 -> DEC.W01.S01_healthy.C_bar_nok
+20,000,000, -> POL.W01.INTEGRITY.cost_missed_leak_nok
+500,000,000, -> POL.W01.INTEGRITY.cost_missed_loc_nok
+50,000 -> POL.W01.INTEGRITY.cost_false_alarm_nok
+1,000,000 -> TEST.PT.ANN.B.cost_nok
+30,000 -> TEST.TOPUP.cost_nok
+0.5 -> DEC.W01.S01_healthy.followup_sensitivity
+0.95 -> DEC.W01.S01_healthy.followup_specificity

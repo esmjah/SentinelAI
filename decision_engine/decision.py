@@ -26,8 +26,19 @@ Gates, in order:
     G2 hard limits: P >= active MAWOP, or margin to operational MAASP
        (measured pressures, inspection findings) < MARGIN_MIN_BAR    -> ALARM (FM.MAASP.x / FM.MARGIN.x)
     G3 twin outside validity envelope, or OOD features                -> ABSTAIN
+    G5 no evidence: the expected-loss rule asks for TEST or ALARM, but even the
+       upper end of the interval is close to the operational prior
+       (evidence ratio odds(p_hi) / odds(prior) < EVIDENCE_RATIO_MIN)   -> NO_ACTION (base-rate risk is
+                                                                        covered by the scheduled test programme)
     G4 interval too wide AND best action differs at p_lo and p_hi     -> minimax action, human review
     otherwise                                                         -> minimum expected loss
+
+Why G5. The expected-loss rule is applied at every evaluation. A probability AT the base rate (no evidence) multiplied
+by a loss-of-containment cost can exceed the cost of a cheap confirmatory test: FM.FLOWCTRL alarms above p = 0.00029,
+and a healthy well sits near the prior 0.002. Without G5 the engine raises ALARM on healthy streams (README 10.8).
+G5 does not change probabilities, costs or thresholds; it only refuses to escalate on a probability that the evidence
+has not moved. It uses p_hi, so a case is held back only if even the most pessimistic bootstrap member sees no
+evidence; wide intervals still reach G4.
 
 Advisory only: trip authority stays with the SIS named on the policy node.
 """
@@ -43,6 +54,8 @@ POLICY_FM = "FM.COMM.TA"
 BLEED_REPEAT_H = 24.0         # a bleed newer than this is already in the evidence
 MARGIN_MIN_BAR = 30.0         # minimum margin to the operational MAASP before a hard alarm
 DEFAULT_SE_SP = (0.50, 0.95)  # for class-B tests without a twin-estimated performance
+EVIDENCE_RATIO_MIN = 3.0      # G5: minimum odds ratio odds(p_hi) / odds(prior) before a probability may escalate;
+                              # a policy node may override it with the attribute min_evidence_ratio
 SIG_KEYS = {("prod", False): ("dA_pre", "dB_pre"), ("prod", True): ("dA_post", "dB_post"),
             ("shut", False): ("dA_shutin",), ("shut", True): ("dA_shutin",)}
 
@@ -147,6 +160,23 @@ def expected_losses(p, C_bar, C_A, C_FA, test: dict | None) -> dict:
     return L
 
 
+def evidence_ratio(p: float, prior: float) -> float:
+    """Bayes factor carried by the evidence: posterior odds / prior odds (1 = the evidence did not move the prior)."""
+    p = min(max(p, 1e-12), 1 - 1e-12)
+    return (p / (1 - p)) / (prior / (1 - prior))
+
+
+def evidence_gate(action: str, p_hi: float, prior: float, ratio_min: float = EVIDENCE_RATIO_MIN) -> bool:
+    """True if G5 holds the action back: a TEST or ALARM driven by a probability the evidence has not moved."""
+    return action in (TEST, ALARM) and evidence_ratio(p_hi, prior) < ratio_min
+
+
+def a_rob_preview(lo, hi, args) -> str:
+    """The minimax action G4 would choose (used to decide whether G5 holds it back)."""
+    w = worst_case(lo, hi, *args)
+    return min(w, key=w.get)
+
+
 def best_action(p, *args):
     L = expected_losses(p, *args)
     return min(L, key=L.get), L
@@ -219,13 +249,24 @@ def decide(feats: dict, pred: dict, g, cal_summary: dict) -> dict:
     a, L = best_action(p, *args)
     a_lo, _ = best_action(lo, *args)
     a_hi, _ = best_action(hi, *args)
+    prior = float(pred.get("prior_op_fail", 0.002))
+    ratio_min = float(pol.get("min_evidence_ratio", EVIDENCE_RATIO_MIN))
+    out.update(evidence_ratio=evidence_ratio(hi, prior), min_evidence_ratio=ratio_min)
     out.update(expected_loss_nok=L, C_bar_nok=C_bar, confirmatory=conf_test["id"],
                confirmatory_cost_nok=float(conf_test["cost_nok"]), followup=test,
                thresholds=thresholds(*args), action_at_p_lo=a_lo, action_at_p_hi=a_hi,
                ranked_mechanisms=ranked[:3], degraded_barriers=q.degraded_barriers(g, mode),
                hazards=q.hazards_reachable(g, mode))
     nxt = {ALARM: conf_test["id"], TEST: test["id"] if test else None}
-    if (hi - lo) > float(pol["abstain_interval_width"]) and a_lo != a_hi:
+    g4 = (hi - lo) > float(pol["abstain_interval_width"]) and a_lo != a_hi
+    held = (a_rob_preview(lo, hi, args) if g4 else a)
+    # G5 evidence: no escalation on a probability the evidence has not moved away from the prior
+    if evidence_gate(held, hi, prior, ratio_min):
+        out.update(action=NO_ACTION, gate="G5_NO_EVIDENCE", next_evidence=None, held_back=held,
+                   reason=f"evidence ratio {out['evidence_ratio']:.2f} below {ratio_min:g}: probability at the base rate; "
+                          "base-rate risk is covered by the scheduled test programme")
+        return out
+    if g4:
         worst = worst_case(lo, hi, *args)
         a_rob = min(worst, key=worst.get)
         out.update(action=a_rob, gate="G4_ROBUST", human_review=True, worst_case_loss_nok=worst,

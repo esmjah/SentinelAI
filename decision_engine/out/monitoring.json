@@ -1,0 +1,182 @@
+{
+ "S01_healthy": {
+  "raw_alarm_h": 0,
+  "surfaced_alarm_h": 0,
+  "raw_flips": 0,
+  "surfaced_flips": 0,
+  "first_raw_alarm_h": null,
+  "first_surfaced_alarm_h": null,
+  "psi_vs_healthy": 0.0,
+  "raw_alarm_by_gate": {},
+  "held_back_by_g5": 11,
+  "held_back_alarms": 7
+ },
+ "S02_tubing_thread_leak": {
+  "raw_alarm_h": 39,
+  "surfaced_alarm_h": 37,
+  "raw_flips": 1,
+  "surfaced_flips": 2,
+  "first_raw_alarm_h": 21.0,
+  "first_surfaced_alarm_h": 23.0,
+  "psi_vs_healthy": 3.766,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 38,
+   "G4_ROBUST": 1
+  },
+  "held_back_by_g5": 1,
+  "held_back_alarms": 1
+ },
+ "S03_packer_leak": {
+  "raw_alarm_h": 39,
+  "surfaced_alarm_h": 37,
+  "raw_flips": 1,
+  "surfaced_flips": 2,
+  "first_raw_alarm_h": 21.0,
+  "first_surfaced_alarm_h": 23.0,
+  "psi_vs_healthy": 4.675,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 38,
+   "G4_ROBUST": 1
+  },
+  "held_back_by_g5": 3,
+  "held_back_alarms": 1
+ },
+ "S04_hanger_seal_bled": {
+  "raw_alarm_h": 18,
+  "surfaced_alarm_h": 16,
+  "raw_flips": 4,
+  "surfaced_flips": 5,
+  "first_raw_alarm_h": 42.0,
+  "first_surfaced_alarm_h": 44.0,
+  "psi_vs_healthy": 1.139,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 3,
+   "G4_ROBUST": 15
+  },
+  "held_back_by_g5": 8,
+  "held_back_alarms": 5
+ },
+ "S05_casing_leak_AB": {
+  "raw_alarm_h": 39,
+  "surfaced_alarm_h": 37,
+  "raw_flips": 1,
+  "surfaced_flips": 2,
+  "first_raw_alarm_h": 21.0,
+  "first_surfaced_alarm_h": 23.0,
+  "psi_vs_healthy": 4.586,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 10,
+   "G4_ROBUST": 29
+  },
+  "held_back_by_g5": 3,
+  "held_back_alarms": 2
+ },
+ "S06_cement_gas_B_bled": {
+  "raw_alarm_h": 1,
+  "surfaced_alarm_h": 0,
+  "raw_flips": 3,
+  "surfaced_flips": 1,
+  "first_raw_alarm_h": 54.0,
+  "first_surfaced_alarm_h": null,
+  "psi_vs_healthy": 3.565,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 1
+  },
+  "held_back_by_g5": 19,
+  "held_back_alarms": 2
+ },
+ "S07_A_outlet_leak_env": {
+  "raw_alarm_h": 39,
+  "surfaced_alarm_h": 37,
+  "raw_flips": 1,
+  "surfaced_flips": 2,
+  "first_raw_alarm_h": 21.0,
+  "first_surfaced_alarm_h": 23.0,
+  "psi_vs_healthy": 4.511,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 28,
+   "G4_ROBUST": 11
+  },
+  "held_back_by_g5": 1,
+  "held_back_alarms": 0
+ },
+ "S08_int_casing_leak_bled": {
+  "raw_alarm_h": 13,
+  "surfaced_alarm_h": 12,
+  "raw_flips": 16,
+  "surfaced_flips": 8,
+  "first_raw_alarm_h": 28.0,
+  "first_surfaced_alarm_h": 48.0,
+  "psi_vs_healthy": 1.798,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 2,
+   "G4_ROBUST": 11
+  },
+  "held_back_by_g5": 8,
+  "held_back_alarms": 1
+ },
+ "S09_choke_erosion": {
+  "raw_alarm_h": 48,
+  "surfaced_alarm_h": 46,
+  "raw_flips": 1,
+  "surfaced_flips": 2,
+  "first_raw_alarm_h": 12.0,
+  "first_surfaced_alarm_h": 14.0,
+  "psi_vs_healthy": 7.674,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 48
+  },
+  "held_back_by_g5": 2,
+  "held_back_alarms": 2
+ },
+ "S10_compound_silent": {
+  "raw_alarm_h": 39,
+  "surfaced_alarm_h": 37,
+  "raw_flips": 1,
+  "surfaced_flips": 2,
+  "first_raw_alarm_h": 21.0,
+  "first_surfaced_alarm_h": 23.0,
+  "psi_vs_healthy": 4.153,
+  "raw_alarm_by_gate": {
+   "EXPECTED_LOSS": 10,
+   "G2_MARGIN": 27,
+   "G4_ROBUST": 2
+  },
+  "held_back_by_g5": 5,
+  "held_back_alarms": 1
+ },
+ "S11_frozen_transmitter": {
+  "raw_alarm_h": 0,
+  "surfaced_alarm_h": 0,
+  "raw_flips": 1,
+  "surfaced_flips": 1,
+  "first_raw_alarm_h": null,
+  "first_surfaced_alarm_h": null,
+  "psi_vs_healthy": 0.404,
+  "raw_alarm_by_gate": {},
+  "held_back_by_g5": 5,
+  "held_back_alarms": 2
+ },
+ "S12_outside_envelope": {
+  "raw_alarm_h": 0,
+  "surfaced_alarm_h": 0,
+  "raw_flips": 0,
+  "surfaced_flips": 0,
+  "first_raw_alarm_h": null,
+  "first_surfaced_alarm_h": null,
+  "psi_vs_healthy": 1.816,
+  "raw_alarm_by_gate": {},
+  "held_back_by_g5": 0,
+  "held_back_alarms": 0
+ },
+ "_healthy_streams": {
+  "raw_alarms": 0,
+  "evaluations": 150,
+  "per_seed": {
+   "101": 0,
+   "102": 0,
+   "103": 0
+  },
+  "held_back_by_g5": 16
+ }
+}

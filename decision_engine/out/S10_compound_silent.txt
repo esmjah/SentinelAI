@@ -1,0 +1,45 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S10_compound_silent]: ALARM (gate G2_MARGIN) [DEC.W01.S10_compound_silent].
+A-annulus pressure is 1.1 bar against 56.2 bar expected by [TWIN-W01]; the residual of -55.2 bar is z = -18.14 with sigma 3.04 bar [RA.W01.S10_compound_silent].
+B-annulus pressure is 29.0 bar against 29.3 bar expected; the residual of 0.1 bar is z = 0.04 with sigma 3.04 bar [RA.W01.S10_compound_silent].
+Probability that a failure mode is active is 0.7223 (90% interval 0.705 to 0.7284) at an operational prior of 0.002 [RA.W01.S10_compound_silent].
+The leading failure mode is [FM.COMM.TA] with probability 0.634 [RA.W01.S10_compound_silent].
+The next most likely is [FM.SCP.B] with probability 0.0702 [RA.W01.S10_compound_silent].
+[FM.MARGIN.B] degrades [BE.SECONDARY].
+[FM.MARGIN.B] degrades [BE.OUTER].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 170.9 bar, margin 169.8 bar [RA.W01.S10_compound_silent].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 53.5 bar, margin 24.5 bar [RA.W01.S10_compound_silent].
+The margin of 24.5 bar to the operational MAASP of 53.5 bar (governed by PC_collapse) [RA.W01.S10_compound_silent] is below the minimum margin: hard limit.
+Recommended next evidence: [TEST.LOG.CAL] [DEC.W01.S10_compound_silent].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S10_compound_silent.t_eval_h
+1.1 -> RA.W01.S10_compound_silent.P_A_bar
+56.2 -> RA.W01.S10_compound_silent.P_A_exp_bar
+-55.2 -> RA.W01.S10_compound_silent.r_A_bar
+-18.14 -> RA.W01.S10_compound_silent.z_A
+3.04 -> RA.W01.S10_compound_silent.sigma_A_bar
+29.0 -> RA.W01.S10_compound_silent.P_B_bar
+29.3 -> RA.W01.S10_compound_silent.P_B_exp_bar
+0.1 -> RA.W01.S10_compound_silent.r_B_bar
+0.04 -> RA.W01.S10_compound_silent.z_B
+3.04 -> RA.W01.S10_compound_silent.sigma_A_bar
+0.7223 -> RA.W01.S10_compound_silent.p_fail
+90% -> RA.W01.S10_compound_silent.interval_level
+0.705 -> RA.W01.S10_compound_silent.p_lo
+0.7284 -> RA.W01.S10_compound_silent.p_hi
+0.002 -> RA.W01.S10_compound_silent.prior_op_fail
+0.634 -> RA.W01.S10_compound_silent.p_top
+0.0702 -> RA.W01.S10_compound_silent.p_FM_SCP_B
+[FM.MARGIN.B] degrades [BE.SECONDARY] -> DEGRADES edge
+[FM.MARGIN.B] degrades [BE.OUTER] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+170.9 -> RA.W01.S10_compound_silent.maasp_A_bar
+169.8 -> RA.W01.S10_compound_silent.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+53.5 -> RA.W01.S10_compound_silent.maasp_B_bar
+24.5 -> RA.W01.S10_compound_silent.margin_B_bar
+24.5 -> RA.W01.S10_compound_silent.margin_B_bar
+53.5 -> RA.W01.S10_compound_silent.maasp_B_bar

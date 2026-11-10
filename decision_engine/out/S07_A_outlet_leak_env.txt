@@ -1,0 +1,61 @@
+Decision for well W01 at t = 59.9 h [RA.W01.S07_A_outlet_leak_env]: ALARM (gate EXPECTED_LOSS) [DEC.W01.S07_A_outlet_leak_env].
+A-annulus pressure is 17.3 bar against 56.2 bar expected by [TWIN-W01]; the residual of -38.4 bar is z = -12.64 with sigma 3.04 bar [RA.W01.S07_A_outlet_leak_env].
+B-annulus pressure is 27.1 bar against 29.3 bar expected; the residual of -1.9 bar is z = -0.64 with sigma 3.04 bar [RA.W01.S07_A_outlet_leak_env].
+Probability that a failure mode is active is 0.6731 (90% interval 0.4587 to 0.7173) at an operational prior of 0.002 [RA.W01.S07_A_outlet_leak_env].
+The leading failure mode is [FM.COMM.TA] with probability 0.624 [RA.W01.S07_A_outlet_leak_env].
+The next most likely is [FM.EXT] with probability 0.0439 [RA.W01.S07_A_outlet_leak_env].
+[FMech.TUB.CORR] can cause [FM.COMM.TA]; distance to its twin signature is 0.1 [DEC.W01.S07_A_outlet_leak_env].
+[FMech.TUB.THREAD] can cause [FM.COMM.TA]; distance to its twin signature is 2.97 [DEC.W01.S07_A_outlet_leak_env].
+[FM.COMM.TA] degrades [BE.PRIMARY].
+A-annulus limits: MAWOP 236.8 bar [LIM.W01.MAWOP-A.A], MAASP 330 bar rev C [LIM.W01.MAASP-A.C]; operational MAASP from measured pressures is 332.1 bar, margin 314.8 bar [RA.W01.S07_A_outlet_leak_env].
+B-annulus limits: MAWOP 118.9 bar [LIM.W01.MAWOP-B.A], MAASP 205 bar rev A [LIM.W01.MAASP-B.A]; operational MAASP from measured pressures is 206.8 bar, margin 179.7 bar [RA.W01.S07_A_outlet_leak_env].
+Expected losses: no action NOK 36,228,446, follow-up test NOK 1,566,343, alarm NOK 1,516,343; expected cost of a miss NOK 53,820,506 [DEC.W01.S07_A_outlet_leak_env].
+Policy costs: missed leak NOK 20,000,000, missed loss of containment NOK 500,000,000, false alarm NOK 50,000 [POL.W01.INTEGRITY].
+Confirmatory test costs NOK 1,500,000 [TEST.PT.ANN.A].
+Follow-up test costs NOK 50,000 [TEST.BLEED.A]; sensitivity 0.66 and specificity 0.992 (twin-estimated) [DEC.W01.S07_A_outlet_leak_env].
+Recommended next evidence: [TEST.PT.ANN.A] [DEC.W01.S07_A_outlet_leak_env].
+This is advisory only; trip authority is SIS only [POL.W01.INTEGRITY].
+
+--- grounding gate: ACCEPTED ---
+59.9 -> RA.W01.S07_A_outlet_leak_env.t_eval_h
+17.3 -> RA.W01.S07_A_outlet_leak_env.P_A_bar
+56.2 -> RA.W01.S07_A_outlet_leak_env.P_A_exp_bar
+-38.4 -> RA.W01.S07_A_outlet_leak_env.r_A_bar
+-12.64 -> RA.W01.S07_A_outlet_leak_env.z_A
+3.04 -> RA.W01.S07_A_outlet_leak_env.sigma_A_bar
+27.1 -> RA.W01.S07_A_outlet_leak_env.P_B_bar
+29.3 -> RA.W01.S07_A_outlet_leak_env.P_B_exp_bar
+-1.9 -> RA.W01.S07_A_outlet_leak_env.r_B_bar
+-0.64 -> RA.W01.S07_A_outlet_leak_env.z_B
+3.04 -> RA.W01.S07_A_outlet_leak_env.sigma_A_bar
+0.6731 -> RA.W01.S07_A_outlet_leak_env.p_fail
+90% -> RA.W01.S07_A_outlet_leak_env.interval_level
+0.4587 -> RA.W01.S07_A_outlet_leak_env.p_lo
+0.7173 -> RA.W01.S07_A_outlet_leak_env.p_hi
+0.002 -> RA.W01.S07_A_outlet_leak_env.prior_op_fail
+0.624 -> RA.W01.S07_A_outlet_leak_env.p_top
+0.0439 -> RA.W01.S07_A_outlet_leak_env.p_FM_EXT
+[FMech.TUB.CORR] can cause [FM.COMM.TA] -> CAUSES edge
+0.1 -> DEC.W01.S07_A_outlet_leak_env.threshold_test_to_alarm
+[FMech.TUB.THREAD] can cause [FM.COMM.TA] -> CAUSES edge
+2.97 -> DEC.W01.S07_A_outlet_leak_env.mechanism_2_distance
+[FM.COMM.TA] degrades [BE.PRIMARY] -> DEGRADES edge
+236.8 -> LIM.W01.MAWOP-A.A.value
+330 -> LIM.W01.MAASP-A.C.value
+332.1 -> RA.W01.S07_A_outlet_leak_env.maasp_A_bar
+314.8 -> RA.W01.S07_A_outlet_leak_env.margin_A_bar
+118.9 -> LIM.W01.MAWOP-B.A.value
+205 -> LIM.W01.MAASP-B.A.value
+206.8 -> RA.W01.S07_A_outlet_leak_env.maasp_B_bar
+179.7 -> RA.W01.S07_A_outlet_leak_env.margin_B_bar
+36,228,446, -> DEC.W01.S07_A_outlet_leak_env.loss_no_action_nok
+1,566,343, -> DEC.W01.S07_A_outlet_leak_env.loss_test_nok
+1,516,343 -> DEC.W01.S07_A_outlet_leak_env.loss_alarm_nok
+53,820,506 -> DEC.W01.S07_A_outlet_leak_env.C_bar_nok
+20,000,000, -> POL.W01.INTEGRITY.cost_missed_leak_nok
+500,000,000, -> POL.W01.INTEGRITY.cost_missed_loc_nok
+50,000 -> POL.W01.INTEGRITY.cost_false_alarm_nok
+1,500,000 -> TEST.PT.ANN.A.cost_nok
+50,000 -> TEST.BLEED.A.cost_nok
+0.66 -> DEC.W01.S07_A_outlet_leak_env.followup_sensitivity
+0.992 -> DEC.W01.S07_A_outlet_leak_env.followup_specificity

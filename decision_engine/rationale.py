@@ -69,6 +69,8 @@ def record(g, run_id: str, feats: dict, pred: dict, dec: dict, provenance: dict)
              human_review=dec["human_review"], interval_width=r4(dec["p_hi"] - dec["p_lo"]),
              twin_valid=bool(feats["twin_valid"]), twin_validity_note=feats["twin_validity_note"],
              ood_features=", ".join(pred["ood_features"]))
+    if "evidence_ratio" in dec:                                       # G5 inputs (evidence ratio of p_hi against the prior)
+        D.update(evidence_ratio=r2(dec["evidence_ratio"]), min_evidence_ratio=r2(dec["min_evidence_ratio"]))
     if L:
         D.update({f"loss_{k.lower()}_nok": round(v) for k, v in L.items()},
                  C_bar_nok=round(dec["C_bar_nok"]), confirmatory=dec["confirmatory"],
@@ -182,6 +184,10 @@ def draft(g2, ra: str, de: str) -> str:
         else:
             L.append(f"Evidence features lie outside the calibration range ({D['ood_features']}) [{de}], so no "
                      f"probability is used.")
+    elif D["gate"] == "G5_NO_EVIDENCE":
+        L.append(f"The evidence ratio {D['evidence_ratio']} is below the minimum {D['min_evidence_ratio']} [{de}]: even the upper "
+                 f"end of the interval has not moved away from the operational prior, so no escalation is raised and the "
+                 f"base-rate risk is left to the scheduled test programme.")
     elif D["gate"] == "G4_ROBUST":
         L.append(f"The interval width {D['interval_width']} [{de}] exceeds abstain_interval_width "
                  f"{pol['abstain_interval_width']} [{pol_id}] and the best action differs across it; the action with "

@@ -263,6 +263,8 @@ python -m decision_engine.reproduce                    # recompute every number 
 python -m decision_engine.reproduce --engine           # + the twelve scenarios end to end (needs twin, graph, artifact)
 python -m decision_engine.test_analysis                # 14 tests of the mathematics and of the runtime code (no artifact needed)
 python -m decision_engine.figures                      # the figures that need only the model card
+python -m pytest decision_engine/test_escalation.py    # 7 tests of the escalation filter and monitoring helpers (no artifact needed)
+python -m decision_engine.monitoring                   # replay the 12 scenarios as a stream: alarm rate, chatter, drift (minutes)
 
 # offline training job (CI / retraining trigger)
 python -m decision_engine.training.dataset             # ~8 min: 1,200 synthetic runs (resumable cache)
@@ -282,7 +284,10 @@ decision_engine/
 ├── diagnosis.py                Step 2  classes from the graph; FailureModeCalibrator (load + predict only)
 ├── decision.py                 Step 3  costs and tests from the graph, expected loss, gates G1-G4
 ├── rationale.py                Step 4  runtime graph nodes, cited draft, grounding gate R1-R7
+├── escalation.py               post-engine dwell and hysteresis on the action stream (operator-facing state)
+├── monitoring.py               stream replay of the scenarios: alarm rate, chatter, detection delay, PSI, ECE helper
 ├── scenarios.py                twelve reference scenarios (the golden set), figure, audit
+├── test_escalation.py          7 tests of escalation.py and the monitoring helpers (no artifact needed)
 ├── test_decision_engine.py     checks that need the artifact, the twin and the graph (9)
 ├── analysis.py                 the mathematics of Chapters 2, 5, 6, 15 as functions (numpy only)
 ├── figures.py, figstyle.py     all figures, in the style of the Solution Description
@@ -306,6 +311,8 @@ decision_engine/
 | `diagnosis.py` | Classes from the graph, applying the ensemble, isotonic maps, prior shift, interval, out-of-range check | 5 |
 | `decision.py` | Costs and tests from the graph, mechanism ranking, expected loss, value of information, four gates | 6 |
 | `rationale.py` | Runtime graph nodes, cited explanation, grounding gate R1–R7 | 7 |
+| `escalation.py` | Dwell and hysteresis on the stream of engine actions; changes what is surfaced, never the decision | 6.10 |
+| `monitoring.py`, `test_escalation.py` | Replay of the scenarios as a stream; alarm rate, chatter, detection delay, PSI drift, ECE helper; 7 tests | 10.8 |
 | `scenarios.py` | Twelve reference scenarios, golden decisions, audit trail, figure | 8 |
 | `training/dataset.py`, `training/train_calibrator.py` | Synthetic data, fitting, evaluation, release gates, promotion | 5, 10 |
 | `artifacts/` | Released artifact, model card, golden set, validation figures | 5, 10 |
@@ -706,6 +713,7 @@ If all failure probability sat on one mode ($\bar C = C_{miss}(k)$), the actions
 | **G2** hard limits | $P_X \ge$ MAWOP_X (graph limit), or margin to operational MAASP $<$ 30 bar | `ALARM` on `FM.MAASP.X` / `FM.MARGIN.X` | A limit needs no probability |
 | **G3** model validity | twin outside its envelope, or a feature out of range | `ABSTAIN` | The calibrator would extrapolate |
 | **G4** decision-relevant uncertainty | interval wider than `abstain_interval_width` (0.4) **and** the best action at $p_{lo}$ differs from the best at $p_{hi}$ | Minimax action, `human_review` | See 6.8 |
+| **G5** no evidence | the cost rule (or G4) asks for TEST or ALARM, but the evidence ratio odds($p_{hi}$) / odds(prior) is below 3 | NO_ACTION; base-rate risk left to the scheduled test programme | A probability at the prior is not evidence (10.8) |
 | — | otherwise | Minimum expected loss | — |
 
 The order follows dependence: first the data, then limits (which need only the data), then the model, then the
@@ -731,6 +739,30 @@ endpoints.
 
 Every decision carries `advisory_only = True` and the policy's `trip_authority = "SIS only"`. The engine never acts
 on the well. Keeping the output advisory also limits automation bias [39], and the protective function stays with the safety instrumented system [40, 41].
+
+### 6.10 Escalation: dwell and hysteresis (`escalation.py`)
+
+`decide()` judges one evaluation. A stream of evaluations near a threshold can chatter (ALARM, TEST, ALARM, ...),
+which is how alarm fatigue starts. `EscalationFilter` sits **after** the engine and **before** the operator. It
+does not change the decision, the audit line or the gates; it only changes what is surfaced. Call
+`filter.update(action, gate)` once per evaluation, or `filter_stream(list_of_(action, gate))` on a recorded stream.
+
+| Rule | Behaviour | Why |
+|---|---|---|
+| Dwell (raise) | ALARM is surfaced after `RAISE_N = 3` consecutive raw ALARMs; until then it is surfaced as `TEST` | One noisy evaluation should not escalate, but the operator still sees that something is being looked at |
+| Hysteresis (clear) | A surfaced ALARM is cleared only after `CLEAR_N = 6` consecutive non-ALARM evaluations | Prevents flicker around the threshold |
+| Hard limits | Gates `G2_LIMIT` and `G2_MARGIN` are surfaced immediately | A limit breach is a measurement, not a probability: dwell would only add delay |
+| ABSTAIN | Always surfaced at once and resets the dwell counter | Bad data or an invalid model must never be hidden by a filter |
+| TEST, NO_ACTION | Surfaced as is while no alarm is latched | — |
+
+`flips(actions)` counts changes between consecutive actions (the chatter count).
+
+**Trade-off.** Dwell lowers false alarms and adds detection delay of at least `RAISE_N - 1` evaluations. On the
+replay of Section 10.8 it removes all alarms on the healthy well, costs about 3 h on the clear leak scenarios, and
+delays flickering scenarios much more (S04 and S08 are surfaced 24 h and 23 h later). The constants are code
+constants; they belong on the policy node with change control (Chapter 13).
+
+The latched alarm is still advisory: it needs human confirmation, and trip authority stays with the SIS (6.9).
 
 ---
 
@@ -962,6 +994,7 @@ the agent, reading the historian, reproduces the engine's offline decision for a
 | **RG2** | Brier of $p(\text{failure})$ better than the naive baseline | 0.124 vs 0.234 | the model must beat "sigmoid of the score" |
 | **RG3** | every follow-up test performance estimated on ≥ 100 samples | min 133 (shut-in) | value-of-information needs trustworthy sensitivity / specificity |
 | **RG4** | the 12 golden scenarios give the same (action, gate, failure mode) | identical | a statistically better model must not silently change safety behaviour |
+| **RG5** | no raw ALARM on three healthy streams with sampled plants, evaluated hourly from 10 h to 60 h | to be run (10.8) | single-evaluation tests cannot see an alarm rate on healthy wells |
 
 If any gate fails, the candidate is written to `artifacts/candidate/` with its model card and figures, the released
 artifact is untouched, and the job exits with code 1 (so a CI pipeline stops). A **behaviour change** on the golden
@@ -1035,6 +1068,66 @@ disposition can be wrong (the event history contains one). Only class-A results 
 | agent evaluation | `sentinel_agent.evals.run_evals` | parity < 1, red team not all pass, retrieval below last release |
 | deployment | package code + `artifacts/` + document index version | — |
 
+### 10.8 Monitoring and the evidence gate (`monitoring.py`)
+
+`python -m decision_engine.monitoring` replays each of the twelve scenarios as a stream, evaluating every hour from
+10 h to the end of the run with the same `features_at → predict → decide` path as production. It passes the raw
+actions through `escalation.py` (6.10) and writes `out/monitoring.json`. It takes several minutes. It is a
+prototype of the signals, run on synthetic data: it shows the mechanism, not field performance.
+
+| Signal | Function | Meaning | Reading |
+|---|---|---|---|
+| Alarm rate | `replay()` → `raw_alarm_h`, `surfaced_alarm_h` | ALARM evaluations before and after the filter | On a healthy well the target is 0 |
+| Chatter | `raw_flips`, `surfaced_flips` | Action changes between consecutive evaluations | Falling after the filter |
+| Detection delay | `first_raw_alarm_h`, `first_surfaced_alarm_h` | First hour with ALARM | Compare with the fault start (20 h in most scenarios) |
+| G5 hold-backs | `run()`, per scenario and gate | Evaluations in which G5 held back a TEST or ALARM | High on healthy streams, low on leaks |
+| Input and score drift | `psi(ref, cur)` | Population stability index of $\log_{10} p_{fail}$ against a reference stream (the healthy scenario), quantile bins of the reference | $< 0.1$ stable, $0.1$–$0.25$ watch, $> 0.25$ investigate |
+| Calibration over time | `ece(p, y)` | Expected calibration error of $p_{fail}$ on a labelled window | Compare with release gate RG1 ($\le 0.05$) |
+
+PSI is the leading signal. `ece()` is **not** computed in the replay: outcomes arrive late in operations (class-A tests,
+inspections), so it is a lagging signal, and labels derived from a replay do not match the operational base rate.
+
+#### Gate G5: no escalation without evidence
+
+Every evaluation is priced with the full consequence of a failure, so a probability sitting at the operational prior
+could still cross the low `NO_ACTION → ALARM` thresholds of Section 6.6. A probability **at** the prior is base-rate risk,
+not evidence. G5 therefore holds back a TEST or ALARM unless the evidence has moved the probability away from the prior,
+measured by the evidence ratio (posterior odds over prior odds) at the **upper** end of the bootstrap interval:
+
+$$\text{ER} = \frac{p_{hi}/(1 - p_{hi})}{\pi/(1 - \pi)}, \qquad \pi = 1 - \pi_{op}(\text{OK}) = 0.002$$
+
+If the expected-loss rule (or the minimax rule of G4) asks for TEST or ALARM and $\text{ER} < 3$, the decision is `NO_ACTION` with gate `G5_NO_EVIDENCE`, and the rationale says that the base-rate risk is left to the scheduled test programme (the same treatment as the silent mechanisms of 8.3). For $\pi = 0.002$ the gate holds back only when $p_{hi} < 0.006$.
+
+| Property | Consequence |
+|---|---|
+| Probabilities, costs and thresholds are unchanged | Sections 5, 6.1 to 6.6 and the reproduction tiers are not affected; no retraining is needed |
+| It uses $p_{hi}$, not $p$ | A case is held back only if even the most pessimistic bootstrap member sees no evidence; wide intervals still reach G4 |
+| It only blocks escalation | NO_ACTION, the hard gates G1 to G3 and every evidence-driven case are untouched: S06 ($p_{hi}$ = 0.012, ER ≈ 6), S08 ($p_{hi}$ = 0.47) and S05 pass |
+| The minimum ratio 3 is a policy value | A policy node attribute `min_evidence_ratio` overrides the code constant `EVIDENCE_RATIO_MIN` |
+| It is recorded | The Decision node stores `evidence_ratio` and `min_evidence_ratio`; `decide()` returns `held_back` (the action that was held); the grounding gate checks the G5 sentence like any other |
+
+Code: `decision.evidence_ratio`, `decision.evidence_gate`, the G5 branch of `decide()`; `rationale.record` and `draft` for the G5 node fields and sentence; `analysis.evidence_ratio`; `test_analysis.test_evidence_gate_g5`.
+
+#### Release gate RG5: healthy streams
+
+`monitoring.healthy_stream_alarms(cal, g)` replays three healthy wells whose plant parameters are drawn from the twin's priors (seeds 101 to 103), every hour from 10 h to 60 h, and counts raw ALARM evaluations and the evaluations G5 held back. The training job uses it as **RG5**: a candidate artifact with any raw ALARM on a healthy stream is not promoted (10.2).
+
+#### What still has to be run
+
+G5 is verified on the runtime code (unit tests of the gate; the rationale passes the grounding gate). The full replay needs the twin, the graph and the artifact and has **not** been run yet. Before relying on it, run:
+
+```bash
+python -m decision_engine.monitoring                   # expect 0 raw ALARM on S01 and on the three healthy streams
+python -m decision_engine.test_decision_engine         # the golden decisions should be unchanged
+python -m decision_engine.training.train_calibrator    # RG1 to RG5
+```
+
+The golden decisions are expected to be unchanged, because at 59.9 h S01 is already NO_ACTION and every other golden scenario either is decided by G1 to G3 or has $p_{hi}$ well above 0.006. If a golden decision does change, it is a behaviour change and needs `--accept-golden`.
+
+#### Next step, not yet built
+
+A sequential formulation would price the cost of **waiting one interval**, or accumulate the evidence over time (a CUSUM on the log-likelihood ratio, allowing for correlated samples) and alarm when it crosses a threshold set for a target false-alarm rate per well-year.
+
 ---
 
 ## 11. Design choices against common failure patterns of AI alarm systems
@@ -1099,10 +1192,18 @@ node in the graph, versioned like the limits.
 - **Binary reduction for the value of information.** The follow-up test is modelled as "failure / no failure" with
   one sensitivity and specificity; its power to separate *modes* is used for test choice, not in the loss.
 - **Measured-column MAASP** ignores a fluid-level drop in the backing annulus (4.10).
+- **Per-evaluation pricing.** Every evaluation is priced with the full consequence of a failure. Gate G5 (10.8) stops
+  escalation on probabilities at the base rate; a sequential formulation (cost of waiting, accumulated evidence) is
+  not built yet.
+- **Escalation constants in code.** `RAISE_N`, `CLEAR_N` and the immediate gates are code constants, not versioned
+  policy nodes, and the dwell filter delays flickering real alarms (6.10).
 
 **Lifecycle**
 - **Golden set of twelve.** It catches gross behaviour changes, not subtle shifts in rarely visited regions; a
-  larger backtest set of confirmed historical events belongs next to it.
+  larger backtest set of confirmed historical events belongs next to it. It also checks single evaluations, not
+  streams (10.8).
+- **Monitoring is a prototype.** `monitoring.py` replays synthetic streams; there are no live dashboards, alerts,
+  scheduled calibration checks on arriving outcomes, or PSI thresholds tuned on field data.
 - **Pickled artifact.** Tied to the scikit-learn version; a portable format (e.g. exported trees and isotonic
   knots) would remove that coupling.
 

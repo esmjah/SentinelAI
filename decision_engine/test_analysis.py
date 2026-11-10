@@ -109,6 +109,18 @@ def test_golden_set_and_card_are_consistent():
     assert gold["calibration"] == CARD["id"] and len(gold["decisions"]) == 12 and CARD["release"]["gates_passed"]
 
 
+def test_evidence_gate_g5():
+    """G5: a TEST or ALARM is held back if even p_hi has not moved the odds away from the prior by EVIDENCE_RATIO_MIN."""
+    assert DEC.EVIDENCE_RATIO_MIN == 3.0 and abs(DEC.evidence_ratio(0.002, 0.002) - 1.0) < 1e-12
+    assert abs(DEC.evidence_ratio(0.06, 0.002) - an.evidence_ratio(0.06, 0.002)) < 1e-12
+    # healthy-stream case of README 10.8: p ~ 0.0015 with FLOWCTRL on top -> the cost rule says ALARM, G5 holds it back
+    assert DEC.best_action(0.0015, 3.1e8, 4e4, 5e4, None)[0] == "ALARM"
+    assert DEC.evidence_gate("ALARM", 0.0020, 0.002) and DEC.evidence_gate("TEST", 0.0050, 0.002)
+    # evidence-driven cases pass: S06 (p_hi 0.012), S05 (p_hi 0.666), S08 (p_hi 0.47); NO_ACTION is never held back
+    assert not any(DEC.evidence_gate(a, ph, 0.002) for a, ph in (("TEST", 0.012), ("ALARM", 0.666), ("ALARM", 0.47)))
+    assert not DEC.evidence_gate("NO_ACTION", 0.001, 0.002)
+
+
 def test_reproduce_all_pass():
     bad = [c for c in rp.run() if not c.ok]
     assert not bad, [(c.id, c.computed, c.expected) for c in bad]

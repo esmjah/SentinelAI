@@ -252,6 +252,12 @@ def thresholds_closed(C_bar: float, C_A: float, C_FA: float, se: float, sp: floa
     return p1, p2
 
 
+def evidence_ratio(p: float, prior: float) -> float:
+    """Odds ratio odds(p) / odds(prior): how far the evidence moved the probability away from the prior (gate G5)."""
+    p = min(max(p, 1e-12), 1 - 1e-12)
+    return odds(p) / odds(prior)
+
+
 def no_test_threshold(C_bar: float, C_A: float, C_FA: float = C_FA) -> float:
     """p* = (C_A + C_FA) / (C_bar + C_FA): where L_none = L_alarm   (H.22, H.23)."""
     return (C_A + C_FA) / (C_bar + C_FA)
